@@ -20,4 +20,6 @@
 	> Gamma prop to sqrt(E) for E < max dE/dx
 	> Gamma prop to  1/E log(E) for E > max dE/dx
 
+[Modele de Schou] (Chap. 4 - 4.2 Particle Induced Electron Emission II - Hasselkamp)
+
 
