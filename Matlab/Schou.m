@@ -1,5 +1,5 @@
-E = [ 1 2 3 4 5 6 7 8 9 10]
-x = [ 1 2 3 4 5 6 7 8 9 10]
+E = logspace(1,4,20)
+x = linspace(1,30,20)
 
 figure
 plot(x,E, 'r-', 'linewidth', 2 )
