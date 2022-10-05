@@ -27,3 +27,28 @@ figure
 semilogx(E,Eloss, 'r+-', 'linewidth', 2 )
 ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 18)
 xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 18)
+
+
+%%
+cd /home/sguincha/espic2d/wk/Test_ions
+addpath '/home/sguincha/espic2d/matlab/'
+Ions = espic2dhdf5('stable_13_fine.h5');
+
+%% 
+dispespicParts(Ions)
+
+%% Compute ion energy
+
+Vr = Ions.VR;
+Vz = Ions.VZ;
+Vt = Ions.VTHET;
+Ions_mass = 3.347e-27;
+dt = Ions.dt;
+t = dt*linspace(0,1000,1000);
+EnergyIon1 = 0.5*Ions_mass*(Vr(1:1000,1).^2+Vz(1:1000,1).^2+Vt(1:1000,1).^2);
+
+
+figure
+plot(t,EnergyIon1,'k+-')
+xlabel('$t$ [s]', 'interpreter', 'latex','Fontsize', 18)
+ylabel('$E$ [eV]', 'interpreter', 'latex', 'Fontsize', 18)
