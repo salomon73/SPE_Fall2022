@@ -45,7 +45,8 @@ Vt = Ions.VTHET;
 Ions_mass = 3.347e-27;
 dt = Ions.dt;
 t = dt*linspace(0,1000,1000);
-EnergyIon1 = 0.5*Ions_mass*(Vr(1:1000,1).^2+Vz(1:1000,1).^2+Vt(1:1000,1).^2);
+n=50;
+EnergyIon1 = (1/1.602e-19)*0.5*Ions_mass*(Vr(1:1000,n).^2+Vz(1:1000,n).^2+Vt(1:1000,n).^2);
 
 
 figure
