@@ -29,12 +29,18 @@ ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 18)
 xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 18)
 
 
-%%
+%% To work remotely from PPB110
 cd /home/sguincha/espic2d/wk/Test_ions
 addpath '/home/sguincha/espic2d/matlab/'
 Ions = espic2dhdf5('stable_13_fine.h5');
 
-%% 
+%% To work from home on local machine (macbook) 
+cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions
+addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
+Ions = espic2dhdf5('stable_13_fine.h5');
+
+%% Show ions phase space 
+
 dispespicParts(Ions)
 
 %% Compute ion energy
@@ -42,6 +48,8 @@ dispespicParts(Ions)
 Vr = Ions.VR;
 Vz = Ions.VZ;
 Vt = Ions.VTHET;
+R = Ions.R;
+Z = Ions.Z;
 Ions_mass = 3.347e-27;
 dt = Ions.dt;
 t = dt*linspace(0,1000,1000);
@@ -53,3 +61,36 @@ figure
 plot(t,EnergyIon1,'k+-')
 xlabel('$t$ [s]', 'interpreter', 'latex','Fontsize', 18)
 ylabel('$E$ [eV]', 'interpreter', 'latex', 'Fontsize', 18)
+
+
+
+%%
+dt = Ions.dt;
+time = 5*dt*linspace(0,1000,201);
+ind  = 0; % will store the indices of the particles that run towards one of the electrodes at a certain t
+tind = 0; % will store the time at which the particles enter the electrodes
+for ii = 1:1000
+    for jj = 1:nsteps
+        if IsInElec()
+            ind = cat(2,ind,ii);
+            time = cat(2,tind,time(jj));
+        end
+    end
+end
+
+
+energy = zeros(length(ind)); % stores the energy of ions when they enter the electrodes
+
+%%
+
+function compute_energy()
+
+
+end
+
+function IsInElec()
+
+end
+
+
+
