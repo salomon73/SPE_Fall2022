@@ -24,9 +24,11 @@ Eloss = cat(2, Eloss1, Eloss2, Eloss3, Eloss4, Eloss5);
 
 %% 
 figure
-semilogx(E,Eloss, 'r+-', 'linewidth', 2 )
-ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 18)
-xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 18)
+semilogx(E,Eloss, 'r+-', 'linewidth', 2)
+set(gca,'fontsize', 18)
+ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 22)
+xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 22)
+
 
 
 %% To work remotely from PPB110

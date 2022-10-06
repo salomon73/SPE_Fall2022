@@ -28,9 +28,9 @@
 %----------------------------------------------------------------------------------------
 
 % The title
-\title[Summary]{TITLE TO BE DEFINED}
+\title[Summary]{Numerical study of the effect of secondary electron emission on the dynamics of electron clouds in gyrotron guns}
 
-\author[S.Guinchard] {Name1$^{1}$, Name2$^{2}$}
+\author[S.Guinchard] {S. ~Guinchard$^{1}$, G. ~Le Bars$^{2}$}
 \institute[SPH] % Your institution may be shorthand to save space
 {
     % Your institution for the title page
@@ -60,26 +60,103 @@
 \end{frame}
 
 % %------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}{Frame Title}
+\begin{frame}{Problem description}
 
 \begin{itemize}
 
 
-\item{Some formulas...
-\beq
-\textbf{r}= R(\phi)\cos(\phi) \hat{x} + R(\phi)\sin(\phi)\hat{y}+Z(\phi)\hat{z}
-\eeq
+\item{Code espic2D does not take account (yet) for secondary electron emissions, induced by ions collected at the electrodes. Let us denote these ion-induced electron emissions by IIEE from now on.
 }
-\item{...And some others
-\beq
-R(\phi)=\sum_{n=0}^{N_{tor}}R_n\cos(n\cdot N_{fp}\phi) \hspace{1.5cm} Z(\phi)=\sum_{n=1}^{N_{tor}}Z_n\sin(n\cdot N_{fp}\phi) 
-\eeq
+\item{Goal: Implement a module to add those IIEE to espic2D 
 }
 \end{itemize}
+\end{frame}
 
+%-------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Model to be used}
+
+\begin{itemize}
+
+
+\item{We seek an expression for the \textbf{electron yield} $\gamma$ 
+}
+\item{It is expected that $\gamma$ depends on the \textbf{incident particle energy}, the target density i.e a \textbf{material parameter} including cross sections for particle interactions, as well as \textbf{transport phenomena} occurring for produced electrons.
+}
+
+\item{ Semi-empirical model: \textbf{Schou} (1988) [Hassel92]
+\beq
+\gamma = \Lambda\cdot \beta \cdot \frac{dE}{dx}\Bigg|_{e}\label{Schou_eq}
+\eeq
+}
+
+\item{In the above Eq.(\ref{Schou_eq}), $\Lambda$ includes the cross sections for collisions with energy deposition, $\beta$ accounts for energy transport by recoil electrons, and $dE/dx$ corresponds to the energy deposed in the solid by the ion colliding with electrons (subscript $e$).
+}
+
+\end{itemize}
 
 \end{frame}
+
+%-------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%%
+
+ \begin{frame}{Empirical values for model parameters}
+     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+         \column{.5\textwidth} % Left column and width
+	\begin{itemize}
+
+
+		\item{Research of tabulated values (semi-empirical model) for the physical parameters:\\
+			\begin{itemize}
+		
+				\item{$dE/dx$ from [Janni]}
+				\item{$\beta$ and $\Lambda = \Lambda_{exp}$ from [Hassel92]}
+				\end{itemize}}
+				
+						
+	\end{itemize}
+
+         \column{.5\textwidth} % Right column and width
+		\begin{figure}[h!]
+		\includegraphics[width=0.7 \textwidth]{Al-table.pdf}
+		\caption{\label{img1} Energy loss values from [Janni82]}
+		\end{figure}
+     \end{columns}
+\end{frame}
+% %------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%%
+
+ \begin{frame}{Appropriate fit for the data}
+     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+         \column{.5\textwidth} % Left column and width
+	\begin{itemize}
+
+
+		\item{In order to implement the energy loss of deposed ions, we need to find the appropriate fit:\\
+		To do so, one has to determine the \textbf{energy distribution of ions collected at the electrode}, and match it with the energy loss curve.
+		}
+		\item{In Fig.(\ref{fig2}), the energy loss of protons in Aluminum has been plotted on the expected energy range of $20$ keV to $1GeV$ (see red curve).\\
+		E.g if the protons are mainly distributed in parabolic region (green) $\rightarrow$ quadratic fit\\
+		Else a linear fit may be more appropriate.
+		}
+				
+						
+	\end{itemize}
+
+         \column{.5\textwidth} % Right column and width
+		\begin{figure}[h!]
+		\includegraphics[width=1 \textwidth]{fit.png}
+		\caption{\label{fig2} Energy loss for protons in aluminum (red) - possible fits for the data in interesting regions (green - black)}
+		\end{figure}
+     \end{columns}
+\end{frame}
+% %------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
 
