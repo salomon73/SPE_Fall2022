@@ -1,0 +1,85 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames,8pt]{beamer}
+\usetheme{Simple}
+
+\usepackage{hyperref}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{tikz}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bes}{\begin{split}}
+\newcommand{\ees}{\end{split}}
+\newcommand{\BB}{\textbf{B}}
+\newcommand{\jj}{\textbf{j}}
+\newcommand{\x}{\times}
+\newcommand{\ii}{\iota}
+\newcommand{\iotaa}{\bar{\iota}}
+\newcommand{\dd}{\partial}
+\graphicspath{{./Figures/}}  
+
+\setbeamersize{text margin left=14mm,text margin right=14mm}
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+% The title
+\title[Summary]{TITLE TO BE DEFINED}
+
+\author[S.Guinchard] {Name1$^{1}$, Name2$^{2}$}
+\institute[SPH] % Your institution may be shorthand to save space
+{
+    % Your institution for the title page
+    $^1$ Ecole Polytechnique Fédérale de Lausanne (EPFL), Physics Section (SPH), CH-1015 Lausanne, Switzerland\\
+    $^2$ Ecole Polytechnique Fédérale de Lausanne (EPFL), Swiss Plasma Center (SPC), CH-1015 Lausanne, Switzerland\\
+    \vspace{1cm}
+}
+\date{\today} % Date, can be changed to a custom date
+
+% Backgorund
+\usebackgroundtemplate%
+{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{Figures/Backgroup-4.png}%
+}
+
+
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}
+    % Print the title page as the first slide
+    \titlepage
+\end{frame}
+
+% %------------------------------------------------
+
+\begin{frame}{Frame Title}
+
+\begin{itemize}
+
+
+\item{Some formulas...
+\beq
+\textbf{r}= R(\phi)\cos(\phi) \hat{x} + R(\phi)\sin(\phi)\hat{y}+Z(\phi)\hat{z}
+\eeq
+}
+\item{...And some others
+\beq
+R(\phi)=\sum_{n=0}^{N_{tor}}R_n\cos(n\cdot N_{fp}\phi) \hspace{1.5cm} Z(\phi)=\sum_{n=1}^{N_{tor}}Z_n\sin(n\cdot N_{fp}\phi) 
+\eeq
+}
+\end{itemize}
+
+
+\end{frame}
+
+\end{document}
+
