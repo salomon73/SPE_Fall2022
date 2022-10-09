@@ -54,7 +54,7 @@ R = Ions.R;
 Z = Ions.Z;
 Ions_mass = 3.347e-27;
 dt = Ions.dt;
-t = dt*linspace(0,1000,1000);
+t = 5*dt*linspace(1,201,201);
 n=50;
 EnergyIon1 = (1/1.602e-19)*0.5*Ions_mass*(Vr(1:1000,n).^2+Vz(1:1000,n).^2+Vt(1:1000,n).^2);
 
@@ -63,6 +63,16 @@ figure
 plot(t,EnergyIon1,'k+-')
 xlabel('$t$ [s]', 'interpreter', 'latex','Fontsize', 18)
 ylabel('$E$ [eV]', 'interpreter', 'latex', 'Fontsize', 18)
+
+%% Test is in electrode 
+
+R = Ions.R;
+Z = Ions.Z;
+
+Relec1 = 0.001;
+Relec2 = 0.01;
+Zelec1 = -0.32;
+Zelec2 = 0.32;
 
 
 
