@@ -1,3 +1,9 @@
 *.log 
 *.aux
+*.out
+*.snm
+*.gz
+*.nav
+*.toc
+*.asv
 .DS_Store
