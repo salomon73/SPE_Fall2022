@@ -5,4 +5,5 @@
 *.gz
 *.nav
 *.toc
+*.asv
 .DS_Store
