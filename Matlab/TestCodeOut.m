@@ -5,9 +5,9 @@ Ions = espic2dhdf5('stable_13_fine.h5');
 %Ions = espic2dhdf5('stable_dt_11.h5');
 
 %% To work from ppb110 
-cd /home/sguincha/SPE_Fall2022/Inputs/Test_ions2
+cd /home/sguincha/SPE_Fall2022/Inputs/Test_ions3
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_dt_12.h5');
+Ions = espic2dhdf5('stable_dt_11.h5');
 %% Display particles data
 dispespicParts(Ions);
 
@@ -145,14 +145,17 @@ figure
 %%
 outliersE  = ~isoutlier(Energy./ER);
 outliersEt = ~isoutlier(Ethet./ER);
+outliersEtr = ~isoutlier(Energy./(Ethet+ER));
 
 figure
     plot(R0(outliersE), Energy(outliersE)./ER(outliersE), 'ro')
     hold on
     plot(R0(outliersEt), Ethet(outliersEt)./ER(outliersEt), 'bo')
+    hold on 
+    plot(R0(outliersEtr), Energy(outliersEtr)./(ER(outliersEtr)+ Ethet(outliersEtr)), 'go')
     xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
     ylabel('$E/E^{R}$, $E^{\theta}/E^{R}$ []', 'Interpreter', 'Latex')
-    legend('$E_{el}/E_{el}^{R}$', '$E_{el}^{\theta}/E_{el}^{R}$', 'Location','northwest','Interpreter','latex');
+    legend('$E_{el}/E_{el}^{R}$', '$E_{el}^{\theta}/E_{el}^{R}$','$E_{el}/(E_{el}^{R}+E_{el}^{\theta})$', 'Location','northwest','Interpreter','latex');
     set(legend,'FontSize',18);
     set (gca, 'fontsize', 20)
     
