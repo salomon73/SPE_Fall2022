@@ -2,11 +2,12 @@
 cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
 Ions = espic2dhdf5('stable_13_fine.h5');
+%Ions = espic2dhdf5('stable_dt_11.h5');
 
 %% To work from ppb110 
 cd /home/sguincha/SPE_Fall2022/Inputs/Test_ions2
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_13_fine.h5');
+Ions = espic2dhdf5('stable_dt_12.h5');
 %% Display particles data
 dispespicParts(Ions);
 
@@ -58,8 +59,6 @@ for jj =1:npart
         indices(jj,2) = t_ind(1);
     end
 end
-
-%%
 k=150; % Index of particle of interest
 EnergyIon_n = (1/1.602e-19)*0.5*Ions_mass*(VR(k,indices(k,2)).^2+VZ(k,indices(k,2)).^2+VT(k,indices(k,2)).^2);
 
@@ -102,7 +101,7 @@ Z = Z(:,:);
 
 POS0 = [I, R0];
 
-%%
+%% TO correct
 for ii = 1:length(R0)                               % go along all particles array
     for jj = 1:nt                                   % go along all time steps
         if Ions.nbparts(jj) ~= 0                    % check if there are still particles in the cell
@@ -110,9 +109,10 @@ for ii = 1:length(R0)                               % go along all particles arr
                 continue
             else 
                 index(ii)  = jj;                 
-                Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(ii,jj)^2+VZ(ii,jj)^2+VT(ii,jj)^2);
-                EThet(ii)  = (1/1.602e-19)*0.5*Ions_mass*VT(ii,jj)^2;
-                ER(ii)  = (1/1.602e-19)*0.5*Ions_mass*VR(ii,jj)^2;
+                %mask       = Ions.partindex(:,index(ii))==jj;
+                %Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(mask,index(ii)).^2+VZ(mask,index(ii)).^2+VT(mask,index(ii)).^2);
+                %EThet(ii)  = (1/1.602e-19)*0.5*Ions_mass*VT(ii,jj)^2;
+                %ER(ii)  = (1/1.602e-19)*0.5*Ions_mass*VR(ii,jj)^2;
                 break 
             end
         end
@@ -121,29 +121,74 @@ end
 
 %%
 tic 
-parfor ii = 1:200
-    posR{ii}  = R(Ions.partindex(:,:)==ii);
-    index(ii) = length(posR{ii});
-    mask      = Ions.partindex(:,index(ii))==ii;
+parfor ii = 1:npart
+    posR{ii}   = R(Ions.partindex(:,:)==ii);
+    index(ii)  = length(posR{ii});
+    mask       = Ions.partindex(:,index(ii))==ii;
     Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(mask,index(ii))^2+VZ(mask,index(ii))^2+VT(mask,index(ii))^2);
+    Ethet(ii)  = (1/1.602e-19)*0.5*Ions_mass*VT(mask,index(ii))^2;
+    ER(ii)     = (1/1.602e-19)*0.5*Ions_mass*VR(mask,index(ii))^2;
+    R0(ii)     = posR{ii}(1);
 end
 toc
 
-for ii =1:200
-    R200(ii) = posR{ii}(1);
-end
-
-Energy200 = Energy(1:200);
-figure
-plot(R200,Energy200, 'ko')
-
 
 %%
-figure
-plot(R0, Energy, 'ko')
 
 figure
-plot(R0, EThet./ER, 'ro')
-hold on 
-plot(R0, Energy./ER, 'bo')
+    plot(R0,Energy, 'ko')
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$E_{el}$ [keV]', 'Interpreter', 'Latex')
+    legend(strcat('$dt = $', num2str(Ions.dt)), 'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 20)
+%%
+outliersE  = ~isoutlier(Energy./ER);
+outliersEt = ~isoutlier(Ethet./ER);
+
+figure
+    plot(R0(outliersE), Energy(outliersE)./ER(outliersE), 'ro')
+    hold on
+    plot(R0(outliersEt), Ethet(outliersEt)./ER(outliersEt), 'bo')
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$E/E^{R}$, $E^{\theta}/E^{R}$ []', 'Interpreter', 'Latex')
+    legend('$E_{el}/E_{el}^{R}$', '$E_{el}^{\theta}/E_{el}^{R}$', 'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 20)
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%% TRASH %%
+tic 
+parfor ii = 1:npart
+    posR{ii}   = R(Ions.partindex(:,:)==ii);
+    index(ii)  = length(posR{ii});
+    mask       = Ions.partindex(:,index(ii))==ii;
+    Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(mask,index(ii))^2+VZ(mask,index(ii))^2+VT(mask,index(ii))^2);
+    Ethet(ii)  = (1/1.602e-19)*0.5*Ions_mass*VT(mask,index(ii))^2;
+    ER(ii)     = (1/1.602e-19)*0.5*Ions_mass*VR(mask,index(ii))^2;
+    R0(ii)     = posR{ii}(1);
+end
+toc
+
+figure
+plot(R0,Energy, 'ko')
+% for ii =1:200
+%     R200(ii) = posR{ii}(1);
+% end
+
+% Energy200 = Energy(1:200);
 
