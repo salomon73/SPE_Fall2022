@@ -91,6 +91,7 @@ dr = 1.75e-3;
 npart = R.nparts;
 mat = zeros(npart,nt);
 R = R(:,:);
+Z = Z(:,:);
 
 [R0 I] = sort(R(Ions.partindex(:,1),1), 'descend');
 
@@ -112,6 +113,25 @@ for ii = 1:length(R0)                               % go along all particles arr
         end
     end
 end
+
+%%
+
+for ii = 1:200
+    posR{ii}  = R(Ions.partindex(:,:)==ii);
+    index(ii) = length(posR{ii});
+    mask      = Ions.partindex(:,index(ii))==ii;
+    Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(mask,index(ii))^2+VZ(mask,index(ii))^2+VT(mask,index(ii))^2);
+end
+
+for ii =1:200
+    R200(ii) = posR{ii}(1);
+end
+
+Energy200 = Energy(1:200);
+figure
+plot(R200,Energy200, 'ko')
+
+
 %%
 figure
 plot(R0, Energy, 'ko')
