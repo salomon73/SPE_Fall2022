@@ -15,14 +15,14 @@ T.M. Tran   SPC/EPFL
 -
 &BASIC
   job_time=144000.0, extra_time=360.0,
-  nrun=500,  !# of steps
+  nrun=1000,  !# of steps
   nlres=f,
   femorder=3,3,
   ngauss=4,4,
   nlppform=.TRUE.
   nlxg=f,       ! Display graphical interface
   nlclassical=t, ! Solve classical equations of motion
-  dt=5E-12,     !timestep [s]
+  dt=5E-11,     !timestep [s]
   nz=128,        !# of intervals in z
   nnr=10,40,30  !# of intervals between radii(1) and radii(2), between radii(2) and radii(3) and between radii(3) and radii(4)
   it0d=10,
@@ -30,7 +30,7 @@ T.M. Tran   SPC/EPFL
   ittext=100,
   itparts=1,
   itgraph=100,
-  resfile='stable_dt_12.h5'
+  resfile='stable_dt_11.h5'
 
   radii=0.001,6e-3,9e-3,0.01  !radius of inner metallic wall, plasma boundaries and outer metallic wall
   plasmadim=-0.10, 0.10, 0.0070, 0.0074,     !zmin zmax rmin rmax of initial plasma loading
