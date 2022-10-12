@@ -2,6 +2,11 @@
 cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
 Ions = espic2dhdf5('stable_13_fine.h5');
+
+%% To work from ppb110 
+cd /home/sguincha/SPE_Fall2022/Inputs/Test_ions2
+addpath /home/sguincha/SPE_Fall2022/matlab_routines
+Ions = espic2dhdf5('stable_13_fine.h5');
 %% Display particles data
 dispespicParts(Ions);
 
@@ -115,13 +120,14 @@ for ii = 1:length(R0)                               % go along all particles arr
 end
 
 %%
-
-for ii = 1:200
+tic 
+parfor ii = 1:200
     posR{ii}  = R(Ions.partindex(:,:)==ii);
     index(ii) = length(posR{ii});
     mask      = Ions.partindex(:,index(ii))==ii;
     Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(mask,index(ii))^2+VZ(mask,index(ii))^2+VT(mask,index(ii))^2);
 end
+toc
 
 for ii =1:200
     R200(ii) = posR{ii}(1);
