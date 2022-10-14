@@ -1,7 +1,7 @@
 %% To work from home on local machine (macbook) 
-cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions
+cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions3
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_13_fine.h5');
+Ions = espic2dhdf5('stable_dt_11.h5');
 
 %% To work from ppb110 
 cd /home/sguincha/SPE_Fall2022/Inputs/Test_ions3
@@ -59,6 +59,7 @@ end
 toc
 
 
+
 %%
 
 figure
@@ -68,6 +69,33 @@ figure
     legend(strcat('$dt = $', num2str(Ions.dt)), 'Location','northwest','Interpreter','latex');
     set(legend,'FontSize',18);
     set (gca, 'fontsize', 22)
+    hold on 
+
+[Rsort,sortId] = sort(R0);
+Esort = Energy(sortId);
+Etild = Esort(1:3:end);
+Rtild = Rsort(1:3:end);
+
+f = @(b,x) b(1) .* log(b(2).*x) + b(3);                % Exponential Fit With Y-Offset
+B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [1e4, 0.5, 73200]);         % Estimate Parameters
+
+    plot(Rtild, 1.e-3*f(B,Rtild), 'r-', 'linewidth', 2)
+    legend(strcat('$dt = $', num2str(Ions.dt)),strcat('y = ', num2str(1e-3*B(1)), ...
+                                                      '$\log($', num2str(B(2)), ...
+                                                      '$\cdot R_0) + $', num2str(B(3))), ...
+                                                      'Location','northwest','Interpreter','latex');
+            
+%%
+
+figure
+    semilogx(R0,1.e-3*Energy, 'ko')
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$E_{el}$ [keV]', 'Interpreter', 'Latex')
+    legend(strcat('$dt = $', num2str(Ions.dt)), 'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+
+
 %%
 outliersE  = ~isoutlier(Energy./ER);
 outliersEt = ~isoutlier(Ethet./ER);
