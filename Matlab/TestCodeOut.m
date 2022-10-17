@@ -1,6 +1,7 @@
 %% To work from home on local machine (macbook) 
 cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions3
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
+addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
 Ions = espic2dhdf5('stable_dt_11.h5');
 
 %% To work from ppb110 
@@ -13,7 +14,7 @@ dispespicParts(Ions);
 %% Display fields data
 dispespicFields(Ions);
 
-%% Follow the particles
+%% Numerical parameters %%
 
 Ions_mass = 3.347e-27;
 Vr = Ions.VR;
@@ -45,7 +46,8 @@ Z = Z(:,:);
 
 POS0 = [I, R0];
 
-%%
+%% Compute energy components and initial radial distance for ions %%
+
 tic 
 parfor ii = 1:npart
     posR{ii}   = R(Ions.partindex(:,:)==ii);
@@ -60,7 +62,7 @@ toc
 
 
 
-%%
+%% Energy collected at electrode with log fit %%
 
 figure
     plot(R0,1.e-3*Energy, 'ko')
@@ -76,16 +78,20 @@ Esort = Energy(sortId);
 Etild = Esort(1:3:end);
 Rtild = Rsort(1:3:end);
 
-f = @(b,x) b(1) .* log(b(2).*x) + b(3);                % Exponential Fit With Y-Offset
-B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [1e4, 0.5, 73200]);         % Estimate Parameters
+f = @(b,x) b(1) .* log(b(2).*x) + b(3);                           % Log Fit With Y-Offset
+B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [1e4, 0.5, 73200]); % Initial guess
 
     plot(Rtild, 1.e-3*f(B,Rtild), 'r-', 'linewidth', 2)
+    hold on 
+    plot(sort(R0),1e-3*(phiA-phiB)*log(sort(R0)./rA)./log(rB/rA), 'g-', 'linewidth', 2)
     legend(strcat('$dt = $', num2str(Ions.dt)),strcat('y = ', num2str(1e-3*B(1)), ...
                                                       '$\log($', num2str(B(2)), ...
                                                       '$\cdot R_0) + $', num2str(B(3))), ...
+                                                      strcat('y = ', ...
+                                                      '$\Delta \phi \cdot \log(\frac{r}{r_a})/ \log(r_b/r_a)$' ), ...
                                                       'Location','northwest','Interpreter','latex');
             
-%%
+%% Energy collected at electrode semilog %%
 
 figure
     semilogx(R0,1.e-3*Energy, 'ko')
@@ -96,7 +102,8 @@ figure
     set (gca, 'fontsize', 22)
 
 
-%%
+%% Kinetic energy components %%
+
 outliersE  = ~isoutlier(Energy./ER);
 outliersEt = ~isoutlier(Ethet./ER);
 outliersEtr = ~isoutlier(Energy./(Ethet+ER));
@@ -116,28 +123,12 @@ figure
 
 
 
-%%
-E0 = [.001 .002 .003 .004 .005 .007 .009 .01];
-E1 = [.02 .03 .04 .05 .06 .07 .08 .09 ];
-E2 = [.1 .2 .3 .4 .5 .6 .7 .8 .9 ];
-E3 = [1 1.5 2 2.5 3 3.5 4 4.5 5 5.5 6 6.5 7 7.5 8 8.5 9 9.5];
-E4 = [10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95];
-E5 = [100 150 200 250 300 350 400 450 500 550 600 650 700 750 800 850 900 950 10000];
+%% Energy loss in electrode and yield%%
 
-    E = cat(2, E0, E1, E2, E3, E4, E5);
-
-
-Eloss0 = [210.09 296.26 362.38 418.12 467.23 564.17 647.61 685.32];
-Eloss1 = [958.52 1103.4 1177.2 1209.7 1218.5 1213.4 1200.5 1183.1];
-Eloss2 = [1163.3 969.92 838.72 747.47 678.39 622.57 575.31 530.43 493.76];
-Eloss3 = [463.10 359.80 297.61 255.35 224.62 201.17 182.63 167.55 155.02 ...
-           144.44 135.40 127.52 120.60 114.46 108.99 104.07 99.622 95.579];
-Eloss4 = [91.884 67.098 53.524 44.910 38.903 34.461 31.033 28.303 26.075 ...
-           24.219 22.649 21.301 20.132 19.106 18.202 17.396 16.673 16.021 ];
-Eloss5 = [15.430 11.584 9.5581 8.3666 7.5440 6.9545 6.5131 6.1718 5.9011 ... 
-           5.6822 5.5024 5.3527 5.2267 5.1197 5.0281 4.9492 4.8809 4.8124 4.7694];
-
-    Eloss = cat(2, Eloss0, Eloss1, Eloss2, Eloss3, Eloss4, Eloss5);
+out = Aluminum();
+E   = out.E;
+Eloss = out.Eloss;
+element = out.element;
 
 dR0 = 1e-2;
 EnergyRange = 1e-6*[min(Energy), max(Energy)];
@@ -154,7 +145,7 @@ figure
     hold on
     plot(E(IndicesFit), Eloss(IndicesFit), 'bo-');
 
-DegFit = 3;
+DegFit = 6;
 P = polyfit(E(IndicesFit), Eloss(IndicesFit),DegFit);
 y = polyval(P,E(IndicesFit));
 
@@ -162,20 +153,54 @@ y = polyval(P,E(IndicesFit));
     plot(E(IndicesFit),y, 'k-');
     ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 22)
     xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 22)
-    legend('$dE/dx$', '$E(R_0^{min})$','$E(R_0^{max})$','fitted values',strcat('fitting $P(E)$: $n=$',num2str(DegFit)), 'Location','northwest','Interpreter','latex');
+    legend('$dE/dx$', '$E(R_0^{min})$','$E(R_0^{max})$','fitted values',...
+            strcat('fitting $P(E)$: $n=$',num2str(DegFit)), ...
+            'Location','northwest','Interpreter','latex');
     set(legend,'FontSize',20);
     set (gca, 'fontsize', 22)
 
 LambdaExp = 1.e-3; % cm/MeV;
-Yield = LambdaExp * y;
+Yield = LambdaExp * y; 
+
+rcoord = linspace(0.001,0.02,1e3); % r coordinate for extrapolated yield
+Yield_pol  =  LambdaExp * polyval(P,rcoord); % yield on this r coordinate
+
 
 figure 
-    plot(E(IndicesFit), Yield, 'ro-', 'Linewidth', 2);
+    plot(E(IndicesFit), Yield, 'ko', 'Linewidth', 2);
+    hold on
+    plot(rcoord, Yield_pol, 'r-', 'linewidth', 2)
     ylabel('$\gamma(E(R_0))$ []', 'interpreter', 'latex','Fontsize', 22)
     xlabel('$R_0$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
-    legend('$\gamma$ for tabulated $dE/dx$ values', 'Location','northwest','Interpreter','latex');
+    legend('$\gamma$ for tabulated $dE/dx$ values', ...
+            strcat('Extrapolated $\gamma$ for',element), ...
+            'Location','northwest','Interpreter','latex');
     set(legend,'FontSize',20);
     set (gca, 'fontsize', 22)
+
+
+
+
+%% Plot of potential phi %%
+phiA = 0;
+phiB = -20000;
+
+rA = Ions.r_a;
+rB = Ions.r_b;
+phiR = -(phiB-phiA)*log(R0./rA)./log(rB./rA) + phiA;
+
+figure
+    plot(R0,phiR, 'ko')
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$\phi$ [V]', 'Interpreter', 'Latex')
+    legend(strcat('$dt = $', num2str(Ions.dt)), ...
+           'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+    hold on 
+
+%% Lower energy model %%
+
 
 
 
@@ -189,6 +214,7 @@ figure
 
 %% TRASH %%
 
+for i =1:10 % for loop to contract section in one line
 %% Collection at electrode using dr interval to model contact %%
 Ions_mass = 3.347e-27;
 Vr = Ions.VR;
@@ -261,5 +287,7 @@ for ii = 1:length(R0)                               % go along all particles arr
             end
         end
     end
+end
+
 end
 
