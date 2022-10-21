@@ -81,7 +81,7 @@ classdef h5partsquantity
                  quantity(:,i) = h5read(obj.filename, sprintf('%s/%s',obj.group,obj.dataset),[1 t(i)],[length(p) 1]); 
                 end
             end
-            quantity=quantity(p,:)*obj.scale;
+            quantity=quantity(:,:)*obj.scale;
         end
     end
 end

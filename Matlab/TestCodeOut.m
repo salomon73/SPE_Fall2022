@@ -1,9 +1,21 @@
 %% To work from home on local machine (macbook) 
-cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions
+%cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions3
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_13_fine.h5');
+addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
+Ions = espic2dhdf5('stable_dt_12.h5');
 
-%% 
+%% To work from ppb110 
+cd /home/sguincha/SPE_Fall2022/Inputs/Test_ions3
+addpath /home/sguincha/SPE_Fall2022/matlab_routines
+Ions = espic2dhdf5('stable_dt_11.h5');
+%% Display particles data
+dispespicParts(Ions);
+
+%% Display fields data
+dispespicFields(Ions);
+
+%% Numerical parameters %%
+
 Ions_mass = 3.347e-27;
 Vr = Ions.VR;
 Vz = Ions.VZ;
@@ -20,6 +32,12 @@ Rb = 0.01;
 Za = -0.32;
 Z_b = 0.32;
 
+phiA = 0;      % change for potinn when available                                                                                                
+phiB = -20000;
+
+rA = Ions.r_a; % change with RA and RB
+rB = Ions.r_b;
+
 dt = Ions.dt;
 nt = R.nt;
 t  = 5*dt*linspace(0,200,nt);
@@ -28,36 +46,346 @@ dr = 1.75e-3;
 npart = R.nparts;
 mat = zeros(npart,nt);
 R = R(:,:);
+Z = Z(:,:);
 
-for jj = 1:npart
-    for ii = 1:nt
-        if R(2,ii) < Ra+dr
-            disp 'touch';
-            mat(jj,ii) = ii; % Trouve l'indice des particles et du temps auquel elles se trouvent pres de/sur l'électrode 
-        else 
-            mat(jj,ii) = 0;
-            
-        end
-    end
-end
+[R0 I] = sort(R(Ions.partindex(:,1),1), 'descend');
 
-indices = zeros(1,2);
-for jj =1:npart
-    for ii = 1:nt
-        t_ind = find(mat(jj,:)); % trouve le premier indice de temps où il y'a contact pour la particule jj
-        indices(jj,1) = jj;
-        indices(jj,2) = t_ind(1);
-    end
-end
-%%
-k=150; % Index of particle of interest
-EnergyIon_n = (1/1.602e-19)*0.5*Ions_mass*(VR(k,indices(k,2)).^2+VZ(k,indices(k,2)).^2+VT(k,indices(k,2)).^2);
+POS0 = [I, R0];
 
-for n=1:npart
-    E(n) = (1/1.602e-19)*0.5*Ions_mass*(VR(n,indices(n,2)).^2+VZ(n,indices(n,2)).^2+VT(n,indices(n,2)).^2);
+%% Compute energy components and initial radial distance for ions %%
+
+tic 
+parfor ii = 1:npart
+    posR{ii}   = R(Ions.partindex(:,:)==ii);
+    index(ii)  = length(posR{ii});
+    mask       = Ions.partindex(:,index(ii))==ii;
+    Energy(ii) = (1/1.602e-19)*0.5*Ions_mass*(VR(mask,index(ii))^2+VZ(mask,index(ii))^2+VT(mask,index(ii))^2);
+    Ethet(ii)  = (1/1.602e-19)*0.5*Ions_mass*VT(mask,index(ii))^2;
+    ER(ii)     = (1/1.602e-19)*0.5*Ions_mass*VR(mask,index(ii))^2;
+    R0(ii)     = posR{ii}(1);
 end
+toc
+
+
+
+%% Energy collected at electrode with log fit %%
 
 figure
-plot(linspace(1,1000,1000),E, 'k+')
-%% Display particles data
-dispespicParts(Ions);
+    plot(R0,1.e-3*Energy, 'ko')
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$E_{el}$ [keV]', 'Interpreter', 'Latex')
+    legend(strcat('$dt = $', num2str(Ions.dt)), 'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+    hold on 
+
+[Rsort,sortId] = sort(R0);
+Esort = Energy(sortId);
+Etild = Esort(1:3:end);
+Rtild = Rsort(1:3:end);
+phiA  = 0;
+phiB  = -20000;
+
+f = @(b,x) b(1) .* log(b(2).*x) + b(3);                           % Log Fit With Y-Offset
+B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [1e4, 1./rA, phiA-phiA]); % Initial guess
+    plot(Rtild, 1.e-3*f(B,Rtild), 'r-', 'linewidth', 2)
+    hold on 
+    plot(sort(R0),1e-3*(phiA-phiB)*log(sort(R0)./rA)./log(rB/rA), 'g-', 'linewidth', 2)
+    legend(strcat('$dt = $', num2str(Ions.dt)),strcat('y = ', num2str(1e-3*B(1)), ...
+                                                      '$\log($', num2str(B(2)), ...
+                                                      '$\cdot R_0) + $', num2str(B(3))), ...
+                                                      strcat('y = ', ...
+                                                      '$\Delta \phi \cdot \log(\frac{r}{r_a})/ \log(r_b/r_a)$' ), ...
+                                                      'Location','northwest','Interpreter','latex');
+            
+%% Energy collected at electrode semilog %%
+
+figure
+    semilogx(R0,1.e-3*Energy, 'ko')
+    hold on 
+    semilogx(sort(R0),1e-3*(phiA-phiB)*log(sort(R0)./rA)./log(rB/rA), 'g-', 'linewidth', 2)
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$E_{el}$ [keV]', 'Interpreter', 'Latex')
+    legend(strcat('$dt = $', num2str(Ions.dt)), ...
+           strcat('y = ', '$\Delta \phi \cdot \log(\frac{r}{r_a})/ \log(r_b/r_a)$' ), ...
+                  'Location','northwest','Interpreter','latex', ...
+                  'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+
+
+%% Kinetic energy components %%
+
+outliersE  = ~isoutlier(Energy./ER);
+outliersEt = ~isoutlier(Ethet./ER);
+outliersEtr = ~isoutlier(Energy./(Ethet+ER));
+
+figure
+    plot(sort(R0(outliersE)), sort(Energy(outliersE)./ER(outliersE)), 'r-', 'linewidth', 2)
+    hold on
+    plot(sort(R0(outliersEt)), sort(Ethet(outliersEt)./ER(outliersEt)), 'b-', 'linewidth', 2)
+    hold on 
+    plot(sort(R0(outliersEtr)), sort(Energy(outliersEtr)./(ER(outliersEtr)+ Ethet(outliersEtr))), 'k-','linewidth', 2)
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$E/E^{R}$, $E^{\theta}/E^{R}$ []', 'Interpreter', 'Latex')
+    legend('$E/E^{R}$', '$E^{\theta}/E^{R}$','$E/(E^{R}+E^{\theta})$', 'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+    
+
+
+
+%% Energy loss in electrode and yield%%
+
+out = Stainless();
+E   = out.E;
+Eloss = out.Eloss;
+element = out.element;
+
+dR0 = 1e-3;
+EnergyRange = 1e-6*[min(Energy), max(Energy)];
+IndicesFit  = find(E>EnergyRange(1) & E<=EnergyRange(2)+dR0);
+RangeOfInterest = E(IndicesFit);
+
+
+figure
+    semilogx(E,Eloss, 'r+-', 'linewidth', 2)
+    hold on
+    plot(EnergyRange(1)*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 2)
+    hold on 
+    plot(EnergyRange(2)*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 2)
+    hold on
+    plot(E(IndicesFit), Eloss(IndicesFit), 'bo-');
+
+DegFit = 4;
+P = polyfit(E(IndicesFit), Eloss(IndicesFit),DegFit);
+y = polyval(P,E(IndicesFit));
+
+    hold on 
+    plot(E(IndicesFit),y, 'k-');
+    ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 22)
+    legend('$dE/dx$', '$E(R_0^{min})$','$E(R_0^{max})$','fitted values',...
+            strcat('fitting $P(E)$: $n=$',num2str(DegFit)), ...
+            'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',20);
+    set (gca, 'fontsize', 22)
+
+LambdaExp = 1.e-3; % cm/MeV;
+Yield = LambdaExp * y; 
+
+energy_coord = linspace(0.001,0.02,1e3); % energy coordinate for extrapolated yield
+Yield_pol  =  LambdaExp * polyval(P,energy_coord); % yield on this r coordinate
+
+
+figure 
+    plot(E(IndicesFit), Yield, 'ko', 'Linewidth', 2);
+    hold on
+    plot(energy_coord, Yield_pol, 'r-', 'linewidth', 2)
+    ylabel('$\gamma(E)$ []', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$E$ [MeV]', 'interpreter', 'latex', 'Fontsize', 22)
+    legend('$\gamma$ for tabulated $dE/dx$ values', ...
+            strcat('Extrapolated $\gamma$ for',element), ...
+            'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',20);
+    set (gca, 'fontsize', 22)
+
+
+%% Plot of energy as a function of initial position R0 and yield %%
+r = linspace(rA,rB, 10000);
+E_r = 1.602*1e-19/(1.602*1e-19) * (-(phiB-phiA)*log(r./rA)./log(rB./rA) + phiA);
+yield = LambdaExp  * polyval(P,1e-6*E_r);
+
+figure
+subplot(1,2,1)
+    plot(r, 1e-6*E_r, 'k-', 'linewidth', 2)
+    ylabel('$E(r)$ [MeV]', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$r$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
+    set (gca, 'fontsize', 22)
+subplot(1,2,2)
+    plot(E_r, yield, 'r-', 'linewidth', 2)
+    hold on 
+    plot(1e6*E(IndicesFit), Yield, 'ko', 'Linewidth', 2);
+    ylabel('$\gamma(E)$ ', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$E$ [MeV]', 'interpreter', 'latex', 'Fontsize', 22)
+    set (gca, 'fontsize', 22)
+    
+
+%% Plot of potential phi %%
+phiR = -(phiB-phiA)*log(R0./rA)./log(rB./rA) + phiA;
+
+figure
+    plot(R0,phiR, 'ko')
+    xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+    ylabel('$\phi$ [V]', 'Interpreter', 'Latex')
+    legend(strcat('$dt = $', num2str(Ions.dt)), ...
+           'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+    hold on 
+
+%% Lower energy model %%
+
+gamma = compute_yield_potential(Ions, 'He');
+
+%% Full energy range yield %%
+
+energy_coord = linspace(0.001,0.02,1e3); % energy coordinate for extrapolated yield
+Yield_pol  =  LambdaExp * polyval(P,energy_coord); % yield on this r coordinate
+Hydrogen   = compute_yield_potential(Ions, 'H');
+Helium     = compute_yield_potential(Ions, 'He');
+Neon       = compute_yield_potential(Ions, 'Ne');
+npoints    = 1000;
+figure
+    plot(energy_coord, Yield_pol, 'r-', 'linewidth', 2)
+    ylabel('$\gamma(E)$', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$E$ [MeV]', 'interpreter', 'latex', 'Fontsize', 22)
+    hold on 
+    plot(linspace(0, 1e-3, npoints), cat(2,Hydrogen*ones(1,npoints-1),min(Yield_pol)), 'k-', 'linewidth', 2)
+    hold on 
+    plot(linspace(0, 1e-3, npoints), cat(2,Neon*ones(1,npoints-1),min(Yield_pol)), 'b-', 'linewidth', 2)
+    hold on 
+    plot(linspace(0, 1e-3, npoints), cat(2,Helium*ones(1,npoints-1),min(Yield_pol)), 'm-', 'linewidth', 2)
+    legend(strcat('Extrapolated $\gamma$ for',element), ...
+           '$\gamma_{p}^{H}$', '$\gamma_{p}^{Ne}$', '$\gamma_{p}^{He}$', ...
+            'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',20);
+    set (gca, 'fontsize', 22);
+
+%% Find best fit for dE/dx curve - piecewise %%
+
+index   = find(E<5e-2);
+energie = E(index);
+dEdx    = Eloss(index);
+
+figure
+plot(energie, dEdx);
+hold on 
+plot(energie, polyval(P,energie), 'k--')
+hold on 
+plot(linspace(0,5e-2, 1000),polyval(P,linspace(0,5e-2, 1000)), 'r--' )
+
+
+%% Energy loss in electrode and yield%%
+
+out = Stainless();
+E   = out.E;
+Eloss = out.Eloss;
+element = out.element;
+
+dR0 = 3.5e-2;
+EnergyRange = 1e-6*[min(Energy), max(Energy)];
+IndicesFit  = find(E>EnergyRange(1) & E<=EnergyRange(2)+dR0);
+RangeOfInterest = E(IndicesFit);
+
+IndicesFit1 = find(E>EnergyRange(1) & E <=0.01);
+IndicesFit2  = find(E>=0.01 & E<=0.02);
+IndicesFit3     = find(E>=0.02 & E <= 0.03);
+IndicesFit4     = find(E>=0.03 & E<=0.05);
+
+deg1 = 3;
+deg2 = 3;
+deg3 = 3;
+deg4 = 3;
+
+P1 = polyfit(E(IndicesFit1), Eloss(IndicesFit1), deg1);
+y1 = polyval(P1,E(IndicesFit1));
+
+P2 = polyfit(E(IndicesFit2), Eloss(IndicesFit2), deg2);
+y2 = polyval(P2,E(IndicesFit2));
+
+P3    = polyfit(E(IndicesFit3), Eloss(IndicesFit3), deg3);
+y3    = polyval(P3,E(IndicesFit3));
+
+P4    = polyfit(E(IndicesFit4), Eloss(IndicesFit4), deg4);
+y4    = polyval(P4,E(IndicesFit4));
+
+figure
+    semilogx(E,Eloss, 'r+-', 'linewidth', 2)
+    hold on
+    plot(E(IndicesFit1),y1, 'k-', 'linewidth', 1);
+    hold on 
+    plot(E(IndicesFit2),y2, 'g-', 'linewidth', 1);
+    hold on 
+    plot(E(IndicesFit3),y3, 'b-', 'linewidth', 1);
+    hold on 
+    plot(E(IndicesFit4),y4, 'y-', 'linewidth', 1);
+    hold on
+    plot(EnergyRange(1)*ones(1,141),linspace(0,2500,141), 'w--', 'linewidth', 1)
+    hold on 
+    plot(E(IndicesFit1(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    hold on 
+    plot(E(IndicesFit2(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    hold on 
+    plot(E(IndicesFit3(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    hold on 
+    plot(E(IndicesFit4(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    hold on 
+    plot(E(IndicesFit4(end))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 22)
+    legend('$dE/dx$', strcat('fitting $P(E)$: $n=$',num2str(deg1)),...
+                      strcat('fitting $P(E)$: $n=$',num2str(deg2)),...
+                      strcat('fitting $P(E)$: $n=$',num2str(deg3)),...
+                      strcat('fitting $P(E)$: $n=$',num2str(deg4)),...
+           'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',20);
+    set (gca, 'fontsize', 22)
+
+%% 
+LambdaExp = 1e-3;
+yield1 = LambdaExp * polyval(P1,E(IndicesFit1));
+yield2 = LambdaExp * polyval(P2,E(IndicesFit2));
+yield3 = LambdaExp * polyval(P3,E(IndicesFit3));
+yield4 = LambdaExp * polyval(P4,E(IndicesFit4));
+allindex = cat(2, IndicesFit1, IndicesFit2, IndicesFit3, IndicesFit4);
+yieldTabulated = LambdaExp * Eloss(allindex);
+
+figure
+    plot(E(IndicesFit1), yield1, 'r-', 'linewidth', 2)
+    hold on 
+    plot(E(IndicesFit2), yield2, 'k-', 'linewidth', 2)
+    hold on 
+    plot(E(IndicesFit3), yield3, 'b-', 'linewidth', 2)
+    hold on 
+    plot(E(IndicesFit4), yield4, 'g-', 'linewidth', 2)
+    hold on 
+    plot(E(allindex), yieldTabulated, 'ko')
+    legend('$dE/dx$', strcat('fitting $P(E)$: $n=$',num2str(deg1)),...
+                      strcat('fitting $P(E)$: $n=$',num2str(deg2)),...
+                      strcat('fitting $P(E)$: $n=$',num2str(deg3)),...
+                      strcat('fitting $P(E)$: $n=$',num2str(deg4)),...
+           'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',20);
+    set (gca, 'fontsize', 22)
+
+   
+
+
+%% Function definitions %%
+
+function gamma = compute_yield_potential(Ions, Neutral)
+
+    alpha  =  0.032; % alpha parameter from Hagstrum model
+    beta   =  0.78;  % Beta parameter from Hagstrum model
+    out    =  Stainless();
+    EF     =  out.EFermi; 
+    Charge =  Ions.qe/1.602176620e-19;
+    d      =  (Charge + 3.7)*1e-10; % See Hasselkamp for distance model (Angstrum) 
+    WF     =  1.602176620e-19*(Ions.potinn-Ions.potout)*Ions.phinorm/log(Ions.r_b/Ions.r_a)*log((Ions.r_a+d)/Ions.r_a)-EF;
+
+switch Neutral 
+    case 'H'
+        gamma = 0.0; %Ei = 13.6 < 2*EF
+    case 'He'
+        Ei = 24.58738;
+        gamma = alpha*(beta*Ei-2*abs(WF));
+    case 'Ne'
+        Ei = 21.5646;
+        gamma = alpha*(beta*Ei-2*abs(WF));
+    otherwise 
+        error('Neutral gas should be Hydrogen, Helium or Neon');
+end
+
+% end of function
+end

@@ -25,12 +25,15 @@ classdef h5parts
         rindex
         zindex
         
+        file
+        
         parent
     
     end
     methods
         function obj=h5parts(filename,hdf5group,parent)
             obj.fullpath=filename;
+            obj.file=filename;
             obj.nlclassical=parent.nlclassical;
             obj.it2=parent.it2;
             obj.rgrid=parent.rgrid;

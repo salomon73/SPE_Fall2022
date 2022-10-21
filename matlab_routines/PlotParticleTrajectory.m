@@ -1,6 +1,7 @@
 function PlotParticleTrajectory(M,partnumber,t,text)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+%PlotParticleTrajectory Plots the trajectory of the particles of given
+% partnumber for the time steps t.
+%   text is added to the filename of the figure
 if (nargin<4)
     text='';
 else
@@ -14,11 +15,11 @@ else
 end
 
 f=figure();
-%time=((t(1):t(end))-1)*M.dt*double(M.it2);
 time=M.tpart(t(1):t(end));
-%sgtitle(sprintf('Particles %d',partnumber));
 ax1=subplot(1,2,1);
 hold(ax1);
+
+% Magnetic field lines
 Blines=geomstruct.rAthet;
 levels=linspace(min(min(Blines(:,2:end))),max(max(Blines(:,:))),10);
 [~,h1]=contour(ax1,geomstruct.zgrid*1000,geomstruct.rgrid*1000,Blines,real(levels),'r-.','linewidth',1.5,'Displayname','Magnetic field lines');
@@ -29,36 +30,50 @@ Msize=8;
 Z=M.Z(partnumber,t,true)*1000;
 R=M.R(partnumber,t,true)*1000;
 THET=M.THET(partnumber,t,true);
+j=0;
+% For each particle we plot the trajectory
 for i=1:length(partnumber)
     Zl=Z(i,R(i,:)>0);
     Rl=R(i,R(i,:)>0);
     THETl=THET(i,R(i,:)>0);
-p1(i)=plot(ax1,Zl,Rl,'x-.','Linewidth',1.1,...
+    if length(Rl)<=0
+        continue 
+    end
+    j=j+1;
+% R Z    
+p1(j)=plot(ax1,Zl,Rl,'x-.','Linewidth',1.1,...
     'Displayname',sprintf('part=%d',partnumber(i)),'MarkerIndices',1,...
     'Markersize',Msize);
 plot(ax1,Zl(end),Rl(end),'^','Linewidth',1.1,...
     'Displayname',sprintf('part=%d',partnumber(i)),'MarkerIndices',1,...
-    'Markersize',Msize,'color',p1(i).Color)
+    'Markersize',Msize,'color',p1(j).Color)
+
+% X Y
 x=Rl.*cos(THETl);
 y=Rl.*sin(THETl);
-%pp=spline(x,y);
 p2=plot(ax2,x,y,'x-.','Linewidth',1.1,...
     'Displayname',sprintf('part=%d',partnumber(i)),'MarkerIndices',1,...
     'Markersize',Msize);
 plot(ax2,Rl(end).*cos(THETl(end)),Rl(end).*sin(THETl(end)),'^',...
     'Linewidth',1.1,'Displayname',sprintf('part=%d',partnumber(i)),'MarkerIndices',1,...
     'Markersize',Msize,'color',p2.Color)
+
 end
+
+% legends and labels
 xlabel(ax1,'z [mm]')
 ylabel(ax1,'r [mm]')
 sgtitle(sprintf('Position between t=[%3.2f-%3.2f] ns',time(1)*1e9,time(end)*1e9))
 xlim(ax1,[M.zgrid(1) M.zgrid(end)]*1e3)
-%xlim(ax1,[-.17 .17])
 ylim(ax1,[M.rgrid(1) M.rgrid(end)]*1e3)
-%ylim(ax1,[0.005 0.025])
 grid(ax1,'on');
 xlabel(ax2,'x [mm]')
 ylabel(ax2,'y [mm]')
+
+
+
+% We add the inner and outer electrode in x,y plot
+% 
 t=2*pi*linspace(0,1,100);
 if(geomstruct.conformgeom)
 
@@ -81,20 +96,17 @@ plot(ax2,xin,yin,'k-')
 xout=min(rlims)*cos(t);
 yout=min(rlims)*sin(t);
 plot(ax2,xout,yout,'k-')
-    
 end
-legend(ax1,p1(1:end))
+
+% Legend and axis changes for clear display
+legend(ax1,p1(1:j))
 legend('location','southwest')
 axis(ax2,'equal')
-%legend(ax2)
 grid(ax2,'on');
 
-% ax=subplot(1,2,2);
-% xlabel(ax,'t [s]')
-% ylabel(ax,'VR [m/s]')
-% title(ax,'Radial velocity')
-% grid on;
 
+
+% We save the data to file
 f.PaperOrientation='landscape';
 [~, name, ~] = fileparts(M.fullpath);
 f.PaperUnits='centimeters';

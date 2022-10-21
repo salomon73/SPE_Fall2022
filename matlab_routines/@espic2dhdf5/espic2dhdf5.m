@@ -182,6 +182,7 @@ classdef espic2dhdf5
             addpath(sprintf('%s/../helper_classes',matlabfuncpath.folder));
             addpath(sprintf('%s/../extrema',matlabfuncpath.folder));
             addpath(sprintf('%s/../export_fig',matlabfuncpath.folder));
+            rehash path
             % Try catch are there for compatibility with older simulation files
             filedata=dir(filename);
             if (isempty(filedata))
@@ -252,10 +253,13 @@ classdef espic2dhdf5
             nbrst=h5readatt(obj.fullpath,'/files','jobnum');
             obj.restartsteps(1)=0;
             obj.restarttimes(1)=0;
+            grp=sprintf('/data/input.%02i/',0);
+            obj.dt(1)=h5readatt(obj.fullpath,grp,'dt');
             for i=1:nbrst
                grp=sprintf('/data/input.%02i/',i);
                obj.restartsteps(i+1)= h5readatt(obj.fullpath,grp,'startstep');
-               obj.restarttimes(i+1)= obj.restarttimes(i) + (obj.restartsteps(i+1)-obj.restartsteps(i))*h5readatt(obj.fullpath,grp,'dt');
+               obj.restarttimes(i+1)= obj.restarttimes(i) + (obj.restartsteps(i+1)-obj.restartsteps(i))*obj.dt(i);
+               obj.dt(i+1)=h5readatt(obj.fullpath,grp,'dt');
             end
             obj.nplasma = h5readatt(obj.fullpath,'/data/input.00/','nplasma');
             obj.potinn = h5readatt(obj.fullpath,'/data/input.00/','potinn');
@@ -526,6 +530,7 @@ classdef espic2dhdf5
                 for i=1:obj.spl_bound.nbsplines
                     splgroup=sprintf('/data/input.00/geometry_spl/%02d',i);
                     obj.spl_bound.boundary(i).knots=h5read(obj.fullpath,sprintf('%s/knots',splgroup));
+                    obj.spl_bound.boundary(i).Dval=h5readatt(obj.fullpath,splgroup,'Dirichlet_val');
                     obj.spl_bound.boundary(i).coefs=reshape(h5read(obj.fullpath,sprintf('%s/pos',splgroup)),2,[])';
                     obj.spl_bound.boundary(i).order=h5readatt(obj.fullpath,splgroup,'order');
                     obj.spl_bound.boundary(i).kind=h5readatt(obj.fullpath,splgroup,'kind');
@@ -2016,7 +2021,7 @@ classdef espic2dhdf5
         end
         
         
-        function displaytotcurrevol(obj,timesteps,toptitle,scalet,dens,subdiv,nmean)
+        function displaytotcurrevol_geom(obj,timesteps,toptitle,scalet,dens,subdiv,nmean)
             % Computes and display the time evolution of the outgoing
             % currents at time obj.t2d(timesteps)
             %scalet=true scales the time by the ellastic collision
@@ -2044,12 +2049,15 @@ classdef espic2dhdf5
             
             if scalet
                 if obj.neutcol.present
-                    vexb0=(obj.Ez(:,:,1).*obj.Br'-obj.Er(:,:,1).*obj.Bz')./(obj.B'.^2);
+                    vexb0=(obj.Ezxt(:,:,1).*obj.Br'-obj.Erxt(:,:,1).*obj.Bz')./(obj.B'.^2);
                     vexb0(obj.geomweight(:,:,1)<=0)=0;
-                    E=0.5*obj.msim/obj.weight*mean(abs(vexb0(:)))^2/obj.qe;
-                    taucol=1/(obj.neutcol.neutdens*mean(abs(vexb0(:)))*(obj.sigio(E)+obj.sigmela(E)+obj.sigmio(E)));
+                    potwell=obj.PotentialWell(0);
+                    vexb0(isnan(potwell))=NaN;
+                    vexb0=mean(abs(vexb0(:)),'omitnan');
+                    E=0.5*obj.msim/obj.weight*vexb0^2/obj.qe;
+                    taucol=1/(obj.neutcol.neutdens*vexb0*(obj.sigio(E)+obj.sigmela(E)+obj.sigmio(E)));
                     try
-                        Sio_S=1e17*(obj.neutcol.neutdens*mean(abs(vexb0(:)))*obj.sigio(E))/(obj.maxwellsrce.frequency*obj.weight/(pi*(obj.maxwellsrce.rlim(2)^2-obj.maxwellsrce.rlim(1)^2)*diff(obj.maxwellsrce.zlim)))
+                        Sio_S=1e17*(obj.neutcol.neutdens*vexb0*obj.sigio(E))/(obj.maxwellsrce.frequency*obj.weight/(pi*(obj.maxwellsrce.rlim(2)^2-obj.maxwellsrce.rlim(1)^2)*diff(obj.maxwellsrce.zlim)))
                     catch
                     end
                     tlabel='t/\tau_d [-]';
@@ -2072,11 +2080,15 @@ classdef espic2dhdf5
                 %[ir,iz]=ind2sub(size(geomw),idl);
                 %nmax=squeeze(max(max(N,[],1),[],2));
                 tn=(obj.t2d(timesteps));
-                nmax=zeros(2,length(tn));
-                nrhalf=find(obj.rgrid>0.07);
-                
-                nmax(1,:)=squeeze(max(max(N(1:nrhalf,:,:),[],1),[],2));
-                nmax(2,:)=squeeze(max(max(N(nrhalf+1:end,:,:),[],1),[],2));
+                nrhalf=find(obj.rgrid>0.07,1,'first');
+                if(nrhalf<length(obj.rgrid))
+                    nmax=zeros(2,length(tn));
+                    
+                    nmax(1,:)=squeeze(max(max(N(1:nrhalf,:,:),[],1),[],2));
+                    nmax(2,:)=squeeze(max(max(N(nrhalf+1:end,:,:),[],1),[],2));
+                else
+                    nmax(:)=squeeze(max(max(N(:,:,:),[],1),[],2));
+                end
                 
                 
                 nlabel='n_{e,max} [m^{-3}]';
@@ -2099,8 +2111,11 @@ classdef espic2dhdf5
             nexttile
             % Plot the evolution of nb of particles
             yyaxis right
-            for i=1:size(nmax,1)
-                p=plot(tn/taucol,nmax(i,:),'b','linewidth',1.8,'Displayname',sprintf('%s, %d',ndlabel,i));
+            if size(nmax,2)>1
+                nmax=nmax';
+            end
+            for i=1:size(nmax,2)
+                p=plot(tn/taucol,nmax(:,i),'b','linewidth',1.8,'Displayname',sprintf('%s, %d',ndlabel,i));
                 hold on
             end
             ylabel(nlabel)
@@ -2142,7 +2157,7 @@ classdef espic2dhdf5
             
             ax2=nexttile;
             geomw=obj.geomweight(:,:,1);
-            geomw(geomw<=0)=0;
+            geomw(geomw<0)=0;
             geomw(geomw>0)=NaN;
             [c1,hContour]=contourf(ax2,obj.zgrid*1000,obj.rgrid*1000,geomw, [0 0]);
             hold on
@@ -2186,163 +2201,11 @@ classdef espic2dhdf5
             %    sgtitle(toptitle)
             %end
             if length(subdiv)>1
-                obj.savegraph(f,sprintf('%s/%s_totIEvol%i%i_div',obj.folder,obj.name,scalet,dens),[16 14]);
+                obj.savegraph(f,sprintf('%s/%s_totIEvol%i%i_div%i',obj.folder,obj.name,scalet,dens,nmean),[16 14]);
             else
-                obj.savegraph(f,sprintf('%s/%s_totIEvol%i%i',obj.folder,obj.name,scalet,dens),[16 14]);
+                obj.savegraph(f,sprintf('%s/%s_totIEvol%i%i_%i',obj.folder,obj.name,scalet,dens,nmean),[16 14]);
             end
             
-        end
-        
-        function display2Dpotentialwell(obj,timestep,rcoord,clims)
-            % Display the 2D potential well at time obj.t2d(timestep)
-            % if rcoord is true, the potential is evaluated at grid points in r,z coordinates
-            % if false, the potential is evaluated at grid points in magnetic field line coordinates
-            % clims are the values limits in eV for the color coding of the
-            % potential well
-            if iscell(timestep)
-                timestep=cell2mat(timestep);
-            end
-            if nargin <3
-                rcoord=true;
-            end
-            if nargin<4
-                clims=[-inf inf];
-            end
-            f=figure('Name',sprintf('%s Potential well',obj.name));
-            ax1=gca;
-            model=obj.potentialwellmodel(timestep);
-            z=model.z;
-            r=model.r;
-            Pot=model.pot;
-            rathet=model.rathet;
-            
-            N0=obj.N(:,:,1);
-            id=find(timestep==0);
-            timestep(id)=[];
-            Nend=obj.N(:,:,timestep);
-            if(~isempty(id))
-                N0=zeros(obj.N.nr,obj.N.nz);
-                Nend=cat(3,Nend(:,:,1:id-1),N0,Nend(:,:,id:end));
-            end
-            Nend=mean(Nend,3);
-            geomw=obj.geomweight(:,:,1);
-            %z(isnan(Pot))=[];
-            %r(isnan(Pot))=[];
-            %Pot(isnan(Pot))=[];
-            if rcoord
-                [Zmesh,Rmesh]=meshgrid(obj.zgrid,obj.rgrid);
-                Pot=griddata(z,r,Pot,Zmesh,Rmesh,'natural');
-                %Pot(obj.geomweight(:,:,1)<=0)=NaN;
-                contourf(obj.zgrid(1:end)*1e3,obj.rgrid(1:end)*1e3,Pot(1:end,1:end),40,'edgecolor','none','Displayname','Well')
-                xlabel('z [mm]')
-                ylabel('r [mm]')
-                xlim([obj.zgrid(1) obj.zgrid(end)]*1e3)
-                ylim([obj.rgrid(1) obj.rgrid(end)]*1e3)
-                hold(gca, 'on')
-                
-                rdisp=obj.rgrid;
-                
-                %% Magnetic field lines
-                Blines=obj.rAthet;
-                levels=linspace(min(Blines(obj.geomweight(:,:,1)>0)),max(Blines(obj.geomweight(:,:,1)>0)),20);
-                Blines(obj.geomweight(:,:,1)<0)=NaN;
-                [~,h1]=contour(obj.zgrid*1000,obj.rgrid*1000,Blines,real(levels),'k-.','linewidth',0.8,'Displayname','Magnetic field lines');
-                
-            else
-                rdisp=sort(obj.rAthet(:,end));
-                [Zmesh,Rmesh]=meshgrid(obj.zgrid,rdisp);
-                Pot=griddata(z,rathet,Pot,Zmesh,Rmesh);
-                [Zinit,~]=meshgrid(obj.zgrid,obj.rAthet(:,1));
-                %         if  isempty(obj.maxwellsrce)
-                %                 end
-                N0=griddata(Zinit,obj.rAthet,N0,Zmesh,Rmesh);
-                Nend=griddata(Zinit,obj.rAthet,Nend,Zmesh,Rmesh);
-                geomw=griddata(Zinit,obj.rAthet,geomw,Zmesh,Rmesh);
-                Pot(geomw<=0)=0;
-                surface(obj.zgrid(1:end),rdisp,Pot(1:end,1:end),'edgecolor','none')
-                ylabel('rA_\theta [Tm^2]')
-                xlabel('z [m]')
-                xlim([obj.zgrid(1) obj.zgrid(end)])
-                ylim([min(rdisp) max(rdisp)])
-                hold(gca, 'on')
-                
-            end
-            if (timestep==0)
-                title(sprintf('Potential well Vacuum'))
-            else
-                title(sprintf('Potential well t=%1.2f [ns]',obj.t2d(timestep)*1e9))
-            end
-            maxdensend=max(Nend(:));
-            contourscale=0.1;
-            Nend=(Nend-contourscale*maxdensend)/maxdensend;
-            maxdens0=max(N0(:));
-            contourscale=0.1;
-            N0=(N0-contourscale*maxdens0)/maxdens0;
-            contour(obj.zgrid*1e3,rdisp*1e3,Nend,linspace(0,1-contourscale,5),'k--','linewidth',1.5,'Displayname','Cloud Boundaries');
-            contour(obj.zgrid*1e3,rdisp*1e3,N0,[0 0],'k-.','linewidth',1.5,'Displayname','Source boundaries');
-            %contour(obj.zgrid*1e3,rdisp*1e3,geomw,[0 0],'-','linecolor',[0.5 0.5 0.5],'linewidth',1.5,'Displayname','Vessel Boundaries');
-            c=colorbar;
-            colormap('jet');
-            
-            
-            
-            % Grey outline showing the metalic walls
-            geomw(obj.geomweight(:,:,1)>0)=-1;
-            geomw(obj.geomweight(:,:,1)<=0)=1;
-            [c1,hContour]=contourf(ax1,obj.zgrid*1000,obj.rgrid*1000,geomw, [0 0]);
-            
-            drawnow;
-            xlim(ax1,[obj.zgrid(1)*1000 obj.zgrid(end)*1000])
-            if(obj.conformgeom)
-                ylim([ax1 ],[obj.rgrid(1)*1000 obj.rgrid(rgridend)*1000])
-            else
-                ylim([ax1],[obj.rgrid(1)*1000 obj.rgrid(end)*1000])
-            end
-            %ylim(ax1,[0.05*1000 obj.rgrid(end)*1000])
-            %xlim([obj.zgrid(1) 0.185]*1e3)
-            xlabel(ax1,'z [mm]')
-            ylabel(ax1,'r [mm]')
-            view(ax1,2)
-            c.Label.String= 'depth [eV]';
-            f.PaperUnits='centimeters';
-            caxis(clims)
-            grid on;
-            hFills=hContour.FacePrims;
-            [hFills.ColorType] = deal('truecoloralpha');  % default = 'truecolor'
-            try
-                drawnow
-                hFills(1).ColorData = uint8([150;150;150;255]);
-                for idx = 2 : numel(hFills)
-                    hFills(idx).ColorData(4) = 0;   % default=255
-                end
-            catch
-            end
-            
-            % add central and external metallic walls if we have a coaxial
-            % configuration
-            if( obj.walltype >=2 && obj.walltype<=4)
-                rectangle('Position',[obj.zgrid(1) obj.r_b obj.zgrid(end)-obj.zgrid(1) 0.001]*1e3,'FaceColor',[150 150 150]/255,'Edgecolor','none')
-                ylimits=ylim;
-                ylim([ylimits(1),ylimits(2)+1])
-            end
-            if sum(obj.geomweight(:,1,1))==0
-                rectangle('Position',[obj.zgrid(1) obj.r_a-0.001 obj.zgrid(end)-obj.zgrid(1) 0.001]*1e3,'FaceColor',[150 150 150]/255,'Edgecolor','none')
-                ylimits=ylim;
-                ylim([ylimits(1)-1,ylimits(2)])
-            end
-            
-            %axis equal
-            %xlim([-100 200])
-            [max_depth,id]=max(abs(Pot(:)));
-            [idr,idz]=ind2sub(size(Pot),id);
-            fprintf('Maximum potential wel depth: %f eV\n',max_depth)
-            fprintf('at location r=%f z=%f [mm]\n',obj.rgrid(idr)*1e3, obj.zgrid(idz)*1e3)
-            papsize=[14 8];
-            if rcoord
-                obj.savegraph(f,sprintf('%s/%s_wellr%i',obj.folder,obj.name,floor(mean(timestep))),papsize);
-            else
-                obj.savegraph(f,sprintf('%s/%s_wellpsi%i',obj.folder,obj.name,floor(mean(timestep))),papsize);
-            end
         end
         
         function display1Dpotentialwell(obj,timestep,rpos)
@@ -2895,8 +2758,9 @@ classdef espic2dhdf5
         end
         
         function displaytavgdensity(obj,fieldstart,fieldend)
-            %displaydensity plot the fluid density averaged in time
-            % for times t2d(fieldstart:fieldend)
+            %displaytavgdensity plot the fluid density averaged in time for times t2d(fieldstart:fieldend)
+            % Displays also the geometry of the metallic boundaries and the
+            % magnetic field lines
             f=figure('Name', sprintf('%sfluid_dens',obj.name));
             ax1=gca;
             geomw=obj.geomweight(:,:,1);
@@ -2916,8 +2780,8 @@ classdef espic2dhdf5
             xlabel(ax1,'z [mm]')
             ylabel(ax1,'r [mm]')
             %title(ax1,sprintf('Density t=[%1.2g-%1.2g]s n_e=%1.2gm^{-3}',obj.t2d(fieldstart),obj.t2d(fieldend),double(maxdens)))
-            %c = colorbar(ax1);
-            %c.Label.String= 'n[m^{-3}]';
+            c = colorbar(ax1);
+            c.Label.String= 'electron density [m^{-3}]';
             view(ax1,2)
             colormap(flipud(hot));
             
@@ -2948,6 +2812,7 @@ classdef espic2dhdf5
             f.PaperUnits='centimeters';
             papsize=[16 14];
             f.PaperSize=papsize;
+            set(ax1,'fontsize',14)
             %axis equal
             obj.savegraph(f,sprintf('%sfluid_dens',obj.name))
         end
@@ -3320,13 +3185,13 @@ classdef espic2dhdf5
             vthermend=std(Vend(~isnan(Vend)),1);
             
             if(length(V)>1)
-                [Counts,edges]=histcounts(V,'binmethod','scott');
+                [Counts,edges]=histcounts(V,'binmethod','sqrt');
                 binwidth=mean(diff(edges));
                 plot([edges(1) 0.5*(edges(2:end)+edges(1:end-1)) edges(end)],[0 Counts 0],'DisplayName',sprintf("t=%2.3d [ns]",obj.tpart(t(1))*1e9));
                 hold on
             end
             hold on
-            [Counts,edges]=histcounts(Vend,'binmethod','scott');
+            [Counts,edges]=histcounts(Vend,'binmethod','sqrt');
             plot([edges(1) 0.5*(edges(2:end)+edges(1:end-1)) edges(end)],[0 Counts 0],'DisplayName',sprintf("t=%2.3d [ns]",obj.tpart(t(2))*1e9));
             
             if strcmp(dist,'maxwell')
@@ -3371,11 +3236,13 @@ classdef espic2dhdf5
             end
             set(fighandle, 'Color', 'w');
             fighandle.PaperSize=papsize;
-            export_fig(fighandle,name,'-png','-r300')
+            %export_fig(fighandle,name,'-png','-r300')
+            exportgraphics(fighandle,sprintf('%s.png',name),'Resolution',300)
             print(fighandle,name,'-dpdf','-fillpage')
             savefig(fighandle,name)
             set(fighandle, 'Color', 'w');
-            export_fig(fighandle,name,'-eps','-painters')
+            exportgraphics(fighandle,sprintf('%s.eps',name))
+            %export_fig(fighandle,name,'-eps','-painters')
             
         end
         

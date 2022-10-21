@@ -78,6 +78,10 @@ PlotEspic2ddata(mf,M,fieldstep);
         colormap(ax2,'jet')
         c = colorbar(ax2);
         c.Label.String= 'E_r [eV]';
+        hold(ax2,'on')
+        border=contourc(M.zgrid,M.rgrid,M.geomweight(:,:,1),[0 0]);
+        zpos=interp2(M.zgrid, M.rgrid, squeeze(M.fluidEkin(1,:,:,fieldstep))/M.qe, border(1,2:end), border(2,2:end));
+        plot3(ax2,border(1,2:end),border(2,2:end),zpos,'r-','linewidth',1.5,'Displayname','Boundaries')
         %c.Limits=[min(M.fluidUR(:,:,:)) max(M.fluidUR(:,:,:))];
         
         grid(ax2, 'on')
@@ -93,7 +97,12 @@ PlotEspic2ddata(mf,M,fieldstep);
         ylabel(ax3,'r [m]')
         colormap(ax3,'jet')
         c = colorbar(ax3);
-        c.Label.String= 'E_\thet [eV]';
+        c.Label.String= 'E_\theta [eV]';
+        hold(ax3,'on')
+        border=contourc(M.zgrid,M.rgrid,M.geomweight(:,:,1),[0 0]);
+        zpos=interp2(M.zgrid, M.rgrid, squeeze(M.fluidEkin(2,:,:,fieldstep))/M.qe, border(1,2:end), border(2,2:end));
+        plot3(ax3,border(1,2:end),border(2,2:end),zpos,'r-','linewidth',1.5,'Displayname','Boundaries')
+
         
         grid(ax3, 'on')
         view(ax3,2)
@@ -108,6 +117,11 @@ PlotEspic2ddata(mf,M,fieldstep);
         c.Label.String= 'E_z [eV]';
         titl='';
         labl='';
+        hold(ax4,'on')
+        border=contourc(M.zgrid,M.rgrid,M.geomweight(:,:,1),[0 0]);
+        zpos=interp2(M.zgrid, M.rgrid, squeeze(M.fluidEkin(3,:,:,fieldstep))/M.qe, border(1,2:end), border(2,2:end));
+        plot3(ax4,border(1,2:end),border(2,2:end),zpos,'r-','linewidth',1.5,'Displayname','Boundaries')
+
         
         grid(ax4, 'on')
         view(ax4,2)
@@ -157,22 +171,37 @@ PlotEspic2ddata(mf,M,fieldstep);
         
         ER=squeeze(M.fluidEkin(1,:,:,fieldstep))/M.qe;
         EZ=squeeze(M.fluidEkin(3,:,:,fieldstep))/M.qe;
+        
         view(ax1,2)
         %% update Radial velocity
+        ax1=fig.Children(end-2);
+        zpos=interp2(M.zgrid, M.rgrid, ER, ax1.Children(end-1).XData, ax1.Children(end-1).YData);
+        ax1.Children(end-1).ZData=zpos;
+        ER(ER<=0)=NaN;
+        fig.Children(end-2).Children(end).CData=ER;
+        fig.Children(end-2).Children(end).ZData=ER;
+        caxis(ax1,[0 50]);
         
-        fig.Children(end-2).Children(1).CData=ER;
-        fig.Children(end-2).Children(1).ZData=ER;
+        
         %% update Azimuthal velocity
+        ax1=fig.Children(end-4);
         Ethet=squeeze(M.fluidEkin(2,:,:,fieldstep))/M.qe;
-
-        fig.Children(end-4).Children(1).CData=Ethet;
-        fig.Children(end-4).Children(1).ZData=Ethet;
-        %% update Axial velocity
-
-        fig.Children(end-6).Children(1).CData=EZ;
-        fig.Children(end-6).Children(1).ZData=EZ;
-        %drawnow limitrate
+        zpos=interp2(M.zgrid, M.rgrid, Ethet, ax1.Children(end-1).XData, ax1.Children(end-1).YData);
+        ax1.Children(end-1).ZData=zpos;
+        Ethet(Ethet<=0)=NaN;     
+        fig.Children(end-4).Children(end).CData=Ethet;
+        fig.Children(end-4).Children(end).ZData=Ethet;
+        caxis(ax1,[0 50]);
         
+        %% update Axial velocity
+        ax1=fig.Children(end-6);
+        zpos=interp2(M.zgrid, M.rgrid, EZ, ax1.Children(end-1).XData, ax1.Children(end-1).YData);
+        ax1.Children(end-1).ZData=zpos;
+        %drawnow limitrate
+        EZ(EZ<=0)=NaN;
+        fig.Children(end-6).Children(end).CData=EZ;
+        fig.Children(end-6).Children(end).ZData=EZ;
+        caxis(ax1,[0 50]);
         
         
     end

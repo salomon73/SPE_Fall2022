@@ -227,10 +227,10 @@ PlotEspic2dpartdata(mf2,M,fieldstep);
         %UNTITLED2 Summary of this function goes here
         %   Detailed explanation goes here
         f=figure();
-        PlotEspic2dpartdata(f,M,sld.Value);
+        PlotEspic2dpartdata(f,M,floor(sld2.Value));
         f.PaperOrientation='portrait';
         [~, name, ~] = fileparts(M.file);
-        print(f,sprintf('%sParts%d',name,sld.Value),'-dpdf','-fillpage')
+        print(f,sprintf('%sParts%d',name,sld2.Value),'-dpdf','-fillpage')
     end
 
 end

@@ -1,5 +1,6 @@
-% creates the magnetic field h5 file necessary for espic2d
-% This uses the geometry of the refurbished 170GHz coaxial gyrotron gun 
+% Creates the geometry for a test case of an empty ring with sqare
+% cross-section. The boundaries are defined using the curve b-splines
+% representation.
 % The magnetic field is the one created by the asg magnet 
 % Both the magnet and geometry are definde in the Final report of the 
 % Development of the european gyrotron CCCGDS6 

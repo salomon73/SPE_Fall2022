@@ -40,8 +40,10 @@ plotaxes=gobjects(2);
 
 Printbt=uibutton(m,'Position',[edt.Position(1)+edt.Position(3)+10 5 40 20],'Text', 'Save');
 Play=uibutton(m,'Position',[Printbt.Position(1)+Printbt.Position(3)+10 5 40 20],'Text', 'Play');
-Pause=uibutton(m,'Position',[Play.Position(1)+Play.Position(3)+10 5 60 20],'Text', 'Pause');
-rcoordbt=uicheckbox(m,'Position',[Pause.Position(1)+Pause.Position(3)+10 5 65 20],'Text', 'r/rAtheta');
+Pause=uibutton(m,'Position',[Play.Position(1)+Play.Position(3)+10 5 45 20],'Text', 'Pause');
+rcoordbt=uiswitch(m);
+rcoordbt.Items = {'rz','rpsi'};
+rcoordbt.Position(1:2)=[Pause.Position(1)+Pause.Position(3)+25 5];
 
 stop=false;
 
@@ -50,7 +52,7 @@ edt.ValueChangedFcn={@updatefigdata,sld,mf};
 Printbt.ButtonPushedFcn={@plotGridButtonPushed};
 Play.ButtonPushedFcn={@plotPlayButtonPushed};
 rcoordbt.ValueChangedFcn={@change_radial_coord};
-rcoordbt.Value=true;
+rcoordbt.Value='rz';
 
 Pause.ButtonPushedFcn={@PauseButtonPushed};
 PlotEspic2dgriddata(mf,M,fieldstep);
@@ -73,7 +75,7 @@ PlotEspic2dgriddata(mf,M,fieldstep);
         stop = true;
     end
     function change_radial_coord(btn,ax)
-        if rcoordbt.Value
+        if strcmp(rcoordbt.Value,'rz')
             ylabel(plotaxes(2),'r [m]')
             ylim(plotaxes(2),[M.rgrid(1) M.rgrid(end)])
             ylabel(plotaxes(1),'r [m]')
@@ -220,14 +222,16 @@ PlotEspic2dgriddata(mf,M,fieldstep);
         pot=model.pot;
         rathet=model.rathet;
         geomweight=M.geomweight(:,:,1);
-        if rcoordbt.Value
+        if strcmp(rcoordbt.Value,'rz')
             plotaxes(1).Children(end).YData=M.rgrid(1:end);
             gweight=geomweight;
+            axis(plotaxes(1),'equal')
         else
             [Zmesh,Rmesh]=meshgrid(M.zgrid,M.rAthet(:,1));
             dens=griddata(Zmesh(:),M.rAthet(:),dens(:),Zmesh,Rmesh);
             gweight=griddata(Zmesh(:),M.rAthet(:),geomweight(:),Zmesh,Rmesh);
             plotaxes(1).Children(end).YData=M.rAthet(:,1);
+            axis(plotaxes(1),'normal')
         end
         
         dens(gweight<0)=NaN;
@@ -246,12 +250,13 @@ PlotEspic2dgriddata(mf,M,fieldstep);
             caxis(plotaxes(1),[-Inf MaxN]);
         end
         
-        if rcoordbt.Value
+        if strcmp(rcoordbt.Value,'rz')
             [Zmesh,Rmesh]=meshgrid(M.zgrid,M.rgrid);
             well=griddata(z,r,pot,Zmesh,Rmesh);
             
             plotaxes(2).Children(end).YData=M.rgrid(1:end);
             plotaxes(2).Children(end-1).YData=M.rgrid(1:end);
+            axis(plotaxes(2),'equal')
         else
             [Zmesh,Rmesh]=meshgrid(M.zgrid,M.rAthet(:,1));
             well=griddata(z,rathet,pot,Zmesh,Rmesh);
@@ -260,6 +265,7 @@ PlotEspic2dgriddata(mf,M,fieldstep);
             
             plotaxes(2).Children(end).YData=M.rAthet(:,1);
             plotaxes(2).Children(end-1).YData=M.rAthet(:,1);
+            axis(plotaxes(2),'normal')
         end
         well(gweight<0)=NaN;
         

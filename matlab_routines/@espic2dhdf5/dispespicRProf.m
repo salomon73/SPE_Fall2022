@@ -116,7 +116,7 @@ PlotEspic2dgriddata(mf,M,fieldstep,zpos);
         
         geomw=M.geomweight(:,zpos,1)>=0;
         ax1=subplot(2,2,1,'Parent',fig);
-        p=plot(ax1,M.rgrid*1e3,M.N(:,zpos,fieldstep));
+        p=plot(ax1,M.rgrid*1e3,M.N(:,zpos,fieldstep),'linewidth',1.5);
         xlim(ax1,[M.rgrid(1) M.rgrid(end)]*1e3)
         xlabel(ax1,'r [mm]')
         title(ax1,'Density')
@@ -135,11 +135,11 @@ PlotEspic2dgriddata(mf,M,fieldstep,zpos);
         hold(ax1, 'on')
         Er=M.Er(:,zpos,fieldstep).*geomw;
         Ez=M.Ez(:,zpos,fieldstep).*geomw;
-        p1=plot(ax1,M.rgrid*1e3,Er);
-        p2=plot(ax1,M.rgrid*1e3,Ez);
+        p1=plot(ax1,M.rgrid*1e3,Er,'linewidth',1.5);
+        p2=plot(ax1,M.rgrid*1e3,Ez,'linewidth',1.5);
         ylabel(ax1,'E [V/m]')
-        if max([Er Ez])>0 
-            ylim(ax1,[ -max([Er Ez]) max([Er Ez])])
+        if max(abs([Er(:); Ez(:)]))>0 
+            ylim(ax1,[ -max(abs([Er(:); Ez(:)])) max(abs([Er(:); Ez(:)]))])
         end
         legend(ax1,[p p1 p2],{'n','Er','Ez'},'location','northwest')
 
@@ -147,7 +147,7 @@ PlotEspic2dgriddata(mf,M,fieldstep,zpos);
         
         ax2=subplot(2,2,2,'Parent',fig);
         ur=M.fluidUR(:,zpos,fieldstep);
-        plot(ax2,M.rgrid*1e3,ur);
+        plot(ax2,M.rgrid*1e3,ur,'linewidth',1.5);
         xlim(ax2,[M.rgrid(1) M.rgrid(end)]*1e3)
         xlabel(ax2,'r [mm]')
         title(ax2,'radial velocity')
@@ -165,7 +165,7 @@ PlotEspic2dgriddata(mf,M,fieldstep,zpos);
         
         ax3=subplot(2,2,3,'Parent',fig);
         uthet=M.fluidUTHET(:,zpos,fieldstep);
-        plot(ax3,M.rgrid*1e3,uthet);
+        plot(ax3,M.rgrid*1e3,uthet,'linewidth',1.5);
         xlim(ax3,[M.rgrid(1) M.rgrid(end)]*1e3)
         xlabel(ax3,'r [mm]')
         title(ax3,'Azimuthal velocity')
@@ -181,11 +181,11 @@ PlotEspic2dgriddata(mf,M,fieldstep,zpos);
         plot(ax3,M.rgrid(id2)*[1 1]*1e3,ylimits,'k--','linewidth',1.5,'Displayname','Boundaries');
         
         uExb=-M.Er(:,zpos,fieldstep)./M.Bz(zpos,:)'.*(uthet~=0);
-        plot(ax3,M.rgrid*1e3,uExb);
+        plot(ax3,M.rgrid*1e3,uExb,'linewidth',1.5);
         
         ax4=subplot(2,2,4,'Parent',fig);
         uz=M.fluidUZ(:,zpos,fieldstep);
-        plot(ax4,M.rgrid*1e3,uz);
+        plot(ax4,M.rgrid*1e3,uz,'linewidth',1.5);
         xlim(ax4,[M.rgrid(1) M.rgrid(end)]*1e3)
         xlabel(ax4,'r [mm]')
         title(ax4,'Axial velocity')
@@ -244,10 +244,10 @@ PlotEspic2dgriddata(mf,M,fieldstep,zpos);
 
     function updatesubplotsdata(fieldstep, zpos, fig)
         sgtitle(fig,sprintf('step=%d t=%0.5e s z=%0.3e mm',(fieldstep-1)*M.it1,M.t2d(fieldstep),M.zgrid(zpos)*1e3))
-        
-        [~,id1]=min(abs(M.geomweight(1:10,zpos,1)));
-        [~,id2]=min(abs(M.geomweight(11:end,zpos,1)));
-        id2=id2+10;
+        [~,rcenterid]=max(M.geomweight(:,zpos,1));
+        [~,id1]=min(abs(M.geomweight(1:rcenterid,zpos,1)));
+        [~,id2]=min(abs(M.geomweight(rcenterid:end,zpos,1)));
+        id2=id2+rcenterid;
         rlim1=M.rgrid(id1)*[1 1]*1e3;
         rlim2=M.rgrid(id2)*[1 1]*1e3;
         
