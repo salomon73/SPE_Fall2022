@@ -1,4 +1,4 @@
-function PlotParticleTrajectory(M,partnumber,t,text)
+function PlotParticleTrajectories(M,partnumber,t,text)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 if (nargin<4)

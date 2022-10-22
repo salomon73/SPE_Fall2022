@@ -359,7 +359,22 @@ figure
     set(legend,'FontSize',20);
     set (gca, 'fontsize', 22)
 
-   
+%% PPB110 %%
+electrons = espic2dhdf5('resultrestart_1e-12.h5');
+%%
+dt_el = electrons.dt(end); %last particle specie : electrons 
+tpart_el = electrons.species(3).tpart;
+vperp_el = electrons.species(3).Vperp(:,:);
+vpar_el  = electrons.species(3).Vpar(:,:);
+R_el = electrons.species(3).R(1,:);
+
+
+%% PLOT GYRATION MOTION %%
+figure
+    plot(tpart_el,1e3*R_el, 'b-', 'linewidth', 2);
+    ylabel('$r_e$ [mm]', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$t$ [s]', 'interpreter', 'latex', 'Fontsize', 22)
+    set (gca, 'fontsize', 22)
 
 
 %% Function definitions %%
