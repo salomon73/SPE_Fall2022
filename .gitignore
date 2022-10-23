@@ -7,3 +7,5 @@
 *.toc
 *.asv
 .DS_Store
+*.mat
+stable_dt_12.h5

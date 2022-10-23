@@ -376,6 +376,8 @@ figure
     xlabel('$t$ [s]', 'interpreter', 'latex', 'Fontsize', 22)
     set (gca, 'fontsize', 22)
 
+%%
+PlotParticleTrajectory(electrons.species(3), 1,1:200)
 
 %% Function definitions %%
 
