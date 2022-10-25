@@ -14,21 +14,21 @@ val = 1:2
 PlotParticleTrajectory(electrons.species(4), 1 , 1:2200)
 
 %% 
-PlotParticleTrajectory(electrons.species(3),1,1:2020)
+PlotParticleTrajectory(electrons.species(3),1,1:3500)
 
 %%
-dt_el1 = electrons1.dt(end); %last particle specie : electrons 
-tpart_el1 = electrons1.species(end).tpart;
-dt_el2 = electrons2.dt(end); %last particle specie : electrons 
-tpart_el2 = electrons2.species(end).tpart;
+dt_el = electrons.dt(end); %last particle specie : electrons 
+tpart_el = electrons.species(end).tpart;
+%dt_el2 = electrons2.dt(end); %last particle specie : electrons 
+%tpart_el2 = electrons2.species(end).tpart;
 % vperp_el = electrons.species(end).Vperp;
 % vperp_el = vperp_el(:,:);
 % vpar_el  = electrons.species(end).Vpar;
 % vpar_el = vpar_el(:,:);
-R_el1 = electrons1.species(end).R;
-R_el1 = R_el1(:,:);
-R_el2 = electrons2.species(end).R;
-R_el2 = R_el2(:,:);
+R_el = electrons.species(end).R;
+R_el = R_el(:,:);
+%R_el2 = electrons2.species(end).R;
+%R_el2 = R_el2(:,:);
 
 %%
 figure
@@ -50,3 +50,11 @@ figure
     ylabel('$r_e$ [mm]', 'interpreter', 'latex','Fontsize', 22)
     xlabel('$t$ [s]', 'interpreter', 'latex', 'Fontsize', 22)
     set (gca, 'fontsize', 22)
+    
+    
+%% Test if it has gone far away enough %%
+index = find(LocalMinInd); % find all local min indices
+diff  = R(1,index(1))-R(1,1);
+
+isfarenough = (diff>1e-8);
+
