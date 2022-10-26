@@ -3,7 +3,7 @@ addpath '/home/sguincha/espic2d/matlab/'
 %electrons1 = espic2dhdf5('RunT_1/resultrestart_5e-12.h5');
 %electrons2 =  espic2dhdf5('resultrestart_5e-12.h5');
 
-electrons = espic2dhdf5('/scratch/sguincha/SPE_Fall2022/Results/resultrestart_5e-12.h5');
+electrons = espic2dhdf5('/scratch/sguincha/SPE_HRES_RUN/ResultsScan3/resultrestart_5e-12.h5');
 
 %%
 Nspecies = size(electrons.species());
@@ -11,7 +11,7 @@ R = electrons.species(end).R;
 R = R(:,:);
 %% plot electrons trajectories - parts1%%
 val = 1:2
-PlotParticleTrajectory(electrons.species(4), 1 , 1:2200)
+PlotParticleTrajectory(electrons.species(end), 1 , 1:2200)
 
 %% 
 PlotParticleTrajectory(electrons.species(3),1,1:3500)

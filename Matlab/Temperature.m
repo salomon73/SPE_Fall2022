@@ -1,14 +1,9 @@
 %% Define the constants %%
-kB = (25.7/298)*1e-3; % eV/K
+kB = (25.7/298)*1e-3;      % eV/K
+m  = 9.10938300000000e-31; % electron mass
+e  = 1.60217662000000e-19; % J/eV
 
 %% Energy range for T range %%
-E = linspace(0.1, 10, 5);
-T = 1/kB*E;
-%%
-figure
-    plot(tpart_el1,1e3*R_el1(1,:), 'b-', 'linewidth', 1);
-    hold on
-    plot(tpart_el2,1e3*R_el2(1,:), 'r-', 'linewidth', 1 )
-    ylabel('$r_e$ [mm]', 'interpreter', 'latex','Fontsize', 22)
-    xlabel('$t$ [s]', 'interpreter', 'latex', 'Fontsize', 22)
-    set (gca, 'fontsize', 22)
+E  = linspace(0.1, 15, 10);
+T  = 1/kB*E;
+v  = sqrt((2*e/m)*E);
