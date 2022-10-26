@@ -2,6 +2,7 @@
 
 path = '/scratch/sguincha';
 directory = '/SPE_HRES_RUN/ResultsScan3/'; % Change result folder name accordingly
+directory2 = 'SPE_Fall2022/RunsElectronsSlices/Results/';
 %-----------------------------------------
 addpath(genpath(strcat(path,directory)));
 addpath(genpath('/home/sguincha/espic2d/matlab/'))
