@@ -70,6 +70,7 @@ for ii = 1:npartalloc
                 plot(1e6*tpart(index(ii)), 1e3*R(ii,index(ii)), 'r*' )
                 ylabel('$r_e$ [mm]', 'interpreter', 'latex','Fontsize', 22)
                 xlabel('$t$ [$\mu$s]', 'interpreter', 'latex', 'Fontsize', 22)
+                legend(strcat('E=',num2str(E(ii)), ' [eV]'), 'Location','northwest','Interpreter','latex');
                 set (gca, 'fontsize', 22)
         case 0 
             disp(strcat('Careful ! After 1 Larmor gyration, particle may not be far enough for particle with E=', num2str(E(ii)), ' eV'))
@@ -86,6 +87,9 @@ figure
     end
     ylabel('$r_e$ [mm]', 'interpreter', 'latex','Fontsize', 22)
     xlabel('$t$ [$\mu$s]', 'interpreter', 'latex', 'Fontsize', 22)
+    legendstring = 'E=' + string(E(RecollectParts)) + ' [eV]';
+    legend(legendstring, 'Location','northwest','Interpreter','latex');
+    set(legend,'FontSize',18);
     set (gca, 'fontsize', 22)
 %% Plot R trajectory for recaptured particles %% 
 
@@ -95,7 +99,7 @@ figure
         plot(1e6*tpart(1:100), 1e3*R(ii,1:100), 'linewidth', 1)
         ylabel('$r_e$ [mm]', 'interpreter', 'latex','Fontsize', 22)
         xlabel('$t$ [$\mu$s]', 'interpreter', 'latex', 'Fontsize', 22)
-        legendstring = 'E=' + string(E) + ' [eV]';
+        legendstring = 'E=' + string(E(3:npartalloc-1)) + ' [eV]';
         legend(legendstring, 'Location','northwest','Interpreter','latex');
         set(legend,'FontSize',18);
         set(gca,   'FontSize',22)
