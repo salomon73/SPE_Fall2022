@@ -5,7 +5,7 @@
     e  = 1.60217662000000e-19; % J/eV
     
     %% Create geom structure %% 
-    %geom = espic2dhdf5(filename);
+    %geom = espic2dhdf5('result_46dA_25kv_10mubar.h5');
 
     lowerBound = 0.1;
     upperBound = 20;
@@ -20,6 +20,7 @@
     Tang   = zeros(UpPts-LowPts,2);
     Norm   = zeros(UpPts-LowPts,2);
     df = fnder(f,1);
+    textFile = 'Test';
     
     for ii = 0:UpPts-LowPts-1
         
@@ -33,6 +34,10 @@
        Norm(ii+1,2) =  tgt(1);
     end
 
+    for jj =1:length(Norm(:,1))
+
+        Norm(jj,:) = 1/norm(Norm(jj,:),2)*Norm(jj,:);   
+    end
 
     LowInd  = LowPts-1;
     HighInd = UpPts-1;
@@ -82,11 +87,11 @@ end
 V0R = zeros(length(E),nppts);
 V0Z = zeros(length(E),nppts);
 
-for ii = 1: length(E)
-    
-    V0R(ii,:) = Norm(:,2)'.*vR(ii,:);
-    V0Z(ii,:) = Norm(:,1)'.*vZ(ii,:);
-    
+for ii =1:length(E)
+    for jj=1:nppts
+        V0R(ii,jj) = Norm(jj,2)*vR(ii,jj);
+        V0Z(ii,jj) = Norm(jj,1)*vZ(ii,jj);
+    end
 end
 
     figure
@@ -111,49 +116,53 @@ end
         set(legend,'FontSize',18);
         set (gca, 'fontsize', 22)
 
-    figure
-        subplot(2,2,1)
-            hold on 
-            plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
-            ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
-            xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
-            set (gca, 'fontsize', 20)
-            hold on 
-            plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
-            hold on 
-            quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(1,1:3:end)', V0R(1,1:3:end)', 'b')
-            axis equal
-        subplot(2,2,2)
-            hold on 
-            plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
-            ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
-            xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
-            set (gca, 'fontsize', 20)
-            hold on 
-            plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
-            hold on 
-            quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(5,1:3:end)', V0R(5,1:3:end)', 'b')
-            axis equal
-        subplot(2,2,3)
-            hold on 
-            plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
-            ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
-            xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
-            set (gca, 'fontsize', 20)
-            hold on 
-            plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
-            hold on 
-            quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(10,1:3:end)', V0R(10,1:3:end)', 'b')
-            axis equal
-        subplot(2,2,4)
-            hold on 
-            plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
-            ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
-            xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
-            set (gca, 'fontsize', 20)
-            hold on 
-            plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
-            quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(end,1:3:end)', V0R(end,1:3:end)', 'b')
-            axis equal
-            
+%     figure
+%         subplot(2,2,1)
+%             hold on 
+%             plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
+%             ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
+%             xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
+%             set (gca, 'fontsize', 20)
+%             hold on 
+%             plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
+%             hold on 
+%             quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(1,1:3:end)', V0R(1,1:3:end)', 'b')
+%             legend('cathode', '$e^-$',strcat('$\mathbf{v_0}$',' : E =',num2str(E(1)), ' eV'), 'Location','northwest','Interpreter','latex');
+%             axis equal
+%         subplot(2,2,2)
+%             hold on 
+%             plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
+%             ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
+%             xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
+%             set (gca, 'fontsize', 20)
+%             hold on 
+%             plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
+%             hold on 
+%             quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(5,1:3:end)', V0R(5,1:3:end)', 'b')
+%             legend('cathode', '$e^-$',strcat('$\mathbf{v_0}$',' : E =',num2str(E(5)), ' eV'), 'Location','northwest','Interpreter','latex');
+%             axis equal
+%         subplot(2,2,3)
+%             hold on 
+%             plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
+%             ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
+%             xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
+%             set (gca, 'fontsize', 20)
+%             hold on 
+%             plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
+%             hold on 
+%             quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(10,1:3:end)', V0R(10,1:3:end)', 'b')
+%             legend('cathode', '$e^-$',strcat('$\mathbf{v_0}$',' : E =',num2str(E(10)), ' eV'), 'Location','northwest','Interpreter','latex');
+%             axis equal
+%         subplot(2,2,4)
+%             hold on 
+%             plot(cathode.coefs(:,1),cathode.coefs(:,2), 'k-', 'linewidth',2) % plot cathode geometry
+%             ylabel('$R$ [m]', 'interpreter', 'latex','Fontsize', 22)
+%             xlabel('$Z$ [m]', 'interpreter', 'latex', 'Fontsize', 22)
+%             set (gca, 'fontsize', 20)
+%             hold on 
+%             plot(Points(1:3:end,1),Points(1:3:end,2),'r.', 'markersize',12)
+%             quiver(Points(1:3:end,1),Points(1:3:end,2), V0Z(end,1:3:end)', V0R(end,1:3:end)', 'b')
+%             legend('cathode', '$e^-$',strcat('$\mathbf{v_0}$',' : E =',num2str(E(end)), ' eV'), 'Location','northwest','Interpreter','latex');
+%             axis equal
+%             
         
