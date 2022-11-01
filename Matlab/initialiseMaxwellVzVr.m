@@ -1,6 +1,6 @@
     %% Add all paths containing outputs %%
-    addpath(genpath(strcat(path,directory)));
     AddAllPaths();
+    
     %% Define the constants %%
     kB = (25.7/298)*1e-3;      % eV/K
     m  = 9.10938300000000e-31; % electron mass
@@ -227,6 +227,12 @@
     %% TREX GEOMETRY %%
     geomTRex = espic2dhdf5('resultrestart_5e-12.h5');
     dispespicFields(geomTRex)
+    
+    %% Define the constants %%
+    kB = (25.7/298)*1e-3;      % eV/K
+    m  = 9.10938300000000e-31; % electron mass
+    e  = 1.60217662000000e-19; % J/eV
+    
  
     %% Energy scan %% 
     format long 
@@ -332,4 +338,21 @@
     
     fclose(fileId);
     
+    %% Plot initial condition for TREX scan %% 
+    t=2*pi*linspace(0,1,100);
     
+    geomstruct = geomTRex;
+    scalefactor = 3e-5;
+    figure
+        contour(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3,geomstruct.geomweight(:,:,1),[0 0],'k-', 'linewidth', 2)
+        [~,rgrid]=meshgrid(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3);
+        rlims=rgrid(geomstruct.geomweight(:,:,1)<0);
+        ylabel('$R$ [mm]', 'interpreter', 'latex','Fontsize', 22)
+        xlabel('$Z$ [mm]', 'interpreter', 'latex', 'Fontsize', 22)
+        set (gca, 'fontsize', 20)
+        hold on
+        plot(1e3*Points(2,1:end),1e3*Points(1,1:end),'r*')
+        hold on 
+        quiver(1e3*Points(2,1:end),1e3*Points(1,1:end), scalefactor*V0(1,1:end,end,1), scalefactor*V0(1,1:end,end,2), 'b', 'Autoscale', 'off')
+
+
