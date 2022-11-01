@@ -1,20 +1,25 @@
-%function initialiseMaxwellVzVr(filename, lowerBound, upperBound, nPoints,TextFile)
+    %% Add all paths containing outputs %%
+    addpath(genpath(strcat(path,directory)));
+    AddAllPaths();
     %% Define the constants %%
     kB = (25.7/298)*1e-3;      % eV/K
     m  = 9.10938300000000e-31; % electron mass
     e  = 1.60217662000000e-19; % J/eV
     
+    %% GT170 GYROTRON GEOMETRY %%
+    geom = espic2dhdf5('result_46dA_25kv_10mubar.h5');
+    
     %% Create geom structure %% 
-    %geom = espic2dhdf5('result_46dA_25kv_10mubar.h5');
 
     lowerBound = 0.1;
     upperBound = 20;
-    nPoints = 20;
+    nPoints = 10;
     cathode = geom.spl_bound.boundary(1);
     LowPts  = 15;
     UpPts   = 65;
     nblocks = nPoints*(UpPts-LowPts);
     nparts  = nblocks;
+    dr      = 1e-6;
     
     f   = cathode.fun;
     E   = linspace(lowerBound, upperBound, nPoints);
@@ -71,7 +76,7 @@
     fprintf(fileId,'//parts\n');
     for ii =1:length(E)
         for jj =1:UpPts-LowPts
-            fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(jj,2), 0.0, Points(jj,1), VNorm(ii,jj,2), 0.0 ,VNorm(ii,jj,1));
+            fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(jj,2)+dr, 0.0, Points(jj,1), VNorm(ii,jj,2), 0.0 ,VNorm(ii,jj,1));
         end
     end
     fclose(fileId);
@@ -150,7 +155,7 @@
     %% Influence of normal and tangential velocity components %% 
 
     format long
-    nComponents = 2; % number of values for velocity
+    nComponents = 7; % number of values for velocity
     nppts = UpPts-LowPts;
     vR    = zeros(length(E),nComponents); 
     vZ    = zeros(length(E),nComponents); 
@@ -190,7 +195,7 @@
     for ii =1 : length(E)
         for jj =1 : nComponents
             for kk =1 : nppts
-                fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(kk,2), 0.0, Points(kk,1), V0(ii,kk,jj,1), 0.0 ,V0(ii,kk,jj,2));
+                fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(kk,2)+dr, 0.0, Points(kk,1), V0(ii,kk,jj,1), 0.0 ,V0(ii,kk,jj,2));
             end
         end
     end
@@ -215,4 +220,116 @@
         figure
             hold on
             plot(1:nppts,E(1)*ones(1,nppts), 'k-')
+            
+%==============================================================================================================
+%==============================================================================================================
+    
+    %% TREX GEOMETRY %%
+    geomTRex = espic2dhdf5('resultrestart_5e-12.h5');
+    dispespicFields(geomTRex)
+ 
+    %% Energy scan %% 
+    format long 
+    
+    % Energy parameters % 
+    lowerBound = 0.1;
+    upperBound = 20;
+    nPoints = 10; % # values to scan E 
+    E = linspace(lowerBound, upperBound, nPoints);
+    
+    % geom parameters %
+    zA = 0.25;
+    zB = 0.45;
+    rA = geomTRex.r_a;
+    rB = geomTRex.r_b;
+    dr = 1e-6; % [m] to particle existence
+    Zlim   = [0.35 0.40];
+    
+    % particles parameters %
+    nElectrons = 7;
+    PointsZ = linspace(Zlim(1), Zlim(2), nElectrons);
+    PointsR = rA+dr;
+    Points  = [ PointsR * ones(size(PointsZ));PointsZ ];
+    
+    % Numerical parameters %
+    nblocks = nPoints * nElectrons;
+    nparts  = nPoints * nElectrons;
+    TRexTxtVNorm = 'vNormTRex';
+    TRexTxtV0    = 'v0TRex';
+    
+    
+    Norm  = zeros(nPoints, nElectrons, 2);
+    VNorm = zeros(nPoints, nElectrons, 2);
+    for ii =1:nPoints 
+        for jj =1:nElectrons
+            Norm(ii,jj,:) = [0 1]; %vecteur normal (0 1) 
+        end
+        VNorm(ii,:,:) = sqrt(2*E(ii)*e/m) * Norm(ii,:,:);
+    end
+    
+   
+    % Normal direction velocity scan for different E %
+    
+    fileId = fopen(strcat(TRexTxtVNorm,'.txt'),'w');
+    fprintf(fileId,'%s %d \n', 'nblocks =' , nblocks );
+    fprintf(fileId,'%s %d \n', 'nparts ='  , nparts );
+    fprintf(fileId,'//parts\n');
+    for ii =1:nPoints
+        for jj =1:nElectrons
+            fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,jj), 0.0, Points(2,jj), VNorm(ii,jj,1), 0.0 ,VNorm(ii,jj,2));
+        end
+    end
+    fclose(fileId);
+    
+    
+    
+    % Influence of velocity directions & 
+    
+    nComponents = 6; % number of values for velocity
+    vR    = zeros(length(E),nComponents); 
+    vZ    = zeros(length(E),nComponents); 
+    
+    % vR and vZ for constant E 
+    for kk=1:length(E)    
+        vRmax = sqrt(2*E(kk)/m*e);
+        vR(kk,:)    = linspace(0,vRmax, nComponents);
 
+        for j = 1 :length(vR(kk,:))
+            if 2*E(kk)/m*e - vR(kk,j)^2 < 1e-3
+                vZ(kk,j) = 0.0;
+            else 
+                vZ(kk,j) = sqrt(2*E(kk)/m*e - vR(kk,j)^2);
+            end
+        end
+    end    
+    
+
+    V0 = zeros(length(E),nElectrons,nComponents,2); % nEnergy * nParticles * nVelocityValues * 2 (r,z) components for each vector
+    
+    for ii = 1: length(E)
+       
+        for jj =1:nComponents
+           V0(ii,:,jj,1) = vZ(ii,jj);
+           V0(ii,:,jj,2) = vR(ii,jj);
+        end
+        
+    end
+    
+    nblockV0 = length(E) * nComponents * nElectrons;
+    npartsV0   = nblockV0;
+    fileId = fopen(strcat(TRexTxtV0,'.txt'),'w');
+    fprintf(fileId,'%s %d \n', 'nblocks =' , nblockV0 );
+    fprintf(fileId,'%s %d \n', 'nparts =' , npartsV0 );
+    fprintf(fileId,'//parts\n');
+    
+    for ii =1 : length(E)
+        for jj = 1:nComponents
+            for kk = 1:nElectrons
+                fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,kk), 0.0, Points(2,kk), V0(ii,kk,jj,1), 0.0 ,V0(ii,kk,jj,2));
+            end
+        end
+    end
+    
+    fclose(fileId);
+    
+    
