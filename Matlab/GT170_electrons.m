@@ -1,24 +1,22 @@
 %% Process electron trajectories for electrons generated at electrodes %%
 
     path = '/scratch/sguincha';
-    directory = '/SPE_HRES_RUN/ResultsScan3/'; % Change result folder name accordingly
-    directory2 = 'SPE_Fall2022/RunsElectronsSlices/Results/';
-    directory3 = '/scratch/sguincha/SPE_Fall2022/Results/';
+    directory = '/scratch/sguincha/gt170_refurbished_4_6_25kV';
     %-----------------------------------------
-    addpath(genpath(strcat(path,directory3)));
+    addpath(genpath(strcat(path,directory)));
     addpath(genpath('/home/sguincha/espic2d/matlab/'))
     addpath(genpath('/home/sguincha/SPE_Fall2022/Matlab/'))
     format long 
 
-    electrons   = espic2dhdf5('resultrestart_5e-12.h5');
+    electrons   = espic2dhdf5('result_46dA_25kv_10mubar.h5');
 
 %%
-
+    tic
     % Electrons characteristics % 
     % -> electrons initialised with normal velocity
     % -> electrons with varying components along (r,z)
     % Read PartInfoV0
-    load('Partinfos.mat')
+    load('PartInfosGT170.mat')
     
     
     % Added species characteristics % 
@@ -40,7 +38,7 @@
     % Energy characteristics %
     lowerBound = 0.1;
     upperBound = 20;
-    nPoints = 10;
+    nPoints = 20;
     E   = linspace(lowerBound, upperBound, nPoints);
     
     
@@ -69,12 +67,12 @@
         warning('Error: different number of particles from output file and from initialisation information')
         
     end
-    
+    toc
     
     
     
 %% RUN test - isparticle leaving electrode ? %%
-    
+    tic
     for i = 1:npartsV0
     
         LocalMinIndV0(i,:) = islocalmin(1e3*RV0(i,:));    % test if each time step has local min of elect traject
@@ -127,13 +125,13 @@
             end
         end
     end
-
+    toc
 
 %% Particles trajectories processing for given energies %% 
 
-    nComponents = 6;
-    nElectrons  = 12;
-    nPoints     = 10;
+    nComponents = 7;
+    nElectrons  = 50;
+    nPoints     = 20;
 
     nbPartsperEnergy   = nComponents*nElectrons;
     EnergyPartsIndices = zeros(1,nPoints);
@@ -149,7 +147,7 @@
 %% Plot particles trajectories for energy value given by energyVal %%
 
     energyVal = 10; % must be between 1 and nPoints = length(E)
-    compoVal  = 6; % must be between 1 and nComponents
+    compoVal  = 1; % must be between 1 and nComponents
     
     % Find all indices with same (vr,vz) for given value %
     for ii = 1:nPoints*nElectrons 
@@ -171,4 +169,4 @@
 %%
     PlotParticleTrajectory(electronsV0,PositionSameCompo(1:20:end),1:500)
 %% 
-    PlotParticleTrajectory(electronsV0,IEnerg',1:500)
+    PlotParticleTrajectory(electronsV0,IEnerg(1:9:end)',1:500)

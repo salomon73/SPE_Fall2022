@@ -13,7 +13,7 @@
 
     lowerBound = 0.1;
     upperBound = 20;
-    nPoints = 10;
+    nPoints = 20;
     cathode = geom.spl_bound.boundary(1);
     LowPts  = 15;
     UpPts   = 65;
@@ -23,7 +23,8 @@
     
     f   = cathode.fun;
     E   = linspace(lowerBound, upperBound, nPoints);
-    Points = zeros(UpPts-LowPts,2);
+    Points = zeros(UpPts-LowPts,2);    
+
     Tang   = zeros(UpPts-LowPts,2);
     Norm   = zeros(UpPts-LowPts,2);
     VNorm  = zeros(length(E), UpPts-LowPts,2);
@@ -216,10 +217,50 @@
             quiver(Points(1:3:end,1),Points(1:3:end,2), V0(1,1:3:end,end,1)', V0(1,1:3:end,end,2)', 'b')
             axis equal
 
-            %%
-        figure
-            hold on
-            plot(1:nppts,E(1)*ones(1,nppts), 'k-')
+            
+    %% Enumerate and label the particles for trajectories processing %%
+
+    PartInfoV0 = zeros(6,npartsV0);
+    PartInfoVn = zeros(6,nparts);
+    compteur   = 0;
+    
+    % All informations about particles initialised with V0 % 
+    for ii = 1:length(E)
+
+       for jj = 1: nElectrons
+
+           for kk = 1: nComponents
+               
+                compteur = compteur + 1; 
+                PartInfoV0(1,compteur) = compteur;  
+                PartInfoV0(2,compteur) = Points(jj,2);
+                PartInfoV0(3,compteur) = Points(jj,1);
+                PartInfoV0(4,compteur) = V0(ii,jj,kk,1);
+                PartInfoV0(5,compteur) = V0(ii,jj,kk,2);
+                PartInfoV0(6,compteur) = E(ii);
+           end
+
+       end
+
+    end
+
+    compteur = 0;
+    % All informations about particles initialised with VN % 
+    for ii =1:length(E)
+
+        for jj =1: nElectrons
+            
+                compteur = compteur + 1; 
+                PartInfoVn(1,compteur) = compteur;  
+                PartInfoVn(2,compteur) = Points(jj,2);
+                PartInfoVn(3,compteur) = Points(jj,1);
+                PartInfoVn(4,compteur) = VNorm(ii,jj,1);
+                PartInfoVn(5,compteur) = VNorm(ii,jj,2);
+                PartInfoVn(6,compteur) = E(ii);
+
+        end
+    end
+
             
 %==============================================================================================================
 %==============================================================================================================
@@ -382,8 +423,8 @@
         
 %% Enumerate and label the particles for trajectories processing %%
 
-    PartInfoV0 = zeros(5,npartsV0);
-    PartInfoVn = zeros(5,nparts);
+    PartInfoV0 = zeros(6,npartsV0);
+    PartInfoVn = zeros(6,nparts);
     compteur   = 0;
     
     % All informations about particles initialised with V0 % 
@@ -399,6 +440,7 @@
                 PartInfoV0(3,compteur) = Points(2,jj);
                 PartInfoV0(4,compteur) = V0(ii,jj,kk,1);
                 PartInfoV0(5,compteur) = V0(ii,jj,kk,2);
+                PartInfoV0(6,compteur) = E(ii);
            end
 
        end
@@ -417,7 +459,7 @@
                 PartInfoVn(3,compteur) = Points(2,jj);
                 PartInfoVn(4,compteur) = VNorm(ii,jj,1);
                 PartInfoVn(5,compteur) = VNorm(ii,jj,2);
-            
+                PartInfoVn(6,compteur) = E(ii);
 
         end
     end

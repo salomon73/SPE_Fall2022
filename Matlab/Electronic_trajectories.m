@@ -1,3 +1,5 @@
+%% FILE FOR ONLY ONE ADD SPECIES %%
+
 %% Process electron trajectories for electrons generated at electrodes %%
 
 path = '/scratch/sguincha';
