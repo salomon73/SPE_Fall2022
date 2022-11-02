@@ -170,3 +170,4 @@
     PlotParticleTrajectory(electronsV0,PositionSameCompo(1:20:end),1:500)
 %% 
     PlotParticleTrajectory(electronsV0,IEnerg(1:9:end)',1:500)
+    
