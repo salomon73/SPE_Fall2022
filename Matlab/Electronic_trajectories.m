@@ -18,10 +18,10 @@ nbSpecies   = species(2);
 Rel         = electrons.species(end).R;
 R           = Rel(:,:);
 nparts      = length(R(:,1));
-npartalloc  = 10;
+npartalloc  = 100;
 tpart       = electrons.species(end).tpart;
 ngyrations  = 5;
-partindices = electrons.species(3).partindex(:,:);
+partindices = electrons.species(4).partindex(:,:);
 velocity_struct = Temperature();
 E            = velocity_struct.E;
 LastTimeStep = zeros(1,npartalloc); % pre allocation for speed
@@ -111,5 +111,5 @@ figure
 GoodParts = npartalloc - (find(isnan(index), 1, 'first')+1);
 
     PlotParticleTrajectory(electrons.species(nbSpecies), 1:GoodParts, 1:min(LastTimeStep(1:GoodParts)))
-    PlotParticleTrajectory(electrons.species(nbSpecies), RecollectParts, 1:min(LastTimeStep(RecollectParts)))
+    %PlotParticleTrajectory(electrons.species(nbSpecies), RecollectParts, 1:min(LastTimeStep(RecollectParts)))
 

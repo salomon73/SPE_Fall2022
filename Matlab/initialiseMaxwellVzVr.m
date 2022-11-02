@@ -226,7 +226,7 @@
     
     %% TREX GEOMETRY %%
     geomTRex = espic2dhdf5('resultrestart_5e-12.h5');
-    dispespicFields(geomTRex)
+    %dispespicFields(geomTRex)
     
     %% Define the constants %%
     kB = (25.7/298)*1e-3;      % eV/K
@@ -249,10 +249,10 @@
     rA = geomTRex.r_a;
     rB = geomTRex.r_b;
     dr = 1e-6; % [m] to particle existence
-    Zlim   = [0.35 0.40];
+    Zlim   = [0.30 0.43];
     
     % particles parameters %
-    nElectrons = 7;
+    nElectrons = 12;
     PointsZ = linspace(Zlim(1), Zlim(2), nElectrons);
     PointsR = rA+dr;
     Points  = [ PointsR * ones(size(PointsZ));PointsZ ];
@@ -344,15 +344,80 @@
     geomstruct = geomTRex;
     scalefactor = 3e-5;
     figure
-        contour(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3,geomstruct.geomweight(:,:,1),[0 0],'k-', 'linewidth', 2)
-        [~,rgrid]=meshgrid(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3);
-        rlims=rgrid(geomstruct.geomweight(:,:,1)<0);
-        ylabel('$R$ [mm]', 'interpreter', 'latex','Fontsize', 22)
-        xlabel('$Z$ [mm]', 'interpreter', 'latex', 'Fontsize', 22)
-        set (gca, 'fontsize', 20)
-        hold on
-        plot(1e3*Points(2,1:end),1e3*Points(1,1:end),'r*')
-        hold on 
-        quiver(1e3*Points(2,1:end),1e3*Points(1,1:end), scalefactor*V0(1,1:end,end,1), scalefactor*V0(1,1:end,end,2), 'b', 'Autoscale', 'off')
+        subplot(1,2,1)
+            contour(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3,geomstruct.geomweight(:,:,1),[0 0],'k-', 'linewidth', 2)
+            [~,rgrid]=meshgrid(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3);
+            rlims=rgrid(geomstruct.geomweight(:,:,1)<0);
+            ylabel('$R$ [mm]', 'interpreter', 'latex','Fontsize', 22)
+            xlabel('$Z$ [mm]', 'interpreter', 'latex', 'Fontsize', 22)
+            set (gca, 'fontsize', 20)
+            hold on
+            plot(1e3*Points(2,1:end),1e3*Points(1,1:end),'r*')
+            hold on 
+            quiver(1e3*Points(2,2:3:end),1e3*Points(1,2:3:end),...
+                   scalefactor*V0(1,2:3:end,end,1), scalefactor*V0(1,2:3:end,end,2),...
+                   'b', 'Autoscale', 'off');
+            legend('electrode', '$e^-$','$\mathbf{v_0} = v_0\mathbf{e_r}$',...
+                        'Location','northwest','Interpreter','latex');
 
 
+        subplot(1,2,2)
+            contour(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3,geomstruct.geomweight(:,:,1),[0 0],'k-', 'linewidth', 2)
+            [~,rgrid]=meshgrid(geomstruct.zgrid*1e3,geomstruct.rgrid*1e3);
+            rlims=rgrid(geomstruct.geomweight(:,:,1)<0);
+            ylabel('$R$ [mm]', 'interpreter', 'latex','Fontsize', 22)
+            xlabel('$Z$ [mm]', 'interpreter', 'latex', 'Fontsize', 22)
+            set (gca, 'fontsize', 20)
+            hold on
+            plot(1e3*Points(2,1:end),1e3*Points(1,1:end),'r*')
+            for ii = 1:nComponents 
+            hold on
+            quiver(1e3*Points(2,2:3:end),1e3*Points(1,2:3:end), scalefactor*V0(1,2:3:end,ii,1),...
+                   scalefactor*V0(1,2:3:end,ii,2),...
+                   'b', 'Autoscale', 'off');
+            end
+                 legend('electrode', '$e^-$','$\mathbf{v_0} = v_r\mathbf{e_r}+v_z\mathbf{e_z}$',...
+                        'Location','northwest','Interpreter','latex');
+
+        
+%% Enumerate and label the particles for trajectories processing %%
+
+    PartInfoV0 = zeros(5,npartsV0);
+    PartInfoVn = zeros(5,nparts);
+    compteur   = 0;
+    
+    % All informations about particles initialised with V0 % 
+    for ii = 1:length(E)
+
+       for jj = 1: nElectrons
+
+           for kk = 1: nComponents
+               
+                compteur = compteur + 1; 
+                PartInfoV0(1,compteur) = compteur;  
+                PartInfoV0(2,compteur) = Points(1,jj);
+                PartInfoV0(3,compteur) = Points(2,jj);
+                PartInfoV0(4,compteur) = V0(ii,jj,kk,1);
+                PartInfoV0(5,compteur) = V0(ii,jj,kk,2);
+           end
+
+       end
+
+    end
+
+    compteur = 0;
+    % All informations about particles initialised with VN % 
+    for ii =1:length(E)
+
+        for jj =1: nElectrons
+            
+                compteur = compteur + 1; 
+                PartInfoVn(1,compteur) = compteur;  
+                PartInfoVn(2,compteur) = Points(1,jj);
+                PartInfoVn(3,compteur) = Points(2,jj);
+                PartInfoVn(4,compteur) = VNorm(ii,jj,1);
+                PartInfoVn(5,compteur) = VNorm(ii,jj,2);
+            
+
+        end
+    end
