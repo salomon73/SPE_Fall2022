@@ -146,7 +146,7 @@
 
 %% Plot particles trajectories for energy value given by energyVal %%
 
-    energyVal = 10; % must be between 1 and nPoints = length(E)
+    energyVal = 20; % must be between 1 and nPoints = length(E)
     compoVal  = 1; % must be between 1 and nComponents
     
     % Find all indices with same (vr,vz) for given value %
@@ -169,5 +169,5 @@
 %%
     PlotParticleTrajectory(electronsV0,PositionSameCompo(1:20:end),1:500)
 %% 
-    PlotParticleTrajectory(electronsV0,IEnerg(1:9:end)',1:500)
+    PlotParticleTrajectory(electronsV0,IEnerg(1:9:end)',1:1000)
     

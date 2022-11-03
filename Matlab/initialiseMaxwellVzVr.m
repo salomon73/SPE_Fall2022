@@ -227,9 +227,9 @@
     % All informations about particles initialised with V0 % 
     for ii = 1:length(E)
 
-       for jj = 1: nElectrons
+       for kk = 1: nComponents
 
-           for kk = 1: nComponents
+           for jj = 1: nElectrons
                
                 compteur = compteur + 1; 
                 PartInfoV0(1,compteur) = compteur;  
@@ -323,7 +323,7 @@
     fprintf(fileId,'//parts\n');
     for ii =1:nPoints
         for jj =1:nElectrons
-            fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,jj), 0.0, Points(2,jj), VNorm(ii,jj,1), 0.0 ,VNorm(ii,jj,2));
+            fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,jj), 0.0, Points(2,jj), VNorm(ii,jj,2), 0.0 ,VNorm(ii,jj,1));
         end
     end
     fclose(fileId);
@@ -430,16 +430,16 @@
     % All informations about particles initialised with V0 % 
     for ii = 1:length(E)
 
-       for jj = 1: nElectrons
+       for kk = 1: nComponents
 
-           for kk = 1: nComponents
+           for jj = 1: nElectrons
                
                 compteur = compteur + 1; 
                 PartInfoV0(1,compteur) = compteur;  
                 PartInfoV0(2,compteur) = Points(1,jj);
                 PartInfoV0(3,compteur) = Points(2,jj);
-                PartInfoV0(4,compteur) = V0(ii,jj,kk,1);
-                PartInfoV0(5,compteur) = V0(ii,jj,kk,2);
+                PartInfoV0(4,compteur) = V0(ii,jj,kk,1); % vZ
+                PartInfoV0(5,compteur) = V0(ii,jj,kk,2); % vR
                 PartInfoV0(6,compteur) = E(ii);
            end
 
