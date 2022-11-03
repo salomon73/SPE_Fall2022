@@ -20,6 +20,7 @@
     nblocks = nPoints*(UpPts-LowPts);
     nparts  = nblocks;
     dr      = 1e-6;
+    nElectrons = UpPts-LowPts;
     
     f   = cathode.fun;
     E   = linspace(lowerBound, upperBound, nPoints);
@@ -261,7 +262,7 @@
         end
     end
 
-            
+   save('PartInfosGT170.mat','PartInfoV0','PartInfoVn');
 %==============================================================================================================
 %==============================================================================================================
     
@@ -463,3 +464,5 @@
 
         end
     end
+    
+   save('PartInfos.mat','PartInfoV0','PartInfoVn');
