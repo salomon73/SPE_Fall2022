@@ -1,4 +1,4 @@
-%% Process electron trajectories for electrons generated at electrodes %%
+    %% Process electron trajectories for electrons generated at electrodes %%
 
     path = '/scratch/sguincha';
     directory = '/scratch/sguincha/gt170_refurbished_4_6_25kV';
@@ -10,5 +10,11 @@
 
     electrons   = espic2dhdf5('resultfast.h5');
     
-    %%
+    %% Display fields %%
     dispespicFields(electrons)
+    
+    
+    %% Extract extrude Geometry %%
+    % Recall that the geometry is elliptical 
+   
+    
