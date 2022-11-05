@@ -390,7 +390,7 @@
     fclose(fileId);
     
     
-        % Influence of velocity directions & 
+    % Influence of velocity directions & 
     
     nComponents = 6; % number of values for velocity
     vR    = zeros(length(E),nComponents); 
@@ -482,9 +482,10 @@
         
     %% Enumerate and label the particles for trajectories processing %%
 
-    PartInfoV0 = zeros(6,npartsV0);
-    PartInfoVn = zeros(6,nparts);
-    compteur   = 0;
+    PartInfoV0   = zeros(6,npartsV0);
+    PartInfoVn   = zeros(6,nparts);
+    PartInfoVneg = zeros(6,npartsV0); % same number of parts for negative velocity components
+    compteur     = 0;
     
     % All informations about particles initialised with V0 % 
     for ii = 1:length(E)
@@ -500,6 +501,28 @@
                 PartInfoV0(4,compteur) = V0(ii,jj,kk,1); % vZ
                 PartInfoV0(5,compteur) = V0(ii,jj,kk,2); % vR
                 PartInfoV0(6,compteur) = E(ii);
+           end
+
+       end
+
+    end
+
+    
+    compteur     = 0;
+    % All informations about particles initialised with V0 and neg components % 
+    for ii = 1:length(E)
+
+       for kk = 1: nComponents
+
+           for jj = 1: nElectrons
+               
+                compteur = compteur + 1; 
+                PartInfoVneg(1,compteur) = compteur;  
+                PartInfoVneg(2,compteur) = Points(1,jj);
+                PartInfoVneg(3,compteur) = Points(2,jj);
+                PartInfoVneg(4,compteur) = V0(ii,jj,kk,1); % vZ - already negative since it has been change by last input generation loop (see above)
+                PartInfoVneg(5,compteur) = V0(ii,jj,kk,2); % vR
+                PartInfoVneg(6,compteur) = E(ii);
            end
 
        end
@@ -524,4 +547,4 @@
     end
     
     % FileNameFormat -> nEnergy_nElectrons.mat
-    save(strcat('PartInfos_',num2str(nPoints),'_',num2str(nElectrons),'.mat'),'PartInfoV0','PartInfoVn');
+    save(strcat('PartInfos_',num2str(nPoints),'_',num2str(nElectrons),'.mat'),'PartInfoV0','PartInfoVn', 'PartInfoVneg');
