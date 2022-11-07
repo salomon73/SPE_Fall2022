@@ -21,7 +21,7 @@
     
     r0 = 0.01;     %geom.r_0;
     z0 = geom.z_0;
-    dr = 1e-8;
+    dr = 1e-6;
     
     zr = geom.z_r; % a semi major axis
     rr = geom.r_r; % b semi minor axis
