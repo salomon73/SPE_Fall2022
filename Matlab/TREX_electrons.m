@@ -24,7 +24,7 @@
     % Added species characteristics % 
     species     = size(electrons.species);
     nbSpecies   = species(2);
-    RelVn       = electrons.species(4).R;
+    RelVn       = electrons.species(end-1).R;
     RelV0       = electrons.species(end).R;
     RVn         = RelVn(:,:);
     RV0         = RelV0(:,:);
@@ -33,7 +33,7 @@
     tpart       = electrons.species(end).tpart;
     nrun        = length(tpart);
     ngyrations  = 5;
-    partindicesVn = electrons.species(4).partindex(:,:);
+    partindicesVn = electrons.species(end-1).partindex(:,:);
     partindicesV0 = electrons.species(end).partindex(:,:);
     nbAddedSpecies = nbSpecies-3;
 
@@ -45,7 +45,7 @@
     
     
     % Particles characteristics % 
-    electronsVn    = electrons.species(4);
+    electronsVn    = electrons.species(end-1);
     LastTimeStepVn = zeros(1,npartsVn); % pre allocation for speed
     isfarenoughVn  = zeros(1,npartsVn); % pre allocation for speed
     indexVn        = zeros(1,npartsVn); % pre allocation for speed
@@ -74,7 +74,7 @@
     
     
 %% RUN test - isparticle leaving electrode ? %%
-    
+    tic
     for i = 1:npartsV0
     
         LocalMinIndV0(i,:) = islocalmin(1e3*RV0(i,:));    % test if each time step has local min of elect traject
@@ -127,7 +127,7 @@
             end
         end
     end
-
+    toc
 
 %% Particles trajectories processing for given energies %% 
 
@@ -147,17 +147,20 @@
        EnergyPartsIndices(ii) = (ii-1)*nbPartsperEnergy+1; 
     end
     
+%==============================================================================================================
+% BELOW : INITIAL VELOCITY COMPONENTS VARYING FROM VR TO VZ PURELY
+%==============================================================================================================
 
 %% Plot particles trajectories for energy value given by energyVal for V0 %%
 
-    energyVal = 1; % must be between 1 and nPoints = length(E)
-    compoVal  = 1; % must be between 1 and nComponents
-    posVal    = 2; % must be between 1 and nElectrons
+    energyVal = 5; % must be between 1 and nPoints = length(E) - energy value
+    compoVal  = 1;  % must be between 1 and nComponents - (vr0,vz0) index
+    posVal    = 2;  % must be between 1 and nElectrons  - electron initial position
     
     % Find all indices with same (vr,vz) for given value %
     for ii = 1:nPoints 
         
-        PositionSameCompo(ii,:) = (72*(ii-1)+compoVal:72*(ii-1)+(11+compoVal));
+        PositionSameCompo(ii,:) = (1+nElectrons*(compoVal-1)) + (nElectrons*nComponents)*(ii-1) : (1+nElectrons*(compoVal-1) + nElectrons-1  ) + (nElectrons*nComponents)*(ii-1);
         
     end
     
@@ -185,6 +188,9 @@
     PlotParticleTrajectory(electronsV0,EnergyPartsIndices(energyVal):3:EnergyPartsIndices(energyVal+1)-1, 1:nrun)
 
 %% Plot all particles with given initial components for fixed E %%
+    disp('All particles with same initial velocity components for a given energy')
+    disp(strcat('(V0R,V0Z) = (',num2str(PartInfoV0(4,energyVal*nElectrons*(nComponents-compoVal))), ',' , num2str(PartInfoV0(5,energyVal*nElectrons*(nComponents-compoVal))), ')' ))
+    disp(strcat('E = ', num2str(E(energyVal)), ' eV'));
     PlotParticleTrajectory(electronsV0,PositionSameCompo(energyVal,:),1:nrun)
     
 %% Plot all components for a given particle position %%
@@ -194,27 +200,81 @@
     
     
     
+    
+    
+    
+    
+%==============================================================================================================
+% BELOW : COMPONENTS NORMAL TO ELECTRODE ONLY
+%==============================================================================================================
+    
 %% Scan Normal component %% 
 
-    energyVal = 10; % must be between 1 and nPoints = length(E)
-    posVal    = 2; % must be between 1 and nElectrons
+    energyVal = 2; % must be between 1 and nPoints = length(E)
+    posVal    = 4; % must be between 1 and nElectrons
     
-    PositionSameEnerg  = zeros(nPoints,nElectrons); % all particles positions for a given energy
+    PositionSameEnergVn  = zeros(nPoints,nElectrons); % all particles positions for a given energy
     
-    for ii =1:nPoints 
-       
-        PositionSameEnerg(ii,:) = nElectrons*(ii-1)+1:nElectrons*(ii-1)+nElectrons;
+    % All positions corresponding to same energy %
+    for ii = 1:nPoints
+        
+        PositionSameEnergVn(ii,:) = (1+nElectrons*(ii-1)):(1+nElectrons*(ii-1)+nElectrons -1);
         
     end
-    EnergiesForSamePos = PositionSameEnerg'; % energies for a given position are given by columns
+    EnergiesForSamePos = PositionSameEnergVn'; % energies for a given position are given by columns
     
     
 %% Plot all particles with a given energy (normal v0) %%
-    PlotParticleTrajectory(electronsVn,PositionSameEnerg(energyVal,:),1:nrun)
+    disp(strcat('E = ', num2str(E(energyVal)), ' eV'));
+    disp('Initial positions: all');
+    PlotParticleTrajectory(electronsVn,PositionSameEnergVn(energyVal,:),1:nrun)
 
 %% Plot trajectories for all energy values at given position %%
+    disp(strcat('(R0,Z0) = (', num2str(PartInfoVn(2,posVal)),',',num2str(PartInfoVn(3,posVal)), ')'));
+    disp(strcat('E in [', num2str(E(1)),',' ,num2str(E(end)),  '] eV'));
+    disp('V0 = Vr eR')
     PlotParticleTrajectory(electronsVn,EnergiesForSamePos(posVal,:),1:nrun)
     
     
     
+     
+%% Compare Vn and purely normal V0 scan %%
+
+    compoVal  = 6; % purely normal (r) initial velocity
+    energyVal = 2; % energy value = E(energyVal)
+    posVal    = 4; % initial electron position
+    
+    % Find all indices with same (vr,vz) for given value %
+    for ii = 1:nPoints 
+        
+        PositionSameCompo(ii,:) = (1+nElectrons*(compoVal-1)) + (nElectrons*nComponents)*(ii-1) : (1+nElectrons*(compoVal-1) + nElectrons-1  ) + (nElectrons*nComponents)*(ii-1);
+        
+    end
+    
+    % find all indices for given energy value %
+    for ii = 1:nPoints
+        
+        PositionSameEnergVn(ii,:) = (1+nElectrons*(ii-1)):(1+nElectrons*(ii-1)+nElectrons -1);
+        
+    end
+    
+    % find all components for same particle (psoition) %
+    for ii =1:nPoints 
+       
+        for jj = 1:nComponents 
+            
+            PosAllCompoPerPart(ii,jj) = nElectrons*(jj-1)+posVal +nElectrons*nComponents*(ii-1); % eventually change nElec*nCompo = 72
+            
+        end 
+    end
+    
+
+    PlotParticleTrajectory(electronsV0,PositionSameCompo(energyVal,:),1:nrun)     % electrons with V0 along r
+    
+    PlotParticleTrajectory(electronsVn, PositionSameEnergVn(energyVal,:), 1:nrun) % electrons with Vr (scan)
+    
+    
+
 %% Plot energy ratio %% 
+
+

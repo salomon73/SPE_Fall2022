@@ -1,0 +1,20 @@
+&partsload
+mass=4.6517e-26,
+charge=1.60217662000000e-19,
+!weight=1.07241110779661e+04,
+weight=1,
+H0=3.20000000000000e-14,
+P0=8.66000000000000e-25,
+nblock=2,
+npartsalloc=1300,
+velocitytype=1,
+radialtype=2,
+temperature=300,
+is_test=t,
+is_field=f
+/
+
+//slices
+0.35 0.01 0.025 300
+0.4  0.03 0.0375 1000
+0.44

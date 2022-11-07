@@ -1,0 +1,76 @@
+A Skeleton for MPI Time-Dependent program
+=========================================
+T.M. Tran   SPC/EPFL
+-
+&BASIC
+  job_time=43000.0, extra_time=200.0,
+  nrun=500000,  !# of steps
+  nlres=t,
+  newres=t,
+  femorder=2,2,
+  ngauss=6,6,
+  nlppform=.TRUE.
+  partperiodic=f
+  nlxg=f,       ! Display graphical interface
+  nlclassical=t, ! Solve classical equations of motion
+  it0d=10,
+  it2d=100,
+  ittext=100,
+  itparts=10000,
+  ittracer=10,
+  itgraph=100,
+  nbcelldiag=0,
+  itcelldiag=100,
+  resfile='/scratch/lebars/gt170_refurbished/IbPhi_scan/4_6/25kV//result_46dA_25kv_10mubar.h5'
+  rstfile='/scratch/lebars/gt170_refurbished/IbPhi_scan/4_6/25kV//restart_10mubar.h5'
+  nbspecies=3,
+  partfile='electrons_gauss.in','electron_tracers.in','ion_tracers.in',
+
+  distribtype=7          ! 1: uniform RZ gaussian in V, 2: stable eq 4.85 from Davidson
+  lz=-0.1,0.192,    		       !Cylinder length
+  nz=1168,        !# of intervals in z
+  
+  nlmaxwellsource=t,
+  nlPhis=t,           ! if false deactivate calculation of self electric field
+  B0=0.23
+  n0=-3e17, dt=8E-12                    !Initial plasma density in plasmadim
+  magnetfile='../phiBprofile_refurbasg_46_red.h5'
+  bscaling=0,
+
+  nnr=56,120,48,140,32  !188,!# of intervals between radii(1) and radii(2)
+  radii=0.045,0.059,0.065,0.077,0.084,0.092
+  !samplefactor=2,
+/
+
+&maxwellsourceparams
+frequency=2E11, 
+temperature=22000, 
+rlimits=0.045,0.092, 
+zlimits=-0.1,0.192
+time_start=-1.0,
+radialtype=2
+time_end=-1.0
+/
+
+
+&geomparams
+walltype=9
+nlweb=t
+/
+
+&spldomain
+dist_extent=3.5e-3,
+h5fname='refurb_geom_open.h5',
+Dvals=-25000,
+/
+
+&neutcolparams
+itcol=1,
+neutdens=2.5e20,
+!Neon parameters
+Eion=15.4,
+scatter_fac=8.3,
+nlcol=t,
+io_cross_sec_file='/home/lebars/espic2d/wk/H2_io_cross_sec.in',
+ela_cross_sec_file='/home/lebars/espic2d/wk/H2_ela_cross_sec.in',
+/

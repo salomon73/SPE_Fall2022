@@ -1,6 +1,10 @@
     %% Add all paths containing outputs %%
     AddAllPaths();
     
+    %==============================================================================================================
+    % BELOW IS FOR THE GT170 GYROTRON GEOMETRY
+    %==============================================================================================================
+    
     %% Define the constants %%
     kB = (25.7/298)*1e-3;      % eV/K
     m  = 9.10938300000000e-31; % electron mass
@@ -20,6 +24,7 @@
     nblocks = nPoints*(UpPts-LowPts);
     nparts  = nblocks;
     dr      = 1e-6;
+    nElectrons = UpPts-LowPts;
     
     f   = cathode.fun;
     E   = linspace(lowerBound, upperBound, nPoints);
@@ -261,13 +266,17 @@
         end
     end
 
-            
-%==============================================================================================================
-%==============================================================================================================
+   save('PartInfosGT170.mat','PartInfoV0','PartInfoVn');
+   
+
+    %==============================================================================================================
+    % BELOW IS FOR THE TREX GEOMETRY
+    %==============================================================================================================
     
     %% TREX GEOMETRY %%
     geomTRex = espic2dhdf5('resultrestart_5e-12.h5');
     %dispespicFields(geomTRex)
+    clc
     
     %% Define the constants %%
     kB = (25.7/298)*1e-3;      % eV/K
@@ -280,7 +289,7 @@
     
     % Energy parameters % 
     lowerBound = 0.1;
-    upperBound = 20;
+    upperBound = 15;
     nPoints = 10; % # values to scan E 
     E = linspace(lowerBound, upperBound, nPoints);
     
@@ -290,10 +299,10 @@
     rA = geomTRex.r_a;
     rB = geomTRex.r_b;
     dr = 1e-6; % [m] to particle existence
-    Zlim   = [0.30 0.43];
+    Zlim   = [0.34 0.40];
     
     % particles parameters %
-    nElectrons = 12;
+    nElectrons = 25;
     PointsZ = linspace(Zlim(1), Zlim(2), nElectrons);
     PointsR = rA+dr;
     Points  = [ PointsR * ones(size(PointsZ));PointsZ ];
@@ -303,6 +312,7 @@
     nparts  = nPoints * nElectrons;
     TRexTxtVNorm = 'vNormTRex';
     TRexTxtV0    = 'v0TRex';
+    TRexTxtV0_   = 'v0NegTRex';
     
     
     Norm  = zeros(nPoints, nElectrons, 2);
@@ -372,13 +382,62 @@
     for ii =1 : length(E)
         for jj = 1:nComponents
             for kk = 1:nElectrons
-                fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,kk), 0.0, Points(2,kk), V0(ii,kk,jj,1), 0.0 ,V0(ii,kk,jj,2));
+                fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,kk), 0.0, Points(2,kk), V0(ii,kk,jj,2), 0.0 ,V0(ii,kk,jj,1));
             end
         end
     end
     
     fclose(fileId);
     
+    
+    % Influence of velocity directions & 
+    
+    nComponents = 6; % number of values for velocity
+    vR    = zeros(length(E),nComponents); 
+    vZ    = zeros(length(E),nComponents); 
+    
+    % vR and vZ for constant E 
+    for kk=1:length(E)    
+        vRmax = sqrt(2*E(kk)/m*e);
+        vR(kk,:)    = linspace(0,vRmax, nComponents);
+
+        for j = 1 :length(vR(kk,:))
+            if 2*E(kk)/m*e - vR(kk,j)^2 < 1e-3
+                vZ(kk,j) = 0.0;
+            else 
+                vZ(kk,j) = -sqrt(2*E(kk)/m*e - vR(kk,j)^2);
+            end
+        end
+    end    
+    
+
+    V0 = zeros(length(E),nElectrons,nComponents,2); % nEnergy * nParticles * nVelocityValues * 2 (r,z) components for each vector
+    
+    for ii = 1: length(E)
+       
+        for jj =1:nComponents
+           V0(ii,:,jj,1) = vZ(ii,jj);
+           V0(ii,:,jj,2) = vR(ii,jj);
+        end
+        
+    end
+    
+    nblockV0 = length(E) * nComponents * nElectrons;
+    npartsV0   = nblockV0;
+    fileId = fopen(strcat(TRexTxtV0_,'.txt'),'w');
+    fprintf(fileId,'%s %d \n', 'nblocks =' , nblockV0 );
+    fprintf(fileId,'%s %d \n', 'nparts =' , npartsV0 );
+    fprintf(fileId,'//parts\n');
+    
+    for ii =1 : length(E)
+        for jj = 1:nComponents
+            for kk = 1:nElectrons
+                fprintf(fileId,'%.8f %.1f %.8f %.8f %.1f %.8f \n', Points(1,kk), 0.0, Points(2,kk), V0(ii,kk,jj,2), 0.0 ,V0(ii,kk,jj,1));
+            end
+        end
+    end
+    
+    fclose(fileId);
     %% Plot initial condition for TREX scan %% 
     t=2*pi*linspace(0,1,100);
     
@@ -421,11 +480,12 @@
                         'Location','northwest','Interpreter','latex');
 
         
-%% Enumerate and label the particles for trajectories processing %%
+    %% Enumerate and label the particles for trajectories processing %%
 
-    PartInfoV0 = zeros(6,npartsV0);
-    PartInfoVn = zeros(6,nparts);
-    compteur   = 0;
+    PartInfoV0   = zeros(6,npartsV0);
+    PartInfoVn   = zeros(6,nparts);
+    PartInfoVneg = zeros(6,npartsV0); % same number of parts for negative velocity components
+    compteur     = 0;
     
     % All informations about particles initialised with V0 % 
     for ii = 1:length(E)
@@ -441,6 +501,28 @@
                 PartInfoV0(4,compteur) = V0(ii,jj,kk,1); % vZ
                 PartInfoV0(5,compteur) = V0(ii,jj,kk,2); % vR
                 PartInfoV0(6,compteur) = E(ii);
+           end
+
+       end
+
+    end
+
+    
+    compteur     = 0;
+    % All informations about particles initialised with V0 and neg components % 
+    for ii = 1:length(E)
+
+       for kk = 1: nComponents
+
+           for jj = 1: nElectrons
+               
+                compteur = compteur + 1; 
+                PartInfoVneg(1,compteur) = compteur;  
+                PartInfoVneg(2,compteur) = Points(1,jj);
+                PartInfoVneg(3,compteur) = Points(2,jj);
+                PartInfoVneg(4,compteur) = V0(ii,jj,kk,1); % vZ - already negative since it has been change by last input generation loop (see above)
+                PartInfoVneg(5,compteur) = V0(ii,jj,kk,2); % vR
+                PartInfoVneg(6,compteur) = E(ii);
            end
 
        end
@@ -463,3 +545,6 @@
 
         end
     end
+    
+    % FileNameFormat -> nEnergy_nElectrons.mat
+    save(strcat('PartInfos_',num2str(nPoints),'_',num2str(nElectrons),'.mat'),'PartInfoV0','PartInfoVn', 'PartInfoVneg');
