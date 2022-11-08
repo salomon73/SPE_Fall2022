@@ -1,4 +1,4 @@
-! Test programmation of a loop
+Test programmation of a loop
 ! Written on 07/11/2022
 ! Salomon
 
