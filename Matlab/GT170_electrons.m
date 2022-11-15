@@ -192,7 +192,7 @@
     disp(strcat('(V0R,V0Z) = (',num2str(PartInfoV0(4,energyVal*nElectrons*(nComponents-compoVal))), ',' , num2str(PartInfoV0(5,energyVal*nElectrons*(nComponents-compoVal))), ')' ))
     disp(strcat('E = ', num2str(E(energyVal)), ' eV'));
     PlotParticleTrajectory(electronsV0,PositionSameCompo(energyVal,1):5:PositionSameCompo(energyVal,end),1:ntimestep)
-    .
+    
 %% Plot all components for a given particle position %%
     PlotParticleTrajectory(electronsV0, PosAllCompoPerPart(energyVal,:), 1:nrun)
     
