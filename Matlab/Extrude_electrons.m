@@ -6,12 +6,13 @@
     addpath(genpath('/home/sguincha/SPE_Fall2022/Matlab/'))
     format long 
 
-    electrons   = espic2dhdf5('resultfast.h5');
+    electrons   = espic2dhdf5('TestElectrons.h5');
     
     %% Particles characteristics %%\
     
     
-    % Numerical particles characteristics %    
+    % Numerical particles characteristics %  
+    tpart       = electrons.species(end).tpart;
     RelVn       = electrons.species(end).R;
     RVn         = RelVn(:,:);
     npartsVn    = length(RVn(:,1));
@@ -40,7 +41,7 @@
     E = linspace(lowerBound, upperBound, nPoints);
 
     % Input electrons characteristics 
-    nElectrons = length(tel);
+    nElectrons = 20;
     nblocks = nEnergy * nElectrons; 
     nparts  = nEnergy * nElectrons;
     
@@ -84,9 +85,9 @@
     
 %% Particles trajectories processing for given energies %% 
 
-    nElectrons  = 25;
-    nPoints     = 10;
-
+    nElectrons  = 21;
+    nPoints     = 20;
+    nbPartsperEnergy   = nElectrons;
     EnergyPartsIndices = zeros(1,nPoints);
     PositionSameCompo  = zeros(nPoints,nElectrons);
     
@@ -127,7 +128,7 @@
     disp(strcat('(R0,Z0) = (', num2str(PartInfoVn(2,posVal)),',',num2str(PartInfoVn(3,posVal)), ')'));
     disp(strcat('E in [', num2str(E(1)),',' ,num2str(E(end)),  '] eV'));
     disp('V0 = Vr eR')
-    PlotParticleTrajectory(electronsVn,EnergiesForSamePos(posVal,:),1:nrun)
+    PlotParticleTrajectory(electronsVn,EnergiesForSamePos(posVal,:),1:1)
     
     
     

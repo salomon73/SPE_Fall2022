@@ -1,0 +1,20 @@
+! Test the case condition in f90
+! written on 08/11/2022
+! Salomon
+
+PROGRAM TESTCASE
+
+	CHARACTER CH
+	PRINT*, 'ENTER A CHARACTER'
+	READ*, CH
+	PRINT*, 'SELECTED CHAR IS: ', CH
+	SELECT CASE (CH)
+		CASE ('A', 'E', 'I', 'O', 'U', 'Y', 'a', 'e', 'i', 'o', 'u')
+		PRINT*, 'VOWEL'
+		CASE DEFAULT 
+		PRINT*, 'NOT A VOWEL, MAYBE ANY OTHER CHAR'
+	END SELECT
+
+
+
+END PROGRAM TESTCASE

@@ -1,0 +1,16 @@
+! Calculates balance after interest compounded
+
+PROGRAM MONEY
+
+        REAL BALANCE, INTEREST, RATE
+        RATE = 0.09
+        PRINT*, 'WHAT IS YOUR BALANCE? '
+        READ*, BALANCE
+        PRINT*, 'CURRENT BALANCE IS', BALANCE
+        PRINT*, 'WITH INTEREST RATE: ', RATE     
+        INTEREST = RATE*BALANCE
+        BALANCE = BALANCE + INTEREST 
+        PRINT*, 'NEW BALANCE IS NOW: ' , BALANCE 
+
+
+END PROGRAM MONEY 
