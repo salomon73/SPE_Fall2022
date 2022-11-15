@@ -12,7 +12,8 @@ radialtype=2,
 temperature=300,
 is_test=t,
 is_field=t,
-calc_moments=f
+calc_moments=f,
+iiee_id=-1 
 /
 
 //slices
