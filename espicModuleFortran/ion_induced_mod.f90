@@ -40,6 +40,7 @@ CONTAINS
 SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
     
     TYPE(particles), INTENT(INOUT):: pion, pelec !< ion and electrons parts
+    REAL(KIND = db), DIMENSION(3) :: last_pos    !< last position for lost ion (revert push)
     INTEGER, DIMENSION(pion%Nploc):: losthole    !< indices of lost ions
     INTEGER :: j, nblostparts, Nploc             !< loop index and #lost particles
     INTEGER :: parts_size_increase, nbadded  
@@ -58,10 +59,15 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
     DO j=1,nblostparts 
         pelec%Nploc = pelec%Nploc+1
         Nploc = pelec%Nploc
-        pelec%R(Nploc)    = pion%R(losthole(j)) + dr
-        pelec%Z(Nploc)    = pion%Z(losthole(j)) 
-        pelec%THET(Nploc) = pion%THET(losthole(j))
+        last_pos = revert_push(pion, losthole(j))
 
+      !  pelec%R(Nploc)    = pion%R(losthole(j)) + dr
+      !  pelec%Z(Nploc)    = pion%Z(losthole(j)) 
+      !  pelec%THET(Nploc) = pion%THET(losthole(j))
+
+        pelec%R(Nploc)     = last_pos(1)
+        pelec%THET(Nploc)  = last_pos(2)
+        pelec%Z(Nploc)     = last_pos(3)
         pelec%UR(Nploc)    = 0
         pelec%UZ(Nploc)    = 0
         pelec%UTHET(NPLOC) = 0
@@ -83,11 +89,25 @@ END SUBROUTINE ion_induced
    !> and hence new electron positions
    !
    !--------------------------------------------------------------------------
-SUBROUTINE invert_push(pion)
-    TYPE(particles), INTENT(INOUT):: pion
+FUNCTION revert_push(pion, partid)
+    USE basic, ONLY: dt, tnorm 
+    REAL(KIND=db), DIMENSION(3)::  revert_push   
+    TYPE(particles), INTENT(INOUT):: pion !> species: ions
+    INTEGER :: partid !> id of particle to reverse position               
+    ! We should try to reverse the angle
+    ! else, one simple and hence maybe temporary
+    ! method is to reverse to previous pos using UR/UTHET*dt
+    
+    revert_push(1)  = pion%R(partid) - pion%UR(partid)*dt 
+    revert_push(2)  = pion%THET(partid) - pion%UTHET(partid)*dt
+    revert_push(3)  = pion%Z(partid) -pion%UZ(partid)*dt 
+
+    ! BELOW WE TRY TO REVERSE THE ANGLE 
+    ! REMAINS TO BE DONE 
 
 
-END SUBROUTINE invert_push 
+END FUNCTION revert_push 
 
 
 END MODULE iiee
+

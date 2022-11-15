@@ -5,7 +5,6 @@ addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Da
 Ions = espic2dhdf5('stable_dt_12.h5');
 
 %% To work from ppb110 
-cd /home/sguincha/SPE_Fall2022/Inputs/TestCodeIIEE/
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
 Ions = espic2dhdf5('stable_13_fine.h5');
 %% Display particles data
@@ -378,6 +377,15 @@ figure
 
 %%
 PlotParticleTrajectory(electrons.species(3), 1,1:200)
+
+
+%% test IIEE module fortran90
+nbparts=100;
+AddedElectrons = Ions.species(1);
+Relec = AddedElectrons.R(1:nbparts,:);
+Thetelec = AddedElectrons.THET(1:nbparts,:);
+% NEED TO BE SORTED TAKING ACCOUNT FOR PARALLELISATION RESULTS
+% with PARTINDEX
 
 %% Function definitions %%
 
