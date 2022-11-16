@@ -19,8 +19,21 @@ MODULE iiee
         USE constants
         USE basic
         IMPLICIT NONE
-        REAL(KIND = db) :: yield  !< net electronic yield for incident ion
-                                  !< yield is a module variable
+     !> All the coefficients below were obtained by piecewise
+     !> fit of dE/dx curve for stainless steel
+        REAL(KIND = db), DIMENSION(2) :: coefficients_1H  = (/0.0, 2.9778E02 /)
+        REAL(KIND = db), DIMENSION(2) :: coefficients_1He = (/0.1273010048, 1.70478995200000E02 /)
+        REAL(KIND = db), DIMENSION(2) :: coefficients_1Ne = (/0.0518524160, 2.45927583999999E02 /)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_2 = (/1.834520315818557E02,1.320304216355084E05, &
+                                                               -8.583700602370013E06,3.526140145560557E08/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_3 = (/2.471679999999999E02,9.695466666666670E04, &
+                                                                -2.475200000000003E06, 2.325333333333340E07/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_4 = (/2.533904454349683E03,-1.766016382825937E05,&
+                                                                8.202640024592019E06, -1.125320217235288E08/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_5 = (/8.786057142856745E02,2.856595238095524e+04, &
+                                                              -1.834285714286391E05, 3.333333333338620E05/)
+        REAL(KIND = db) :: yield
+
         ! INTEGER indpion, indpelec !< indices of ions and electrons respectively
         ! the above integers would not be used providing that an index iiee_id
         ! is defined
@@ -99,7 +112,7 @@ FUNCTION revert_push(pion, partid)
     ! method is to reverse to previous pos using UR/UTHET*dt
     
     revert_push(1)  = pion%R(partid) - pion%UR(partid)*dt 
-    revert_push(2)  = pion%THET(partid) - pion%UTHET(partid)*dt
+    revert_push(2)  = pion%THET(partid) -1/pion%R(partid)* pion%UTHET(partid)*dt
     revert_push(3)  = pion%Z(partid) -pion%UZ(partid)*dt 
 
     ! BELOW WE TRY TO REVERSE THE ANGLE 
@@ -107,6 +120,71 @@ FUNCTION revert_push(pion, partid)
 
 
 END FUNCTION revert_push 
+
+
+   !---------------------------------------------------------------------------
+   !> @author
+   !> Salomon Guinchard EPFL/SPC
+   !
+   ! DESCRIPTION
+   !> Evaluate a polynomial at a given point 
+   !> with its coefficients provided in an array 
+   !> s.t lowest order coeff = 1st element 
+   !
+   !--------------------------------------------------------------------------
+REAL(KIND = db) FUNCTION eval_polynomial(coefficients, value)
+    REAL(KIND = db), DIMENSION(:) :: coefficients !< polynomial (e.g fitted yield) coeffs
+    REAL(KIND = db) :: value                      !< point where to evaluate polyn
+    INTEGER :: ii
+
+    eval_polynomial = 0
+    DO ii=1, size(coefficients)
+      eval_polynomial = eval_polynomial+coefficients(ii)*value**(ii-1)
+    END DO 
+END FUNCTION eval_polynomial
+
+
+   !---------------------------------------------------------------------------
+   !> @author
+   !> Salomon Guinchard EPFL/SPC
+   !
+   ! DESCRIPTION
+   !> Gives the theoretical value for the electron yield 
+   !> as a function of the energy of the incident ion and
+   !> the type of neutral gas  
+   !
+   !--------------------------------------------------------------------------
+REAL(KIND = db) FUNCTION compute_yield(energy, neuttype_id)
+    REAL(KIND = db) :: energy
+    INTEGER :: neuttype_id
+    
+    IF(energy.le. 1E-3 ) THEN 
+            SELECT CASE(neuttype_id)
+              CASE(1)
+                compute_yield = eval_polynomial(coefficients_1H, energy)
+              CASE(2)
+                compute_yield = eval_polynomial(coefficients_1He, energy)
+              CASE(3)
+                compute_yield = eval_polynomial(coefficients_1Ne, energy)
+              CASE DEFAULT
+                compute_yield = eval_polynomial(coefficients_1H, energy)
+       
+            END SELECT
+        ELSE IF(energy.gt. 1E-3 .and. energy.le. 1E-2) THEN
+                compute_yield = eval_polynomial(coefficients_2,energy)
+
+        ELSE IF(energy.gt. 1E-2  .and. energy.le. 2E-2 ) THEN
+                compute_yield = eval_polynomial(coefficients_3,energy)
+
+        ELSE IF(energy.gt. 2E-2 .and. energy.le. 3E-2) THEN
+                compute_yield = eval_polynomial(coefficients_4,energy)
+
+        ELSE IF(energy.gt. 3E-2 .and. energy.le. 5E-2) THEN 
+                compute_yield = eval_polynomial(coefficients_5,energy)
+
+    END IF 
+
+END FUNCTION compute_yield 
 
 
 END MODULE iiee
