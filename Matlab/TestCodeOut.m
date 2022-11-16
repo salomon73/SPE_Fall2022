@@ -339,6 +339,14 @@ yield3 = LambdaExp * polyval(P3,E(IndicesFit3));
 yield4 = LambdaExp * polyval(P4,E(IndicesFit4));
 allindex = cat(2, IndicesFit1, IndicesFit2, IndicesFit3, IndicesFit4);
 yieldTabulated = LambdaExp * Eloss(allindex);
+DeltaX = E(IndicesFit1(1))-0; %slope
+DeltaYH = yieldTabulated(IndicesFit(1))-Hydrogen;
+DeltaYHe = yieldTabulated(IndicesFit(1))-Helium;
+DeltaYNe = yieldTabulated(IndicesFit(1))-Neon;
+X = linspace(0,DeltaX,10);
+hydrogen_yield = DeltaYH/DeltaX*X + Hydrogen;
+helium_yield   = DeltaYHe/DeltaX*X + Helium;
+neon_yield     = DeltaYNe/DeltaX*X + Neon;
 
 figure
     plot(E(IndicesFit1), yield1, 'r-', 'linewidth', 2)
@@ -350,10 +358,18 @@ figure
     plot(E(IndicesFit4), yield4, 'g-', 'linewidth', 2)
     hold on 
     plot(E(allindex), yieldTabulated, 'ko')
-    legend('$dE/dx$', strcat('fitting $P(E)$: $n=$',num2str(deg1)),...
+    hold on 
+    plot(X,hydrogen_yield,'-', 'linewidth', 2)
+    hold on 
+    plot(X,helium_yield,'-', 'linewidth', 2)
+    hold on 
+    plot(X,neon_yield,'-', 'linewidth', 2)
+    legend(           strcat('fitting $P(E)$: $n=$',num2str(deg1)),...
                       strcat('fitting $P(E)$: $n=$',num2str(deg2)),...
                       strcat('fitting $P(E)$: $n=$',num2str(deg3)),...
                       strcat('fitting $P(E)$: $n=$',num2str(deg4)),...
+                      '$\gamma$',...
+                      'H','He', 'Ne',...
            'Location','northwest','Interpreter','latex');
     set(legend,'FontSize',20);
     set (gca, 'fontsize', 22)
