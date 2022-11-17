@@ -18,6 +18,10 @@ MODULE iiee
         USE particletypes
         USE constants
         USE basic
+        USE random_distr 
+        !USE factorial      ASK GUILLAUME HOW TO COMBINE MODULES 
+        !#include "mkl_vsl.f90"
+
         IMPLICIT NONE
      !> All the coefficients below were obtained by piecewise
      !> fit of dE/dx curve for stainless steel
@@ -185,6 +189,81 @@ REAL(KIND = db) FUNCTION compute_yield(energy, neuttype_id)
     END IF 
 
 END FUNCTION compute_yield 
+
+   !---------------------------------------------------------------------------
+   !> @author
+   !> Salomon Guinchard EPFL/SPC
+   !
+   ! DESCRIPTION
+   !> Gives random values distributed
+   !> following a Poisson distrib. of parameter
+   !> lambda = yield(E) for incomin ion energy E 
+   !> and making use of the random_distr module (random_distr.f90)
+   !--------------------------------------------------------------------------
+INTEGER FUNCTION gen_elec(lambda, kmax)
+
+    
+    REAL(KIND = db) :: lambda !< Lambda parameter for Poisson distribution 
+    REAL(KIND = db) :: rand   !< random number unif. generated in [0,1]
+    INTEGER :: kmax           !< max number possible from Poisson
+    REAL(KIND = db), DIMENSION(kmax) :: vect, SumPart, diff !< terms, partial sums for CDF and distance of rand# to CDF
+    REAL(KIND = db) :: CumulPoisson !< Flag to ensure CDF ~ 1
+    INTEGER :: i  
+    REAL(KIND = db), DIMENSION(kmax) :: alea 
+
+    DO i = 1,kmax
+       vect(i)    = exp(-lambda)*lambda**(i-1)/factorial_fun(i-1);
+       SumPart(i) = sum(vect(1:i));
+       alea(i)    = 1.0 
+    END DO
+ 
+    CumulPoisson = sum(vect)
+    alea = random_number*alea
+    diff = abs(alea-SumPart)
+    ! REMAINS TO IMPLEMENT : FIND MIN OF DIFF AND ASSOCIATE CORRECT VALUE
+    ! THEN gen_elec = this value = # of generate electrons  
+
+
+
+
+   ! Below: see Intel oneAPI Math Kernel Library - Fortran
+   ! to optimise running speed when generating random numbers
+   ! TO DO : change if enough time 
+   !----------------------------------------------------------- 
+   !
+   ! INTEGER, INTENT(IN) :: method
+   ! TYPE (VSL_STREAM_STATE), INTENT(IN) :: stream
+   ! INTEGER, INTENT(IN) :: n = 1
+   ! INTEGER, INTENT(IN) :: r
+   ! status = virngpoisson( method, stream, n, r, lambda )
+   ! gen_elec = r
+   !
+   !------------------------------------------------------------
+
+END FUNCTION gen_elec
+
+
+
+
+
+
+INTEGER FUNCTION factorial_fun(n)
+    INTEGER :: ii 
+    INTEGER :: n
+    factorial_fun = 1
+    IF (n .lt. 0) THEN
+        RETURN
+    ELSE IF (n == 0) THEN
+        factorial_fun = 1
+    ELSE
+        DO ii=1,n
+         factorial_fun = factorial_fun*ii
+        END DO
+   END IF
+END FUNCTION factorial_fun
+
+
+
 
 
 END MODULE iiee
