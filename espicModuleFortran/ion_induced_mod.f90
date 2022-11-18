@@ -24,7 +24,7 @@ MODULE iiee
 
         IMPLICIT NONE
      !> All the coefficients below were obtained by piecewise
-     !> fit of dE/dx curve for stainless steel
+     !> fit of dE/dx curve for 304 stainless steel
         REAL(KIND = db), DIMENSION(2) :: coefficients_1H  = (/0.0, 2.9778E02 /)
         REAL(KIND = db), DIMENSION(2) :: coefficients_1He = (/0.1273010048, 1.70478995200000E02 /)
         REAL(KIND = db), DIMENSION(2) :: coefficients_1Ne = (/0.0518524160, 2.45927583999999E02 /)
@@ -110,7 +110,7 @@ FUNCTION revert_push(pion, partid)
     USE basic, ONLY: dt, tnorm 
     REAL(KIND=db), DIMENSION(3)::  revert_push   
     TYPE(particles), INTENT(INOUT):: pion !> species: ions
-    INTEGER :: partid !> id of particle to reverse position               
+    INTEGER :: partid                     !> id of particle to reverse position               
     ! We should try to reverse the angle
     ! else, one simple and hence maybe temporary
     ! method is to reverse to previous pos using UR/UTHET*dt
@@ -198,33 +198,36 @@ END FUNCTION compute_yield
    !> Gives random values distributed
    !> following a Poisson distrib. of parameter
    !> lambda = yield(E) for incomin ion energy E 
-   !> and making use of the random_distr module (random_distr.f90)
    !--------------------------------------------------------------------------
 INTEGER FUNCTION gen_elec(lambda, kmax)
 
     
     REAL(KIND = db) :: lambda !< Lambda parameter for Poisson distribution 
-    REAL(KIND = db) :: rand   !< random number unif. generated in [0,1]
+    REAL(KIND = db) :: nb_alea!< random number unif. generated in [0,1]
     INTEGER :: kmax           !< max number possible from Poisson
-    REAL(KIND = db), DIMENSION(kmax) :: vect, SumPart, diff !< terms, partial sums for CDF and distance of rand# to CDF
-    REAL(KIND = db) :: CumulPoisson !< Flag to ensure CDF ~ 1
-    INTEGER :: i  
-    REAL(KIND = db), DIMENSION(kmax) :: alea 
-
+    REAL(KIND = db) :: CumulPoisson  !< Flag to ensure CDF ~ 1
+    INTEGER :: i, ii                 !< loop indices   
+    REAL(KIND = db), DIMENSION(kmax) :: vect, SumPart !< terms, partial sums for CDF
+   
+    !> Compute probabilities for each int. value and CDF values
     DO i = 1,kmax
        vect(i)    = exp(-lambda)*lambda**(i-1)/factorial_fun(i-1);
        SumPart(i) = sum(vect(1:i));
-       alea(i)    = 1.0 
     END DO
- 
+    
+    !> CDF expected to sum to 1 
     CumulPoisson = sum(vect)
-    alea = random_number*alea
-    diff = abs(alea-SumPart)
-    ! REMAINS TO IMPLEMENT : FIND MIN OF DIFF AND ASSOCIATE CORRECT VALUE
-    ! THEN gen_elec = this value = # of generate electrons  
 
-
-
+    !> Generate poisson distrib. int. (see Matlab. code for convg.)
+    call random_number(nb_alea)
+    DO ii = 1,size(SumPart)-1
+        IF (nb_alea .lt. SumPart(1)) THEN
+                gen_elec = 0
+        ELSE IF ((SumPart(ii).le.nb_alea) .and. (nb_alea .lt. SumPart(ii+1))) THEN
+                gen_elec = ii  
+        END IF  
+    END DO 
+    
 
    ! Below: see Intel oneAPI Math Kernel Library - Fortran
    ! to optimise running speed when generating random numbers
@@ -242,11 +245,13 @@ INTEGER FUNCTION gen_elec(lambda, kmax)
 
 END FUNCTION gen_elec
 
-
-
-
-
-
+   !---------------------------------------------------------------------------
+   !> @author
+   !> Salomon Guinchard EPFL/SPC
+   !
+   ! DESCRIPTION
+   !> Gives the factorial of an integer
+   !--------------------------------------------------------------------------
 INTEGER FUNCTION factorial_fun(n)
     INTEGER :: ii 
     INTEGER :: n
