@@ -312,11 +312,11 @@ figure
     hold on
     plot(EnergyRange(1)*ones(1,141),linspace(0,2500,141), 'w--', 'linewidth', 1)
     hold on 
-    plot(E(IndicesFit1(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    plot(E(IndicesFit1(1))*ones(1,141),linspace(0,2500,141), 'g--', 'linewidth', 1)
     hold on 
     plot(E(IndicesFit2(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
     hold on 
-    plot(E(IndicesFit3(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
+    plot(E(IndicesFit3(1))*ones(1,141),linspace(0,2500,141), 'b--', 'linewidth', 1)
     hold on 
     plot(E(IndicesFit4(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
     hold on 
@@ -402,6 +402,15 @@ Relec = AddedElectrons.R(1:nbparts,:);
 Thetelec = AddedElectrons.THET(1:nbparts,:);
 % NEED TO BE SORTED TAKING ACCOUNT FOR PARALLELISATION RESULTS
 % with PARTINDEX
+
+
+%%
+seuils_E = zeros(1,4);
+seuils_E(1) = E(IndicesFit1(1))
+seuils_E(2) = E(IndicesFit2(1))
+seuils_E(3) = E(IndicesFit3(1))
+seuils_E(4) = E(IndicesFit4(1))
+
 
 %% Function definitions %%
 
