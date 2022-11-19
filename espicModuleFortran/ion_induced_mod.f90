@@ -19,23 +19,24 @@ MODULE iiee
         USE constants
         USE basic
         USE random_distr 
-        !USE factorial      ASK GUILLAUME HOW TO COMBINE MODULES 
+        !USE factorial  !    ASK GUILLAUME HOW TO COMBINE MODULES 
         !#include "mkl_vsl.f90"
 
         IMPLICIT NONE
+    
      !> All the coefficients below were obtained by piecewise
      !> fit of dE/dx curve for 304 stainless steel
         REAL(KIND = db), DIMENSION(2) :: coefficients_1H  = (/0.0, 2.9778E02 /)
         REAL(KIND = db), DIMENSION(2) :: coefficients_1He = (/0.1273010048, 1.70478995200000E02 /)
         REAL(KIND = db), DIMENSION(2) :: coefficients_1Ne = (/0.0518524160, 2.45927583999999E02 /)
-        REAL(KIND = db), DIMENSION(4) :: coefficients_2 = (/1.834520315818557E02,1.320304216355084E05, &
-                                                               -8.583700602370013E06,3.526140145560557E08/)
-        REAL(KIND = db), DIMENSION(4) :: coefficients_3 = (/2.471679999999999E02,9.695466666666670E04, &
-                                                                -2.475200000000003E06, 2.325333333333340E07/)
-        REAL(KIND = db), DIMENSION(4) :: coefficients_4 = (/2.533904454349683E03,-1.766016382825937E05,&
-                                                                8.202640024592019E06, -1.125320217235288E08/)
-        REAL(KIND = db), DIMENSION(4) :: coefficients_5 = (/8.786057142856745E02,2.856595238095524e+04, &
-                                                              -1.834285714286391E05, 3.333333333338620E05/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_2 = &
+        (/1.834520315818557E02,1.320304216355084E05,-8.583700602370013E06,3.526140145560557E08/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_3 = &
+        (/2.471679999999999E02,9.695466666666670E04,-2.475200000000003E06, 2.325333333333340E07/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_4 = &
+        (/2.533904454349683E03,-1.766016382825937E05,8.202640024592019E06, -1.125320217235288E08/)
+        REAL(KIND = db), DIMENSION(4) :: coefficients_5 = &
+        (/8.786057142856745E02,2.856595238095524e+04,-1.834285714286391E05, 3.333333333338620E05/)
         REAL(KIND = db) :: yield
 
         ! INTEGER indpion, indpelec !< indices of ions and electrons respectively
@@ -59,41 +60,83 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
     TYPE(particles), INTENT(INOUT):: pion, pelec !< ion and electrons parts
     REAL(KIND = db), DIMENSION(3) :: last_pos    !< last position for lost ion (revert push)
     INTEGER, DIMENSION(pion%Nploc):: losthole    !< indices of lost ions
-    INTEGER :: j, nblostparts, Nploc             !< loop index and #lost particles
-    INTEGER :: parts_size_increase, nbadded  
-    REAL(KIND = db) :: dr                        !< dr displacement for created parts
-                                                 !< will be changed to normal disp                       
-   ! nblostparts=2 !< #lost particles (set to 2 for test purposes)
-    nbadded=nblostparts !< # particles to add to electron species
-    dr = 1E-3/rnorm
+    INTEGER ::i,j, nblostparts, Nploc, Nploc_old !< loop indices and #lost particles
+    INTEGER :: parts_size_increase, nbadded 
+    INTEGER :: neuttype_id         !< neutral gas type_id 
+    INTEGER :: gen_el, kmax        !< # of electrons generated, max# possibly gen. elec. 
+    REAL(KIND = db) :: lambda      !< Poisson param. to gen elec. (yield)       
+    REAL(KIND = db) :: Ekin        !< kinetic energy of lost particles (yield param)
+    REAL(KIND = db) :: dr          !< dr displacement for created parts
+                                   !< will be changed to normal disp       
+
+ 
+    !nbadded=nblostparts !< # particles to add to electron species
+    dr   = 1E-3/rnorm
+    kmax = 12
+    neuttype_id = pion%neuttype_id !> temporarily stored in particle type 
+   
+    DO  i=1,nblostparts
+      Ekin    = compute_Ekin( (/pion%UR(losthole(i)), pion%UTHET(losthole(i)), pion%UZ(losthole(i))/), pion)
+      lambda  = compute_yield(Ekin, neuttype_id)
+      nbadded = gen_elec(lambda, kmax)  
+      IF(pelec%Nploc + nbadded .gt. size(pelec%Z,1)) THEN
+        parts_size_increase=Max(floor(0.1*size(pelec%Z,1)),nbadded)
+        CALL change_parts_allocation(pelec, parts_size_increase)
+      END IF
+      Nploc_old   = pelec%Nploc 
+      pelec%Nploc = pelec%Nploc + nbadded
+      Nploc = pelec%Nploc 
+      last_pos = revert_push(pion, losthole(i))
+      DO j=1,nbadded
+        pelec%R(Nploc_old+i)     = last_pos(1)
+        pelec%THET(Nploc_old+i)  = last_pos(2)
+        pelec%Z(Nploc_old+i)     = last_pos(3)
+        pelec%UR(Nploc_old+i)    = 0
+        pelec%UZ(Nploc_old+i)    = 0
+        pelec%UTHET(Nploc_old+i) = 0
+      END DO 
+    END DO
+
+!    DO j=1,nblostparts 
+!        pelec%Nploc = pelec%Nploc+1
+!        Nploc = pelec%Nploc
+!        last_pos = revert_push(pion, losthole(j))
+!
+!      !  pelec%R(Nploc)    = pion%R(losthole(j)) + dr
+!      !  pelec%Z(Nploc)    = pion%Z(losthole(j)) 
+!      !  pelec%THET(Nploc) = pion%THET(losthole(j))
+!
+!        pelec%R(Nploc)     = last_pos(1)
+!        pelec%THET(Nploc)  = last_pos(2)
+!        pelec%Z(Nploc)     = last_pos(3)
+!        pelec%UR(Nploc)    = 0
+!        pelec%UZ(Nploc)    = 0
+!        pelec%UTHET(NPLOC) = 0
+!
+!
+!    END DO 
     
-    IF(pelec%Nploc + nbadded .gt. size(pelec%Z,1)) THEN
-      parts_size_increase=Max(floor(0.1*size(pelec%Z,1)),nbadded)
-      CALL change_parts_allocation(pelec, parts_size_increase)
-    END IF
-
-    
-    DO j=1,nblostparts 
-        pelec%Nploc = pelec%Nploc+1
-        Nploc = pelec%Nploc
-        last_pos = revert_push(pion, losthole(j))
-
-      !  pelec%R(Nploc)    = pion%R(losthole(j)) + dr
-      !  pelec%Z(Nploc)    = pion%Z(losthole(j)) 
-      !  pelec%THET(Nploc) = pion%THET(losthole(j))
-
-        pelec%R(Nploc)     = last_pos(1)
-        pelec%THET(Nploc)  = last_pos(2)
-        pelec%Z(Nploc)     = last_pos(3)
-        pelec%UR(Nploc)    = 0
-        pelec%UZ(Nploc)    = 0
-        pelec%UTHET(NPLOC) = 0
-
-
-    END DO 
-    
-
 END SUBROUTINE ion_induced
+
+
+
+   !---------------------------------------------------------------------------
+   !> @author
+   !> Salomon Guinchard EPFL/SPC
+   !
+   ! DESCRIPTION
+   !> Computes the kinetic energy of a particle given its 3-vel. components
+   !--------------------------------------------------------------------------
+FUNCTION  compute_Ekin(velocity, p) RESULT(Ekin)
+
+    TYPE(particles), INTENT(INOUT):: p
+    REAL(KIND = db), DIMENSION(3) :: velocity
+    REAL(KIND = db) :: Ekin
+
+    Ekin = 0.5 * p%m * (velocity(1)**2 + velocity(2)**2 + velocity(3)**2)
+
+END FUNCTION compute_Ekin
+
 
 
    !---------------------------------------------------------------------------
@@ -122,8 +165,8 @@ FUNCTION revert_push(pion, partid)
     ! BELOW WE TRY TO REVERSE THE ANGLE 
     ! REMAINS TO BE DONE 
 
-
 END FUNCTION revert_push 
+
 
 
    !---------------------------------------------------------------------------
@@ -146,6 +189,7 @@ REAL(KIND = db) FUNCTION eval_polynomial(coefficients, value)
       eval_polynomial = eval_polynomial+coefficients(ii)*value**(ii-1)
     END DO 
 END FUNCTION eval_polynomial
+
 
 
    !---------------------------------------------------------------------------
@@ -189,6 +233,8 @@ REAL(KIND = db) FUNCTION compute_yield(energy, neuttype_id)
     END IF 
 
 END FUNCTION compute_yield 
+
+
 
    !---------------------------------------------------------------------------
    !> @author
@@ -244,6 +290,8 @@ INTEGER FUNCTION gen_elec(lambda, kmax)
    !------------------------------------------------------------
 
 END FUNCTION gen_elec
+
+
 
    !---------------------------------------------------------------------------
    !> @author
