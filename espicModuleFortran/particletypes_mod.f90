@@ -43,6 +43,7 @@ MODULE particletypes
         INTEGER, DIMENSION(:), ALLOCATABLE :: Zindex         !< Index in the electric potential grid for the Z direction
         INTEGER, DIMENSION(:), ALLOCATABLE :: partindex      !< Index of the particle to be able to follow it when it goes from one MPI host to the other
         INTEGER                            :: iiee_id=-1     !< Index defining whether or not ion induced ee are considered
+        INTEGER                            :: neuttype_id=1  !< Index defining which type of neutral gas is used to produce the ions
         REAL(kind=db), DIMENSION(:), ALLOCATABLE :: R     !< radial coordinates of the particles
         REAL(kind=db), DIMENSION(:), ALLOCATABLE :: Z     !< longitudinal coordinates of the particles
         REAL(kind=db), DIMENSION(:), ALLOCATABLE :: THET  !< azimuthal coordinates of the particles
@@ -141,6 +142,7 @@ SUBROUTINE creat_parts(p, nparts)
     p%nbadded=0
     p%partindex=-1
     p%iiee_id=-1
+    p%neuttype_id=1
     p%URold=0
     p%UZold=0
     p%UTHETold=0

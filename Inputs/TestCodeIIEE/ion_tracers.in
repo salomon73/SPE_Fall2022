@@ -13,7 +13,8 @@ temperature=300,
 is_test=t,
 is_field=t,
 calc_moments=f,
-iiee_id=2 
+iiee_id=2,
+neuttype_id=2 
 /
 
 //slices
