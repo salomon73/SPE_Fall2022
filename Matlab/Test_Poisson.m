@@ -9,7 +9,7 @@
 
 format long               % change double format
 it      = 100000;         % iterations #
-lambda  = 1;              % Poisson parameter
+lambda  = 1.4;              % Poisson parameter
 kmax    = 10;             % highest integ. to be gen. 
 vect    = zeros(1,kmax);  % PDF(k) values 
 SumPart = zeros(1,kmax);  % CDF(k) values
