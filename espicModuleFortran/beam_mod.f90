@@ -1708,6 +1708,7 @@ END SUBROUTINE calcnbperz
     INTEGER:: radialtype=1    !< 1) 1/R  2) uniform  3) 1/R^2 4) gauss
     INTEGER:: npartsalloc     !< initial size of particles arrays
     INTEGER:: iiee_id         !< index of species to add particles to for IIEE
+    INTEGER:: neuttype_id     !< index of neutral gas producing ions
     REAL(kind=db):: mass=me
     REAL(kind=db):: charge=-elchar
     REAL(kind=db):: weight=1.0
@@ -1727,7 +1728,7 @@ END SUBROUTINE calcnbperz
 
     NAMELIST /partsload/ nblock, mass, charge, weight, npartsalloc, velocitytype, & 
              & radialtype, temperature, H0, P0, is_test, n0, partformat, meanv, spanv, &
-             & calc_moments, qmratioscale, is_field, iiee_id
+             & calc_moments, qmratioscale, is_field, iiee_id, neuttype_id
     
     ! Set defaults
     qmratioscale=1.0
@@ -1740,6 +1741,7 @@ END SUBROUTINE calcnbperz
     is_test=.false.
     is_field=.true.
     iiee_id = -1
+    neuttype_id=1
 
     ! Open the paticle file
     OPEN(UNIT=lu_partfile,FILE=trim(partfilename),ACTION='READ',IOSTAT=openerr)
@@ -1788,6 +1790,7 @@ END SUBROUTINE calcnbperz
         p%calc_moments=calc_moments
         p%Newindex=sum(npartsslice)
         p%iiee_id = iiee_id
+        p%neuttype_id = neuttype_id
 
         SELECT CASE(radialtype)
           CASE(1) ! 1/R distribution in R
@@ -1853,7 +1856,8 @@ END SUBROUTINE calcnbperz
         p%is_field=is_field
         p%calc_moments=calc_moments
         p%iiee_id = iiee_id
-
+        p%neuttype_id = neuttype_id
+        
         !normalizations
         p%r=p%r/rnorm
         p%z=p%z/rnorm

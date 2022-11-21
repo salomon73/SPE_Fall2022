@@ -15,8 +15,9 @@ T.M. Tran   SPC/EPFL
 -
 &BASIC
   job_time=144000.0, extra_time=360.0,
-  nrun=1000,  !# of steps
+  nrun=400,  !# of steps
   nlres=f,
+  newres=t,
   femorder=3,3,
   ngauss=4,4,
   nlppform=.TRUE.
@@ -31,7 +32,7 @@ T.M. Tran   SPC/EPFL
   itparts=5,
   ittracer=1,
   itgraph=100,
-  resfile='stable_13_fine.h5'
+  resfile= 'Test_iiee.h5' !'stable_13_fine.h5'
 
   radii=0.001,6e-3,9e-3,0.01  !radius of inner metallic wall, plasma boundaries and outer metallic wall
   plasmadim=-0.10, 0.10, 0.0070, 0.0074,     !zmin zmax rmin rmax of initial plasma loading

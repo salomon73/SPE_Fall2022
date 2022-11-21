@@ -10,3 +10,4 @@
 *.mat
 stable_dt_12.h5
 *.m~
+*.o

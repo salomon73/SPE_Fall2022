@@ -95,7 +95,27 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
         pelec%UZ(Nploc_old+i)    = 0
         pelec%UTHET(Nploc_old+i) = 0
       END DO 
-    END DO    
+    END DO
+
+!    DO j=1,nblostparts 
+!        pelec%Nploc = pelec%Nploc+1
+!        Nploc = pelec%Nploc
+!        last_pos = revert_push(pion, losthole(j))
+!
+!      !  pelec%R(Nploc)    = pion%R(losthole(j)) + dr
+!      !  pelec%Z(Nploc)    = pion%Z(losthole(j)) 
+!      !  pelec%THET(Nploc) = pion%THET(losthole(j))
+!
+!        pelec%R(Nploc)     = last_pos(1)
+!        pelec%THET(Nploc)  = last_pos(2)
+!        pelec%Z(Nploc)     = last_pos(3)
+!        pelec%UR(Nploc)    = 0
+!        pelec%UZ(Nploc)    = 0
+!        pelec%UTHET(NPLOC) = 0
+!
+!
+!    END DO 
+    
 END SUBROUTINE ion_induced
 
 
