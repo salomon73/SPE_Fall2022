@@ -8,7 +8,7 @@
 
     electrons   = espic2dhdf5('TestElectrons.h5');
     
-    %% Particles characteristics %%\
+    %% Particles characteristics %%
     
     
     % Numerical particles characteristics %  
