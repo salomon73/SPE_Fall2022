@@ -1,0 +1,22 @@
+MODULE materials 
+
+        USE constants 
+
+        IMPLICIT NONE    
+     !> All the coefficients below were obtained by piecewise
+     !> fit of dE/dx curve for 304 stainless steel
+        REAL(KIND = db), DIMENSION(2), PARAMETER  :: coefficients_1H  = (/0.0, 2.9778E02 /)
+        REAL(KIND = db), DIMENSION(2), PARAMETER  :: coefficients_1He = (/0.1273010048, 1.70478995200000E02 /)
+        REAL(KIND = db), DIMENSION(2), PARAMETER  :: coefficients_1Ne = (/0.0518524160, 2.45927583999999E02 /)
+        REAL(KIND = db), DIMENSION(4), PARAMETER  :: coefficients_2 = &
+        (/1.834520315818557E02,1.320304216355084E05,-8.583700602370013E06,3.526140145560557E08/)
+        REAL(KIND = db), DIMENSION(4), PARAMETER  :: coefficients_3 = &
+        (/2.471679999999999E02,9.695466666666670E04,-2.475200000000003E06, 2.325333333333340E07/)
+        REAL(KIND = db), DIMENSION(4), PARAMETER  :: coefficients_4 = &
+        (/2.533904454349683E03,-1.766016382825937E05,8.202640024592019E06, -1.125320217235288E08/)
+        REAL(KIND = db), DIMENSION(4), PARAMETER  :: coefficients_5 = &
+        (/8.786057142856745E02,2.856595238095524e+04,-1.834285714286391E05, 3.333333333338620E05/)
+
+
+
+END MODULE materials

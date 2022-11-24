@@ -21,7 +21,7 @@ MODULE beam
   USE distrib
   USE particletypes
   USE weighttypes
-  USE iiee
+  
 
   IMPLICIT NONE
 
