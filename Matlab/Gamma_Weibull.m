@@ -4,8 +4,8 @@
 Emin = 0;  % eV
 Emax = 25; % eV
 x = linspace(Emin,Emax,1000);
-theta = 2.0;
-kappa = 2.0;
+theta = .5;
+kappa = 4.0;
 
 PDF = 1/(gamma(kappa)*theta^kappa) * x.^(kappa-1).*exp(-x/theta);
 CDF = 1/(gamma(kappa))*gammainc(x/theta, kappa); 
