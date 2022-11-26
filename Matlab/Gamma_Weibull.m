@@ -37,5 +37,7 @@ for ii=1:nit
     beta = rand;
     [val, Ind] = min(abs(beta-CDF));
     rand_num(ii)= x(Ind);
+%     num = gamrnd(2.0,2.0);
+%     rand_num(ii) = num;
 end
 mean(rand_num)
