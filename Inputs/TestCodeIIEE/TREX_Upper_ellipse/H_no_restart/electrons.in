@@ -1,0 +1,19 @@
+&partsload
+mass=9.10938300000000e-31,
+charge=-1.60217662000000e-19,
+weight=1,
+H0=3.20000000000000e-14,
+P0=8.66000000000000e-25,
+nblock=1,
+npartsalloc=100000,
+velocitytype=1,
+radialtype=2, !1 for uniform distribution 2 for uniform density (slice) 
+temperature=0.0,
+is_test=t,
+is_field=f,
+partformat='parts'
+/
+
+//parts
+0.0101 0.0 0.375 0.0 0.0 0.0
+

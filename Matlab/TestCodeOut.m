@@ -6,7 +6,7 @@ Ions = espic2dhdf5('stable_dt_12.h5');
 
 %% To work from ppb110 
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_13_fine.h5');
+Ions = espic2dhdf5('stable_dt_11.h5');
 %% Display particles data
 dispespicParts(Ions);
 
@@ -136,7 +136,7 @@ figure
 
 %% Energy loss in electrode and yield%%
 
-out = Stainless();
+out = Aluminum();
 E   = out.E;
 Eloss = out.Eloss;
 element = out.element;
@@ -225,7 +225,7 @@ figure
 
 %% Lower energy model %%
 
-gamma = compute_yield_potential(Ions, 'He');
+gamma = compute_yield_potential(Ions, 'H')
 
 %% Full energy range yield %%
 
@@ -267,7 +267,7 @@ plot(linspace(0,5e-2, 1000),polyval(P,linspace(0,5e-2, 1000)), 'r--' )
 
 %% Energy loss in electrode and yield%%
 
-out = Stainless();
+out = Aluminum();
 E   = out.E;
 Eloss = out.Eloss;
 element = out.element;

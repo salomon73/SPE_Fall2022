@@ -44,6 +44,8 @@ MODULE particletypes
         INTEGER, DIMENSION(:), ALLOCATABLE :: partindex      !< Index of the particle to be able to follow it when it goes from one MPI host to the other
         INTEGER                            :: iiee_id=-1     !< Index defining whether or not ion induced ee are considered
         INTEGER                            :: neuttype_id=1  !< Index defining which type of neutral gas is used to produce the ions
+        INTEGER                            :: material_id=1  !< Index defining the type of material for the electrodes (1=304SS)
+        LOGICAL                            :: zero_vel=.true.!< Defines wether or not the electrons are gen. with init. vel
         REAL(kind=db), DIMENSION(:), ALLOCATABLE :: R     !< radial coordinates of the particles
         REAL(kind=db), DIMENSION(:), ALLOCATABLE :: Z     !< longitudinal coordinates of the particles
         REAL(kind=db), DIMENSION(:), ALLOCATABLE :: THET  !< azimuthal coordinates of the particles
@@ -143,6 +145,8 @@ SUBROUTINE creat_parts(p, nparts)
     p%partindex=-1
     p%iiee_id=-1
     p%neuttype_id=1
+    p%material_id=1
+    p%zero_vel=.true.
     p%URold=0
     p%UZold=0
     p%UTHETold=0

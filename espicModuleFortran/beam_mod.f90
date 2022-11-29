@@ -21,7 +21,7 @@ MODULE beam
   USE distrib
   USE particletypes
   USE weighttypes
-  USE iiee
+  
 
   IMPLICIT NONE
 
@@ -1709,6 +1709,8 @@ END SUBROUTINE calcnbperz
     INTEGER:: npartsalloc     !< initial size of particles arrays
     INTEGER:: iiee_id         !< index of species to add particles to for IIEE
     INTEGER:: neuttype_id     !< index of neutral gas producing ions
+    INTEGER:: material_id     !< index determining the type of electrode material
+    LOGICAL:: zero_vel        !< logical to chose wether or not el. are gen. with non 0 init. vel. 
     REAL(kind=db):: mass=me
     REAL(kind=db):: charge=-elchar
     REAL(kind=db):: weight=1.0
@@ -1728,7 +1730,7 @@ END SUBROUTINE calcnbperz
 
     NAMELIST /partsload/ nblock, mass, charge, weight, npartsalloc, velocitytype, & 
              & radialtype, temperature, H0, P0, is_test, n0, partformat, meanv, spanv, &
-             & calc_moments, qmratioscale, is_field, iiee_id, neuttype_id
+             & calc_moments, qmratioscale, is_field, iiee_id, neuttype_id, material_id, zero_vel
     
     ! Set defaults
     qmratioscale=1.0
@@ -1742,6 +1744,8 @@ END SUBROUTINE calcnbperz
     is_field=.true.
     iiee_id = -1
     neuttype_id=1
+    material_id=1
+    zero_vel = .true.
 
     ! Open the paticle file
     OPEN(UNIT=lu_partfile,FILE=trim(partfilename),ACTION='READ',IOSTAT=openerr)
@@ -1791,7 +1795,8 @@ END SUBROUTINE calcnbperz
         p%Newindex=sum(npartsslice)
         p%iiee_id = iiee_id
         p%neuttype_id = neuttype_id
-
+        p%material_id = material_id
+        p%zero_vel = zero_vel
         SELECT CASE(radialtype)
           CASE(1) ! 1/R distribution in R
             CALL loadPartslices(p, lodunir, ra, rb, z, npartsslice)
@@ -1857,7 +1862,9 @@ END SUBROUTINE calcnbperz
         p%calc_moments=calc_moments
         p%iiee_id = iiee_id
         p%neuttype_id = neuttype_id
-        
+        p%material_id = material_id
+        p%zero_vel = zero_vel
+
         !normalizations
         p%r=p%r/rnorm
         p%z=p%z/rnorm
