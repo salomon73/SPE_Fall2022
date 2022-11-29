@@ -18,7 +18,7 @@ program main
 !
   implicit none
 
-  call test_3() 
+  call test_gamain()  
 
   write ( *, '(a)' ) ' '
   call timestamp ( )
@@ -99,26 +99,25 @@ subroutine test01 ( )
     a, x, fx, fx2, abs ( fx - fx2 )
 
   end do
+   
+  
 
   return
 
 
 end subroutine test01
 
-subroutine test_3()
+subroutine test_gamain
+        real(kind = 8)  x,a, resultat
+        integer(kind = 4)  ifault
+    
+        a = 0.1 
+        x = 0.03 
+        resultat = gamain ( x, a, ifault)
 
-real(kind = 8 ) fxgam
-real(kind = 8 ) a, x
-integer(kind = 4) ifault 
-
-a = 0.20D+01
-x = 0.15D+01
-
-fxgam = gamain (x , a , ifault)
-
-write(*, '(g24.16)') fxgam
-
-end subroutine test_3
+    write ( *, &
+    '(2x,f12.8,2x,f12.8,2x,g24.16)' ) &
+    a, x, resultat
 
 
-
+end subroutine test_gamain
