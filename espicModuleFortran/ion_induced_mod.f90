@@ -129,7 +129,7 @@ END FUNCTION compute_Ekin
 FUNCTION compute_Vnorm(Ekin, p) RESULT(Vnorm)
     REAL(KIND = db) :: Ekin, Vnorm !> Ekin of emitted electron, Normal. corres. veloc. 
     TYPE(particles) :: p           !> electrons      
-    Vnorm = sqrt(2/p%m * Ekin * elchar) !> * elchar to get the enery in J and Vnorm in m/s
+    Vnorm = sqrt(2/p%m * Ekin * elchar) / vlight !> * elchar to get the enery in J and Vnorm in m/s
 END FUNCTION compute_Vnorm
 
 
