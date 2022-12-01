@@ -18,7 +18,7 @@ SUBROUTINE chkrst(flag)
   CHARACTER(len=2):: specieindex
   real(kind=db):: old_rnorm, old_tnorm, qmratioscale
   real(kind=db):: prev_bias
-  INTEGER:: logical_val
+  INTEGER:: logical_val, id
   ! Only process 0 should save on file
   
  
@@ -159,26 +159,7 @@ SUBROUTINE chkrst(flag)
           partslist(i)%is_test =.false.
           partslist(i)%is_field =.false.
           partslist(i)%calc_moments =.false.
-          err=0
-          ! ------------------------------------------------------------
-          ! ION INDUCED MODULE PARAMETERS ADDED 
-          !CALL getatt(firdst, trim(group), 'zero_vel', logical_val, err)
-          !if(err .ge.0)then
-          !  if(logical_val.gt.0) partslist(i)%zero_vel =.true.
-          !end if
-          !err=0
-          !CALL getatt(firdst, trim(group), 'add here', logical_val, err)
-          !if(err .ge.0)then
-          !  if(logical_val.gt.0) partslist(i)%is_test =.true.
-          !end if
-          !err=0
-          !CALL getatt(firdst, trim(group), 'add here', logical_val, err)
-          !if(err .ge.0)then
-          !  if(logical_val.gt.0) partslist(i)%is_test =.true.
-          !end if
-          !err=0
-          ! END OF ION INDUCED MODULE PARAM. 
-          ! ----------------------------------------------------------
+          err=0    
           CALL getatt(fidrst, trim(group), 'is_test', logical_val,err)
           if(err .ge.0)then
             if(logical_val.gt.0) partslist(i)%is_test =.true.
@@ -193,6 +174,28 @@ SUBROUTINE chkrst(flag)
           if(err .ge.0)then
             if(logical_val.gt.0) partslist(i)%calc_moments =.true.
           end if
+          ! ---------------------------------------------------------------------------------
+          ! IIEE PARAMETERS 
+          CALL getatt(fidrst, trim(group), 'zero_vel', logical_val,err)
+          if(err .ge.0)then
+            if(logical_val.gt.0) partslist(i)%zero_vel =.true.
+          end if
+          CALL getatt(fidrst, trim(group), 'iiee_id',id, err)
+          if (err .ge. 0) then 
+             partslist(i)%iiee_id = id
+          end if
+          CALL getatt(fidrst, trim(group), 'neuttype_id',id, err)
+          if (err .ge. 0) then
+             partslist(i)%neuttype_id = id
+          end if
+
+          CALL getatt(fidrst, trim(group), 'material_id',id, err)
+          if (err .ge. 0) then
+             partslist(i)%material_id = id
+          end if
+
+          ! END IIEE PARAMETERS 
+          ! ---------------------------------------------------------------------------------
           IF(partslist(i)%Nptot .gt. 0) THEN
             CALL getarr(fidrst, trim(group) // '/Z',         partslist(i)%Z)
             CALL getarr(fidrst, trim(group) // '/R',         partslist(i)%R)
@@ -333,6 +336,18 @@ SUBROUTINE chkrst(flag)
           else
             CALL attach(fidrst, trim(group), 'calc_moments', 0)
           end if
+          !-------------------------------------------------------------------------
+          ! IIEE PARAMETERS 
+          if(partslist(i)%zero_vel)then
+            CALL attach(fidrst, trim(group), 'zero_vel', 1)
+          else
+            CALL attach(fidrst, trim(group), 'zero_vel', 0)
+          end if
+          CALL attach(fidrst, trim(group), 'material_id', partslist(i)%iiee_id)
+          CALL attach(fidrst, trim(group), 'neuttype_id', partslist(i)%neuttype_id)
+          CALL attach(fidrst, trim(group), 'material_id', partslist(i)%material_id)
+          ! END OF IIEE PARAMETERS
+          ! ------------------------------------------------------------------------
           IF(partslist(i)%Nptot .gt. 0) THEN
             CALL putarr(fidrst, trim(group) // '/Z',         partslist(i)%Z(1:partslist(i)%Nptot)*rnorm)
             CALL putarr(fidrst, trim(group) // '/R',         partslist(i)%R(1:partslist(i)%Nptot)*rnorm)

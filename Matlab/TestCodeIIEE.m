@@ -4,14 +4,15 @@ addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Da
 
 filename = 'Test_V0_H_SS.h5';
 ions = espic2dhdf5(filename);
+%%
 dt = ions.dt;
 time = dt*linspace(0,double(ions.nrun),ions.nrun+1);
 
 %% plot number of particles over time %% 
 figure
-    plot(time, ions.nbparts, 'linewidth', 2)
+    plot(time, ions.species(3).nbparts, 'linewidth', 2)
     hold on 
-    plot(time, ions.species(1).nbparts, 'linewidth', 2)
+    plot(time, ions.species(4).nbparts, 'linewidth', 2)
     xlabel('t [s]', 'Interpreter', 'Latex') 
     ylabel('nparts', 'Interpreter', 'Latex')
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
@@ -19,9 +20,9 @@ figure
     set (gca, 'fontsize', 22)
 
 figure
-    plot( ions.nbparts, 'linewidth', 2)
+    plot(ions.species(3).nbparts, 'linewidth', 2)
     hold on 
-    plot(ions.species(1).nbparts, 'linewidth', 2)
+    plot(ions.species(4).nbparts, 'linewidth', 2)
     xlabel('nsteps', 'Interpreter', 'Latex') 
     ylabel('nparts', 'Interpreter', 'Latex')
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
@@ -44,4 +45,46 @@ figure
     set (gca, 'fontsize', 22)
    
 figure
-    plot(Z(2,76:end), 'k-')
+    plot(Z(2,76:end), 'k-', 'linewidth', 2)
+    xlabel('nsteps', 'Interpreter', 'Latex') 
+    ylabel('Z', 'Interpreter', 'Latex')
+    set (gca, 'fontsize', 22)
+    
+
+%%
+me = 9.1e-31;
+vE = sqrt((2/me)*2*1.602e-19)
+
+% %% 
+% elec_id = ions.species(4).partindex;
+% % elec_id = elec_id(:100,:);
+
+Relec = ions.species(4).R;
+Relec = Relec(1:2000,:);
+Zelec = ions.species(4).Z;
+Zelec = Zelec(1:2000,:);
+nrun = 20000;
+%%
+threshold = 1e-6;
+lostparts = zeros(1,100);
+%% 
+for ii = 1500 : 1574
+   for jj = 2:nrun 
+      if ((Relec(ii:jj) ==  Relec(ii,jj-1)) &  (Relec(ii, jj-1) ~= 0))
+          lostparts(ii-1499) = 0; % lost
+      break
+      else 
+          lostparts(ii - 1499) = 1; % not lost
+      end 
+   end
+end
+
+
+%% figure
+
+figure
+plot(Zelec(1490,2000:20000) , Relec(1490, 2000:20000), 'k*')
+    xlabel('Z', 'Interpreter', 'Latex') 
+    ylabel('R', 'Interpreter', 'Latex')
+    set (gca, 'fontsize', 22)
+

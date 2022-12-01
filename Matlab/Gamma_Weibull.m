@@ -3,7 +3,7 @@
 
 Emin = 0;  % eV
 Emax = 25; % eV
-x = linspace(Emin,Emax,1000);
+x = linspace(Emin,Emax,500);
 theta = .5;
 kappa = 4.0;
 
@@ -69,3 +69,11 @@ for ii=1:nit
 %     rand_num(ii) = num;
 end
 mean(rand_num)
+
+
+
+N = hist(rand_num)
+figure
+histogram(rand_num, 'Normalization', 'PDF')
+hold on 
+plot(x,PDF1, 'b-', 'linewidth', 2)

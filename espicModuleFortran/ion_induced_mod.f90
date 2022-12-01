@@ -39,12 +39,13 @@ CONTAINS
    !
    !--------------------------------------------------------------------------
 SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
-    
+    USE geometry 
+
     TYPE(particles), INTENT(INOUT):: pion, pelec !< ion and electrons parts
     REAL(KIND = db), DIMENSION(3) :: last_pos    !< last position for lost ion (revert push)
     REAL(KIND = db), DIMENSION(3) :: normal_dir  !< normal direction vector (normalised)
     INTEGER, DIMENSION(pion%Nploc):: losthole    !< indices of lost ions
-    INTEGER ::i,j, nblostparts, Nploc, Nploc_old !< loop indices and #lost particles
+    INTEGER ::i,j, nblostparts, Nploc, Nploc_old, Nploc_init!< loop indices and #lost particles
     INTEGER :: parts_size_increase, nbadded 
  
     INTEGER :: neuttype_id         !< neutral gas type_id
@@ -59,7 +60,8 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
     kappa = 4.0   !> kappa param. (Gamma)
     theta = 0.5   !> theta param. (Gamma) 
     Emax  = 25    !> Max value for el. (Gamma)
-  
+    
+    write(*,*) 'Entering ion_induced' 
     neuttype_id = pion%neuttype_id !> temporarily stored in particle type 
     material_id = pion%material_id !> temporarily stored in particle type
 
@@ -67,12 +69,14 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
       parts_size_increase=Max(floor(0.1*size(pelec%Z,1)),2*nblostparts)
       CALL change_parts_allocation(pelec, parts_size_increase) 
     END IF
+!    write(*,*) 'Error before enetering loop'
+    Nploc_init = pelec%Nploc
 
     DO  i=1,nblostparts
       Ekin    = compute_Ekin( (/pion%UR(losthole(i)), pion%UTHET(losthole(i)), pion%UZ(losthole(i))/), pion)
       lambda  = compute_yield(Ekin, neuttype_id, material_id)
-      nbadded = gen_elec(lambda, kmax)  
-      Nploc_old   = pelec%Nploc 
+      nbadded = gen_elec(lambda, kmax)              
+      Nploc_old   = pelec%Nploc
       pelec%Nploc = pelec%Nploc + nbadded
       Nploc = pelec%Nploc 
       last_pos = revert_push(pion, losthole(i))
@@ -83,6 +87,9 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
         pelec%R(Nploc_old+j)     = last_pos(1)
         pelec%THET(Nploc_old+j)  = last_pos(2)
         pelec%Z(Nploc_old+j)     = last_pos(3)
+        pelec%newindex = pelec%newindex + 1
+        pelec%partindex(Nploc_old+j) = pelec%newindex
+
         IF(pelec%zero_vel == .false.) THEN
             Eem = gen_E_gamma(kappa, theta, Emax) !> generate an energy value following gamma distribution 
             pelec%UR(Nploc_old+j)    = compute_Vnorm(Eem, pelec)* normal_dir(1) !> Vr 
@@ -94,7 +101,14 @@ SUBROUTINE ion_induced(pion, losthole, pelec, nblostparts)
             pelec%UTHET(Nploc_old+j) = 0.0
         END IF 
       END DO 
-    END DO    
+    END DO  
+ !   write(*,*) 'Error  when calling geomweight'
+ !   write(*,*) Nploc_init, pelec%Nploc
+   if (Nploc_init-pelec%Nploc .ge. 1) then 
+           call geom_weight(pelec%Z(Nploc_init+1:pelec%Nploc), pelec%R(Nploc_init+1:pelec%Nploc), pelec%geomweight(Nploc_init+1:pelec%Nploc, :)) 
+   end if 
+write(*,*) 'Exitting ion_induced'
+
 END SUBROUTINE ion_induced
 
 
@@ -377,10 +391,35 @@ END FUNCTION gen_elec
    !--------------------------------------------------------------------------
 
 FUNCTION gen_E_gamma(kappa, theta, Emax) RESULT(E_el)
-    REAL(KIND = db) E_el, Emax
-    REAL(KIND = db) kappa, theta !> parameters to shape Gamma_distr  
-   
-    E_el  = 2
+ 
+    USE random 
+    USE incomplete_gamma
+        
+    REAL(KIND = db) :: E_el, Emin, Emax
+    REAL(KIND = db) :: kappa, theta !> parameters to shape Gamma_distr  
+    REAL(KIND = db) :: nb_alea(1:1)
+    REAL(KIND = db), DIMENSION(1000) :: Einc, CDF, Diff
+    INTEGER :: ii !> loop index
+    INTEGER :: ifault 
+    INTEGER :: posid 
+
+    Emin = 0.00 
+    Emax = 25.0
+    kappa = 4.0
+    theta = 0.5
+    
+    DO ii= 1,size(Einc) 
+       Einc(ii) = ( Emin + (ii-1)*(Emax-Emin)/(size(Einc)-1) )
+       CDF(ii)  = gamain(Einc(ii)/theta, kappa, ifault)
+    END DO 
+
+    !> Generate Gamma distrib. int. (see Matlab. code for convg.)
+    call random_array(nb_alea,1,ran_index(1),ran_array(:,1))
+    Diff  = abs(nb_alea(1) - CDF)
+    posid = minloc(Diff, dim = 1)
+
+        
+    E_el  = Einc(posid)
 END FUNCTION gen_E_gamma
 
    !---------------------------------------------------------------------------

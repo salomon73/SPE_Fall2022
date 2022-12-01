@@ -63,11 +63,14 @@ subroutine test01 ( )
 
   real ( kind = 8 ) a
   real ( kind = 8 ) fx
-  real ( kind = 8 ) fx2
+  real ( kind = 8 ) fx2, resultat
   real ( kind = 8 ) gamain
-  integer ( kind = 4 ) ifault
+  integer ( kind = 4 ) ifault, jfault
   integer ( kind = 4 ) n_data
-  real ( kind = 8 ) x
+  real ( kind = 8 ) x, y,b
+
+  y=2
+  b =1.5 
 
   write ( *, '(a)' ) ' '
   write ( *, '(a)' ) 'TEST01:'
@@ -93,10 +96,10 @@ subroutine test01 ( )
     end if
 
     fx2 = gamain ( x, a, ifault )
-
+    resultat = gamain(y,b,jfault)
     write ( *, &
-    '(2x,f12.8,2x,f12.8,2x,g24.16,2x,g24.16,2x,g10.4)' ) &
-    a, x, fx, fx2, abs ( fx - fx2 )
+    '(2x,f12.8,2x,f12.8,2x,g24.16,2x,g24.16,2x,g10.4,2x,g24.16)' ) &
+    a, x, fx, fx2, abs ( fx - fx2 ), resultat
 
   end do
    
@@ -108,9 +111,11 @@ subroutine test01 ( )
 end subroutine test01
 
 subroutine test_gamain
+        
+        IMPLICIT NONE 
         real(kind = 8)  x,a, resultat
         integer(kind = 4)  ifault
-    
+        real(kind=8) :: gamain  
         a = 0.1 
         x = 0.03 
         resultat = gamain ( x, a, ifault)

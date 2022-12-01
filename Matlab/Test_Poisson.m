@@ -8,8 +8,8 @@
 %-----------------------------------------------%
 
 format long               % change double format
-it      = 100000;         % iterations #
-lambda  = 1.4;              % Poisson parameter
+it      = 1000000;         % iterations #
+lambda  = 1;              % Poisson parameter
 kmax    = 10;             % highest integ. to be gen. 
 vect    = zeros(1,kmax);  % PDF(k) values 
 SumPart = zeros(1,kmax);  % CDF(k) values
@@ -63,4 +63,8 @@ xlabel('k', 'Interpreter', 'Latex')
 ylabel('CDF', 'Interpreter', 'Latex')
 set (gca, 'fontsize', 20) 
 
-
+%%
+figure
+histogram(I, 'Normalization', 'PDF')
+hold on 
+plot(linspace(0,9,10),vect, 'r-', 'linewidth', 2)

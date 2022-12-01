@@ -292,7 +292,7 @@ SUBROUTINE boundary_loss(p)
   INTEGER :: i,j,isup, nblostparts, iend,nbunch
   INTEGER, DIMENSION(p%Nploc) :: losthole
   INTEGER, DIMENSION(16)::idwall
-  INTEGER :: nblost(size(p%nblost,1))
+  INTEGER :: nblost(size(p%nblost,1)), ii, Nploc_init, Nploc_new
 
   nblostparts=0
   nblost=0
@@ -331,7 +331,14 @@ SUBROUTINE boundary_loss(p)
       call LSDRADIXSORT(losthole(1:nblostparts),nblostparts)
       !Write(*,'(a,60i)') "losthole: ", losthole(nblostparts:nblostparts+1)
       IF(p%iiee_id.gt.0) THEN
-             CALL ion_induced(p, losthole, partslist(p%iiee_id), nblostparts) 
+             Nploc_init = partslist(p%iiee_id)%Nploc
+             CALL ion_induced(p, losthole, partslist(p%iiee_id), nblostparts)
+             Nploc_new = partslist(p%iiee_id)%Nploc    
+             if (Nploc_init-Nploc_new .ge. 1) then
+                DO ii =Nploc_init+1,Nploc_new  
+                    Call p_calc_rzindex(partslist(p%iiee_id),ii)
+                END DO
+             end if  
              !----------------------------------------------------------
              ! CALL ion_induced(p,losthole,partslist(indpelec))
              ! here we call our routine to create electrons out of 
