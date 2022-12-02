@@ -2,7 +2,7 @@
 addpath( '/home/sguincha/espic2d/matlab/')
 addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
 
-filename = 'Test_V0_H_SS.h5';
+filename = 'extrude_iiee_peak_density.h5';
 ions = espic2dhdf5(filename);
 %%
 dt = ions.dt;
@@ -12,9 +12,9 @@ time = dt*linspace(0,double(ions.nrun),ions.nrun+1);
 figure
     plot(time, ions.species(3).nbparts, 'linewidth', 2)
     hold on 
-    plot(time, ions.species(4).nbparts, 'linewidth', 2)
+    plot(timelle, ions.species(4).nbparts, 'linewidth', 2)
     xlabel('t [s]', 'Interpreter', 'Latex') 
-    ylabel('nparts', 'Interpreter', 'Latex')
+    ylabel('nparts', 'Interpreter', 'Latex')ell
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
     set(legend,'FontSize',18);
     set (gca, 'fontsize', 22)
@@ -66,15 +66,15 @@ Zelec = Zelec(1:2000,:);
 nrun = 20000;
 %%
 threshold = 1e-6;
-lostparts = zeros(1,100);
+lostparts = zeros(1,10);
 %% 
-for ii = 1500 : 1574
+for ii = 600 : 610
    for jj = 2:nrun 
       if ((Relec(ii:jj) ==  Relec(ii,jj-1)) &  (Relec(ii, jj-1) ~= 0))
-          lostparts(ii-1499) = 0; % lost
+          lostparts(ii-599) = 0; % lost
       break
       else 
-          lostparts(ii - 1499) = 1; % not lost
+          lostparts(ii - 599) = 1; % not lost
       end 
    end
 end
@@ -83,8 +83,20 @@ end
 %% figure
 
 figure
-plot(Zelec(1490,2000:20000) , Relec(1490, 2000:20000), 'k*')
+plot(Zelec(1500,2000:20000) , Relec(1500, 2000:20000), 'k*')
     xlabel('Z', 'Interpreter', 'Latex') 
     ylabel('R', 'Interpreter', 'Latex')
     set (gca, 'fontsize', 22)
 
+    
+    
+ %%
+ elec_id = ions.species(4).partindex;
+ elec_id = elec_id(1:2000,:);
+ 
+ 
+ 
+ %% Plot particles 
+ PlotParticleTrajectory(ions.species(4), 2:3, 18000:20000) % for extrude_iiee_peak_density
+ % save the above trajectory and superimpose with the potential well 
+ ions.display2Dpotentialwell(0)
