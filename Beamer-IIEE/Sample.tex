@@ -70,7 +70,7 @@
 \item{Recall: electronic yield $\gamma(E) = \Lambda_{exp}*\frac{dE_{ions}}{dx}$ }
 \item{Ion Induced Electrons have been modeled using a Poisson Law}
 \vspace{1cm}
-\item{$P(x=k) = e^{-\lambda}\frac{\lambda^k}{x^k} =  e^{-\gamma(E_i)}\frac{\gamma(E_i)^k}{x^k} $}
+\item{$P(x=k) = e^{-\lambda}\frac{\lambda^k}{k!} =  e^{-\gamma(E_i)}\frac{\gamma(E_i)^k}{k!} $}
 \end{itemize}
 \end{frame}
 
@@ -136,8 +136,61 @@
 \end{frame}
 % %------------------------------------------------
 %%%%%%%%%%%%%%%%%%%%
+  \begin{frame}{Module tests - TREX extrude geometry}
+     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+         \column{.5\textwidth} % Left column and width
+	\begin{itemize}
 
 
+		\item{Rectangle of incident ions at peak of cloud density \\
+			\begin{itemize}
+		
+				\item{5000 incident ions}
+				\item{Zero initial energy}
+				\item{End of simulation: +570 electrons remaining}
+				\item{$\sim 10 \%$ of incident ions number}
+				\end{itemize}}
+				
+						
+	\end{itemize}
+
+         \column{.5\textwidth} % Right column and width
+		\begin{figure}[h!]
+		\includegraphics[width=1 \textwidth]{nparts_peak_density.eps}
+		\caption{\label{img1} Particles number as function of time}
+		\end{figure}
+     \end{columns}
+\end{frame}
+
+% %------------------------------------------------
+%%%%%%%%%%%%%%%%%%%%
+  \begin{frame}{Module tests - TREX extrude geometry}
+     \begin{columns}[c] % The "c" option specifies centered vertical alignment while the "t" option is used for top vertical alignment
+
+         \column{.5\textwidth} % Left column and width
+	\begin{itemize}
+
+
+		\item{Rectangle of incident ions around whole cloud \\
+			\begin{itemize}
+		
+				\item{5000 incident ions}
+				\item{Zero initial energy}
+				\item{End of simulation: $\sim 700$ electrons remaining}
+				\item{$ \sim 14 \%$ of incident ions number}
+				\end{itemize}}
+				
+						
+	\end{itemize}
+
+         \column{.5\textwidth} % Right column and width
+		\begin{figure}[h!]
+		\includegraphics[width=1 \textwidth]{parts_number_wholde_cloud}
+		\caption{\label{img1} Particles number as function of time}
+		\end{figure}
+     \end{columns}
+\end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%
