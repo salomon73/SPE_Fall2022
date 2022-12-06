@@ -3,7 +3,7 @@
 
 Emin = 0;  % eV
 Emax = 25; % eV
-x = linspace(Emin,Emax,1000);
+x = linspace(Emin,Emax,500);
 theta = .5;
 kappa = 4.0;
 
@@ -27,11 +27,14 @@ CDF3 = gammainc(x/theta3,kappa3);
 figure
     subplot(1,2,1)
         hold on 
-        plot(x,PDF1, 'b-', 'linewidth', 2)
+        h1 = plot(x,PDF1, '-', 'linewidth', 2);
+        set(h1(1), 'Color', '#0072BD')
         hold on 
-        plot(x,PDF2, 'r-', 'linewidth', 2)
+        h2 = plot(x,PDF2, '-'	, 'linewidth', 2);
+        set(h2(1), 'Color', '#D95319')
         hold on 
-        plot(x,PDF3, 'k-', 'linewidth', 2)
+        h3 = plot(x,PDF3 ,'-', 'linewidth', 2);
+        set(h3(1), 'Color', '#77AC30')
             xlabel('E [eV]', 'Interpreter', 'Latex') 
             ylabel('P(E)', 'Interpreter', 'Latex')
             legend(strcat('$\theta =$', num2str(theta),'$\kappa =$', num2str(kappa)) ,...
@@ -42,11 +45,14 @@ figure
             set (gca, 'fontsize', 22)
     subplot(1,2,2)
         hold on 
-        plot(x,CDF1, 'b-', 'linewidth', 2)
+        h1 = plot(x,CDF1, '-', 'linewidth', 2);
+        set(h1(1), 'Color', '#0072BD')
         hold on 
-        plot(x,CDF2, 'r-', 'linewidth', 2)
+        h2 = plot(x,CDF2, '-'	, 'linewidth', 2);
+        set(h2(1), 'Color', '#D95319')
         hold on 
-        plot(x,CDF3, 'k-', 'linewidth', 2)
+        h3 = plot(x,CDF3 ,'-', 'linewidth', 2);
+        set(h3(1), 'Color', '#77AC30')
             xlabel('E [eV]', 'Interpreter', 'Latex') 
             ylabel('$P(E_{el} \leq E)$', 'Interpreter', 'Latex')
             legend(strcat('$\theta =$', num2str(theta),'$\kappa =$', num2str(kappa)) ,...
@@ -65,7 +71,20 @@ for ii=1:nit
     beta = rand;
     [val, Ind] = min(abs(beta-CDF1));
     rand_num(ii)= x(Ind);
-%     num = gamrnd(2.0,2.0);
-%     rand_num(ii) = num;
 end
 mean(rand_num)
+
+
+
+N = hist(rand_num)
+figure
+    histogram(rand_num, 'Normalization', 'PDF', 'FaceColor', '#0072BD', 'FaceAlpha', 0.5)
+    hold on 
+    h1 = plot(x,PDF1, 'b-', 'linewidth', 2)
+    set(h1(1), 'Color', '#D95319')
+    xlabel('E [eV]', 'Interpreter', 'Latex') 
+    ylabel('$P(E_{el} = E)$', 'Interpreter', 'Latex')
+    legend( '$\frac{n_{counts}}{n_{it}}(k)$','PDF(E)', ...
+       'Location','northeast','Interpreter','latex');
+    set(legend,'FontSize',20);
+    set (gca, 'fontsize', 22)

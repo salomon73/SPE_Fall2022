@@ -1,0 +1,108 @@
+% Document class 
+%=============
+\documentclass[aps,prc,floatfix,showkeys,nofootinbib]{revtex4-1}
+% Packages 
+%========
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage[referable]{threeparttablex}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows.meta}
+\usepgfplotslibrary{colormaps}
+\pgfplotsset{
+    compat=newest,
+    colormap={mycolormap}{color=(lightgray) color=(white) color=(lightgray)}
+}
+% New commands
+%=============
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bes}{\begin{split}}
+\newcommand{\ees}{\end{split}}
+\newcommand{\BB}{\textbf{B}}
+\newcommand{\jj}{\textbf{j}}
+\newcommand{\nn}{\textbf{n}}
+\newcommand{\rr}{\textbf{r}}
+\newcommand{\vv}{\textbf{v}}
+\newcommand{\g}{\textbf{g}}
+\newcommand{\x}{\times}
+\newcommand{\ii}{\iota}
+\newcommand{\iotaa}{\bar{\iota}}
+\newcommand{\dd}{\partial}
+\newcommand{\Div}{\nabla\cdot}
+\newcommand{\grad}{\nabla}
+\newcommand{\rot}{\nabla \times}
+\newcommand{\modB}{\|B\|}
+\newcommand{\doubleint}{\int_{0}^{2\pi/N_{fp}}\int_{0}^{2 \pi} d\theta d\phi}
+\newcommand{\IInt}{\int \int d \theta d\phi}
+\newcommand{\FourierModB}{\sum_{m,n} B_{mn} \cos(m\theta - n  N_{fp}\phi)}
+\newcommand{\inscale}{0.495}
+\newcommand{\outscale}{0.8}
+\newcommand{\myscale}{0.38}
+\newcommand{\myscalea}{0.32}
+\renewcommand*{\thefootnote}{\alph{footnote}}
+% Paths
+%=====
+\graphicspath{{./Illustration/}}  
+
+
+% Document's body
+%==============
+%-----------------DOCUMENT------------------------------
+%----------------------------------------------------------------
+\begin{document}
+
+\title{Numerical study of the effect of secondary electron emission on the dynamics of electron clouds in gyrotron guns }
+
+\author{S.~Guinchard} 
+\email{salomon.guinchard@epfl.ch}
+\affiliation{Section de Physique, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Suisse}
+
+\collaboration{Supervised by G.~Le Bars and J.~Loizu}
+\altaffiliation{Swiss Plasma Center, Ecole Polytechnique Fédérale de Lausanne, Lausanne, Suisse}
+
+\date{\today}
+
+%------------------ABSTRACT------------------------------
+%----------------------------------------------------------------
+\begin{abstract}
+In this document, behavior of ions inducing electrons in presence of magnetic and strong electric fields is reviewed. Ion-induced electron-emissions (IIEE) are implemented in the FENNECS code \cite{fennecs}. Results are planned to be compared with the Trapped Electrons Experiment (TREX).
+\end{abstract}
+\keywords{Gyrotron, electron cloud, trapped electron cloud, ionisation, IIEE, FENNECS}
+
+{
+\let\clearpage\relax
+\maketitle
+\sloppy
+}
+
+
+
+
+\input{Introduction}
+
+\input{Theory}
+
+\input{Results}
+
+\input{Conclusion}
+
+\input{Appendix}
+
+
+\newpage
+\bibliographystyle{alpha}
+\bibliography{references}
+\end{document}
+% End of document
+%==============

@@ -6,7 +6,7 @@ Ions = espic2dhdf5('stable_dt_12.h5');
 
 %% To work from ppb110 
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_dt_11.h5');
+Ions = espic2dhdf5('stable_13_fine.h5');
 %% Display particles data
 dispespicParts(Ions);
 
