@@ -6,7 +6,7 @@ electrons_gauss_zero_vel = 1; % zero initial vel. (default)
 electrons_gauss_neuttype_id = 1; % hydrogen 
 
 
-ion_tracers_iiee_id    = 2;   % ions add el to species 3
+ion_tracers_iiee_id    = 2;   % ions add el to species 2
 ion_tracers_material_id = 1;  % ions impinging on 304 SS
 ion_tracers_zero_vel = 1;  % zero initial vel. (default) 
 ion_tracers_neuttype_id = 1;  % hydrogen 
