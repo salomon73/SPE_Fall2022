@@ -49,22 +49,47 @@ k      = [kval linspace(kval(end)+1, kmax, kmax-kval(end))];
 Counts = [C zeros(1,kmax-kval(end))];
 SumCumul = [SumPart SumPart(end)+exp(-lambda)*lambda^(kmax)/factorial(kmax)];
 
+%%
 % Plot CDF and counts converging to PDF
 figure
 hold on 
-plot(k,1/it*Counts, 'r-', 'linewidth',2)
-xlabel('k', 'Interpreter', 'Latex')
-ylabel('counts', 'Interpreter', 'Latex')
-set (gca, 'fontsize', 20) 
+    subplot(1,2,1)
+        plot(k,1/it*Counts, 'r-', 'linewidth',2)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('counts', 'Interpreter', 'Latex')
+        set (gca, 'fontsize', 20) 
+    subplot(1,2,2)
+        plot(k,SumCumul, 'r-', 'linewidth',2)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('CDF', 'Interpreter', 'Latex')
+        set (gca, 'fontsize', 20) 
 
+%%
 figure
-plot(k,SumCumul, 'r-', 'linewidth',2)
-xlabel('k', 'Interpreter', 'Latex')
-ylabel('CDF', 'Interpreter', 'Latex')
-set (gca, 'fontsize', 20) 
+hold on 
+    subplot(1,2,1)
+        plot(k,poisspdf(k,lambda), 'r-', 'linewidth',2)
+        hold on 
+        histogram(I, 'Normalization', 'PDF', 'FaceColor', '#0072BD', 'FaceAlpha', 0.5)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('counts', 'Interpreter', 'Latex')
+        legend( 'PDF(k)', '$\frac{n_{counts}}{n_{it}}(k)$', ...
+       'Location','northeast','Interpreter','latex');
+        set(legend,'FontSize',20);
+        set (gca, 'fontsize', 24) 
+    subplot(1,2,2)
+        plot(k,SumCumul, 'r-', 'linewidth',2)
+        hold on 
+        plot(k,poisscdf(k,lambda), 'k--', 'linewidth',1.5)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('CDF', 'Interpreter', 'Latex')
+        legend( 'CDF(k)', 'CDF$_{exp}(k)$', ...
+       'Location','northeast','Interpreter','latex');
+        set(legend,'FontSize',20);
+        set (gca, 'fontsize', 24)         
 
 %%
 figure
 histogram(I, 'Normalization', 'PDF')
 hold on 
-plot(linspace(0,9,10),vect, 'r-', 'linewidth', 2)
+plot(x,poisspdf(x, lambda), 'r-', 'linewidth', 2)

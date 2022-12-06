@@ -12,7 +12,7 @@ time = dt*linspace(0,double(ions.nrun),ions.nrun+1);
 figure
     plot(time, ions.species(3).nbparts, 'linewidth', 2)
     hold on 
-    plot(timelle, ions.species(4).nbparts, 'linewidth', 2)
+    plot(time, ions.species(4).nbparts, 'linewidth', 2)
     xlabel('t [s]', 'Interpreter', 'Latex') 
     ylabel('nparts', 'Interpreter', 'Latex')
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
@@ -100,4 +100,7 @@ plot(Zelec(1500,2000:20000) , Relec(1500, 2000:20000), 'k*')
  PlotParticleTrajectory(ions.species(4), 2:3, 18000:20000) % for extrude_iiee_peak_density
  % save the above trajectory and superimpose with the potential well 
  ions.display2Dpotentialwell(0)
+ 
+ 
+
  
