@@ -1,12 +1,15 @@
 %% To work from home on local machine (macbook) 
-%cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions3
+%cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions3    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
 addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
-Ions = espic2dhdf5('stable_dt_12.h5');
+Ions = espic2dhdf5('stable_dt_11.h5');
 
 %% To work from ppb110 
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
-Ions = espic2dhdf5('stable_13_fine.h5');
+Ions = espic2dhdf5('ions_vert_slice_dt10.h5');
+
 %% Display particles data
 dispespicParts(Ions);
 
@@ -14,8 +17,7 @@ dispespicParts(Ions);
 dispespicFields(Ions);
 
 %% Numerical parameters %%
-
-Ions_mass = 3.347e-27;
+Ions_mass = 1.67262192000000e-27; %3.347e-27;
 Vr = Ions.VR;
 Vz = Ions.VZ;
 Vt = Ions.VTHET;
@@ -97,6 +99,34 @@ B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [1e4, 1./rA, phiA-phiA]); % Initia
                                                       '$\Delta \phi \cdot \log(\frac{r}{r_a})/ \log(r_b/r_a)$' ), ...
                                                       'Location','northwest','Interpreter','latex');
             
+                                                  
+                                                  
+%% subplot for energy collected at electrode
+
+figure 
+    subplot(1,2,1)
+        xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+        ylabel('$E_{el}$ [keV]', 'Interpreter', 'Latex')
+        legend(strcat('$dt = $', num2str(Ions.dt)),strcat('y = ', num2str(1e-3*B(1)), ...
+                                                          '$\log($', num2str(B(2)), ...
+                                                          '$\cdot R_0) + $', num2str(B(3))), ...
+                                                          strcat('y = ', ...
+                                                          '$\Delta \phi \cdot \log(\frac{r}{r_a})/ \log(r_b/r_a)$' ), ...
+                                                          'Location','northwest','Interpreter','latex');
+                                                          set(legend,'FontSize',18);
+                                                          set (gca, 'fontsize', 22)
+subplot(1,2,2)
+        xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
+        ylabel('$E_{el}$ [keV]', 'Interpreter', 'Latex')
+        legend(strcat('$dt = $', num2str(Ions.dt)),strcat('y = ', num2str(1e-3*B(1)), ...
+                                                          '$\log($', num2str(B(2)), ...
+                                                          '$\cdot R_0) + $', num2str(B(3))), ...
+                                                          strcat('y = ', ...
+                                                          '$\Delta \phi \cdot \log(\frac{r}{r_a})/ \log(r_b/r_a)$' ), ...
+                                                          'Location','northwest','Interpreter','latex');
+                                                          set(legend,'FontSize',18);
+                                                          set (gca, 'fontsize', 22)
+
 %% Energy collected at electrode semilog %%
 
 figure

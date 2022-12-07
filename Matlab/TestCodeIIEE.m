@@ -10,21 +10,19 @@ time = dt*linspace(0,double(ions.nrun),ions.nrun+1);
 
 %% plot number of particles over time %% 
 figure
-%     plot(time, ions.species(3).nbparts, 'linewidth', 2)
-%     hold on 
-%     plot(time, ions.species(4).nbparts, 'linewidth', 2)
-%     xlabel('t [s]', 'Interpreter', 'Latex') 
-%     ylabel('nparts', 'Interpreter', 'Latex')
-%     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
-%     set(legend,'FontSize',18);
-%     set (gca, 'fontsize', 22)
+    plot(ions.species(2).tpart, ions.species(2).nbparts, 'linewidth', 2)
+    hold on 
+    plot(ions.species(1).tpart, ions.species(1).nbparts, 'linewidth', 2)
+    xlabel('t [s]', 'Interpreter', 'Latex') 
+    ylabel('nparts', 'Interpreter', 'Latex')
+    legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
 
 figure
     plot(ions.species(2).nbparts, 'linewidth', 2)
     hold on 
     plot(ions.species(1).nbparts, 'linewidth', 2)
-    hold on 
-    plot(ions.nbparts, 'linewidth', 2)
     xlabel('nsteps', 'Interpreter', 'Latex') 
     ylabel('nparts', 'Interpreter', 'Latex')
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
