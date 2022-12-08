@@ -13,6 +13,8 @@ figure
     plot(ions.species(2).tpart, ions.species(2).nbparts, 'linewidth', 2)
     hold on 
     plot(ions.species(1).tpart, ions.species(1).nbparts, 'linewidth', 2)
+    hold on 
+    plot(ions.tpart, ions.nbparts, 'linewidth', 2)
     xlabel('t [s]', 'Interpreter', 'Latex') 
     ylabel('nparts', 'Interpreter', 'Latex')
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
@@ -23,6 +25,8 @@ figure
     plot(ions.species(2).nbparts, 'linewidth', 2)
     hold on 
     plot(ions.species(1).nbparts, 'linewidth', 2)
+    hold on 
+    plot(ions.nbparts, 'linewidth', 2)
     xlabel('nsteps', 'Interpreter', 'Latex') 
     ylabel('nparts', 'Interpreter', 'Latex')
     legend('$n_i$', '$n_e$' ,'Location','best','Interpreter','latex');
