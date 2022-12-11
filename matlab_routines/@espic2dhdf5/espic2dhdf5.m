@@ -2865,9 +2865,12 @@ classdef espic2dhdf5
             else
                 ylim([ax1],[obj.rgrid(1)*1000 obj.rgrid(end)*1000])
             end
-            legend([h1,h2],{'Magnetic field lines','Equipotentials [V]'},'location','northeast')
-            xlabel(ax1,'z [mm]')
-            ylabel(ax1,'r [mm]')
+            legend([h1,h2],{'Magnetic field lines','Equipotentials [V]'},'location','northeast','Interpreter','latex')
+            xlabel(ax1,'Z [mm]','Interpreter','latex')
+            ylabel(ax1,'R [mm]','Interpreter','latex')
+            set(legend,'FontSize',18);
+            set (gca, 'fontsize', 22)
+
             
             c = colorbar(ax1);
             c.Label.String= 'n[m^{-3}]';

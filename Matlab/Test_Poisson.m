@@ -49,6 +49,11 @@ k      = [kval linspace(kval(end)+1, kmax, kmax-kval(end))];
 Counts = [C zeros(1,kmax-kval(end))];
 SumCumul = [SumPart SumPart(end)+exp(-lambda)*lambda^(kmax)/factorial(kmax)];
 
+CDF_exp = zeros(1,length(Counts));
+for ii = 1:length(CDF_exp)
+   CDF_exp(ii) = 1/it*sum(Counts(1:ii)); 
+end
+
 %%
 % Plot CDF and counts converging to PDF
 figure
@@ -78,7 +83,7 @@ hold on
         set(legend,'FontSize',20);
         set (gca, 'fontsize', 24) 
     subplot(1,2,2)
-        plot(k,SumCumul, 'r-', 'linewidth',2)
+        plot(k,CDF_exp, 'r-', 'linewidth',2)
         hold on 
         plot(k,poisscdf(k,lambda), 'k--', 'linewidth',1.5)
         xlabel('k', 'Interpreter', 'Latex')
@@ -89,6 +94,8 @@ hold on
         set (gca, 'fontsize', 24)         
 
 %%
+
+x = linspace(0,10,11);
 figure
 histogram(I, 'Normalization', 'PDF')
 hold on 
