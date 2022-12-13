@@ -1,29 +1,10 @@
 \section{Theory}\label{Theory}
 
 \subsection{Gyrotron guns}
-\begin{itemize}
-\item{A few words on gyrotrons}
-\item{What they are used for}
-\item{GT-170: image}
-\item{Possible disruptions in the use of gyrotrons}
-\item{Has this been quantified ? Time scale ? Densities ? Clouds}
-\end{itemize}
 
 \subsection{The FENNECS code}
-\begin{itemize}
-\item{Particle In Cell code}
-\item{Brief description of implementation}
-\item{Vlasov Poisson system of equations}
-\end{itemize}
 
 \subsection{Ion-Induced Electron-Emissions}
-\begin{itemize}
-\item{Schou's model}
-\item{Kinetic emissions}
-\item{Low energies: potential emissions}
-\item{Possible cascade phenomena}
-\end{itemize}
-
 
 In order to take into account IIEE in the FENNECS code, the question of choosing the appropriate physical model arose. Indeed, expected energy distribution of the ions in the TREX experiment was ranging between 0 and 20-30 keV. These values correspond to roughly the minimal and maximal values that could be reached by ions accelerated in an electric field perpendicular to the magnetic field lines, in vacuum, and over a distance of about 1cm.
  
@@ -66,12 +47,12 @@ E(r_0) = \Delta \Phi \frac{\log{(\frac{r_0}{r_a})}}{\log{(\frac{r_b}{r_a})}},
 The potential emissions model that has been chosen to treat ion-induced electron emissions at low energies ($E<1$keV) is due to Kishinevsky \cite{Kishi73}. The result is very elegant in the sense that it depends only on the Fermi energy of the material, the ionisation energy required to produce the incident ions, and the work function of the metal. Since no energy dependence of the electronic yield arises in this model, the yield should be constant in the range $[0,1]$ keV. Comments on the validity of this approximation will be made below. Let us now briefly summarise the derivation of the result for $\gamma$. First, let us state the expression for the electronic yield as derived in \cite{Kishi73}: 
 
 \beq
-\gamma \sim \frac{0.2}{\epsilon_F}\big( 0.8 \cdot E_i -2 \phi \big),
+\gamma \sim \frac{0.2}{\epsilon_F}\big( 0.8 \cdot E_i -2 \phi \big),\label{pot_em}
 \eeq
 
 \noindent where $\epsilon_F$ denotes the Fermi energy of the metal constituting the target material, $\phi$ its work function, and $E_i$ the ionisation energy required initially to produce the incident ions. For hydrogen, this ionisation energy is $E_H \simeq 13.6$ eV. 
 
-\subsection{Trapped Electrons EXperiment TREX}
+\subsection{TRapped Electrons eXperiment TREX}
 \begin{itemize}
 \item{Description of the experiment}
 \item{What we hope to see}
@@ -90,4 +71,55 @@ The potential emissions model that has been chosen to treat ion-induced electron
 
 
 
-In order to implement numerically Schou's model from Eq.(\ref{}), it was necessary to obtain reference values for the electronic yield, as a function of incident ions' energies. Tabulated values for the energy loss $dE/dx$ of protons in various materials were extracted from \cite{Janni_vol1, Janni_vol2}. To be consistent with the TREX experiment plans (See \ref{TREX_sec}), attention was drawn on 304 stainless steel $^{304}SS$, copper $Cu$ and aluminum $Al$. 
+In order to implement numerically Schou's model from Eq.(\ref{}), it was necessary to obtain reference values for the electronic yield, as a function of incident ions' energies. Tabulated values for the energy loss $dE/dx$ of protons in various materials were extracted from \cite{Janni_vol1, Janni_vol2}. To be consistent with the TREX experiment plans (See \ref{TREX_sec}), attention was drawn on 304 stainless steel $^{304}$SS, copper Cu and aluminum Al.\\
+
+\noindent From the tabulated values for $dE/dx$ obtained, energy loss curves for protons in various materials were derived, and a primary tendency for the electronic yield appeared. Indeed, for all three materials, $d^2E/dx^2<0$, that is the energy loss is a concave function of the incident energy, in the range of interest. Since the electronic yield is directly proportional to the energy loss, one deduces that it is increasing yet concave on our restricted ions energy range. Fig.(\ref{yield}) shows the electronic yield from the tabulated values, based on a proportionality constant $\Lambda_{exp}=0.1$ cm/MeV. One then remarks that the yield is the highest for $^{304}$SS at higher energies, and lowest for Cu. 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{Yield_combined.eps}
+	\caption{\label{yield} Electronic yield $\gamma$ obtained from tabulated values of $dE/dx$ from \cite{Janni_vol1, Janni_vol2} and extrapolated between the points, for the 3 possible electrode materials. Left: Let appear the tabulated values - Right: Extrapolated $\gamma(E)$ over the full energy range taking account for the potential emissions model from Eq.(\ref{pot_em}).}
+\end{figure}  
+
+\noindent To numerically implement the previous results, the yield curve $\gamma(E)$ had to be fitted. Since the required degree for a polynomial fit over the full energy range would have been somewhat too high to be implemented in the code, for numerical complexity reasons, the energy range has been split so that the curve could be fitted by several degree-3 polynomials in the kinetic emissions region. Regarding the potential emissions region, the yield curve was linearly interpolated between the bottom of the kinetic emissions region to the constant value from Kishinevksy's model. Thus the yield curve simply reduced to piecewise polynomials, whose coefficients were implemented in the FENNECS code.\\
+
+Regarding the emission of electrons in itself, since electron-emissions are discrete and qualified as rare, such events ought to follow a Poisson law. Considering that the average number of electrons emitted per ion is fully determined by the yield curve $\gamma(E)$, the parameter of the chosen Poisson law must be $\lambda(E) = \gamma(E)$. To sum things up, each ion impinges on the cathode surface with an energy $E$. Depending on its value, the emission phenomenon will be either potential or kinetic. The average number of emitted electrons, for a large number of collisions with the electrode, at this fixed value $E$, will be $\gamma(E)$. Then, since the number of emitted electrons has to be discrete, the probability to release $k$ electrons, with $k\in \mathbb{N}$ must be following a Poisson law such that its average $\lambda$ equals $\gamma(E)$. Hence, the probability for an ion of energy $E$ to release $k$ electrons is
+
+\beq
+P(k) = \frac{e^{-\gamma(E)}}{k!}.\label{poiss_prob}
+\eeq
+
+\noindent The cumulative distribution function corresponding to the PDF in Eq.(\ref{poiss_prob}) is then given by the following expression 
+
+
+\beq
+C(k) = \sum_{j=0}^{\lfloor(k)\rfloor}\frac{\gamma(E)^{j}}{j!}. \label{poisson_dist}
+\eeq
+
+
+\noindent Now that the probability for each event to occur is known, remains to implement the electron generator in the FENNECS code. To do so, a random number generator has been programmed such that the integers produced follow a Poisson law specified by $\lambda := \gamma(E)$. In order to achieve this random generation, random numbers are generated uniformly in $[0,1]$. Since the cumulative distribution function (CDF) of the probability law ranges in $[0,1[$, the distance from these numbers to the preimages of the CDF is evaluated. The integer $k$ taken as number of emitted electrons is then given by the min value of the previous distance. Mathematically, this reads as follows: 
+
+\begin{enumerate}[i)]
+\item{Generate a random number $r$ uniformly  in $[0,1[. $}
+\item{Evaluate the CDF of the law with $\lambda = \gamma(E)$ as in Eq.(\ref{poisson_dist}).}
+\item{Take $k$ as $k := \min_{\tilde{k}} |r-C(\tilde{k})|$}.
+\end{enumerate}
+
+\noindent In order to make sure that this way of generating random number according to the CDF in Eq.(\ref{poiss_prob}) is correct, a statistical survey over a large number of tests is ran, with several values for $\lambda = \gamma(E)$, and the obtained number of counts for each value of $k$ is represented in Fig.(\ref{Poisson_stat}). As expected for $\lambda=1$, the number of counts for $k=0$ and $k=1$ are equal. Results show good agreements with theory for other values of $\lambda$, ensuring then that our Poisson random generator works fine. \\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{Poisson_stats.eps}
+	\caption{\label{Poisson_stat} Left: Normalised histogram for the number of counts obtained for each $k$ following the Poisson law of parameter $\lambda = 1$ with the expected $P(k)$ (red) - Right: $C_{exp}(k)$ obtained by summing the contributions from each bin of the histogram and $C(k)$ the theoretical cumulative distribution function for $\lambda = 1$. }
+\end{figure}  
+
+One more thing that had to be treated is the angular distribution of the emitted electrons, and their energy. Indeed, all the electrons are not generated with zero velocity, and the emission direction can also vary.  Regarding the energy distribution, according to \cite{HasselII, Pagonakis}, it seems that the emitted electrons' energy follows a gamma law, such that it averages at $2$ eV. Recall that the gamma distribution varies in shape and in peak localisation according two parameters $\kappa$ and $\theta$, with $\kappa$ the shape parameter and $\theta$ the scale parameter. Recall too that the mean is given by $m=\kappa \theta$. 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{Gamma_distr.eps}
+	\caption{\label{Poisson_stat} Left: Gamma PDF for several $(\kappa, \theta)$ couples - Right: Corresponding CDF. }
+\end{figure}  
+
+\noindent Fig.(\ref{gamma_distr}) shows several gamma distributions with different couples $(\kappa, \theta)$ such that $m=2$ eV. The couple that has been kept is $(\kappa,\theta) = (0.5,4)$, so the peak probability would be closer to 2. 
+

@@ -166,7 +166,7 @@ figure
 
 %% Energy loss in electrode and yield%%
 
-out = Aluminum();
+out = Copper();
 E   = out.E;
 Eloss = out.Eloss;
 element = out.element;
