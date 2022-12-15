@@ -30,7 +30,7 @@ Eloss4 = [242.84 180.32 145.38 122.81 106.95 95.132 85.965 78.632 72.614  ...
 
     out.E       = cat(2, E0, E1, E2, E3, E4);
     out.Eloss   = cat(2, Eloss0, Eloss1, Eloss2, Eloss3, Eloss4);
-    out.element = 'Cu';
+    out.element = ' Cu';
     out.EFermi  = 7.0; %eV
 
 end
