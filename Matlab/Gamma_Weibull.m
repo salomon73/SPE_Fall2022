@@ -82,6 +82,7 @@ figure
     hold on 
     h1 = plot(x,PDF1, 'b-', 'linewidth', 2)
     set(h1(1), 'Color', '#D95319')
+    xlim([0 15])
     xlabel('E [eV]', 'Interpreter', 'Latex') 
     ylabel('$P(E_{el} = E)$', 'Interpreter', 'Latex')
     legend( '$\frac{n_{counts}}{n_{it}}(k)$','PDF(E)', ...

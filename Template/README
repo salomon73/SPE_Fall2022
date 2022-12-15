@@ -1,0 +1,11 @@
+# LaTeX beamer template for SPC presentations
+This package provides a LaTeX beamer template for SPC presentations. It is based on the official
+EPFL Power Point template and implements the EPFL rules about the usage of the new visual identity
+(the only exception is the red rectangle in which lies the presentation title).
+
+## How to use it
+### Without installation
+If you want to use it without installing it first, you will need to copy the `.sty` files and the
+`figures` folder into your presentation folder. Then, simply add the following line into your
+presentation preamble:
+> \usetheme{spc}

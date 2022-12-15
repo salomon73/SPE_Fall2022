@@ -9,7 +9,7 @@
 
 format long               % change double format
 it      = 1000000;         % iterations #
-lambda  = 1;              % Poisson parameter
+lambda  = 0.8;              % Poisson parameter
 kmax    = 10;             % highest integ. to be gen. 
 vect    = zeros(1,kmax);  % PDF(k) values 
 SumPart = zeros(1,kmax);  % CDF(k) values
@@ -94,9 +94,34 @@ hold on
         set (gca, 'fontsize', 24)         
 
 %%
-
 x = linspace(0,10,11);
 figure
-histogram(I, 'Normalization', 'PDF')
+histogram(I, 'Normalization', 'PDF','FaceColor', '#77AC30', 'FaceAlpha', 0.5)
 hold on 
 plot(x,poisspdf(x, lambda), 'r-', 'linewidth', 2)
+
+
+
+%%
+figure
+subplot(1,3,1)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('counts', 'Interpreter', 'Latex')
+        legend( 'PDF(k)', '$\frac{n_{counts}}{n_{it}}(k)$', ...
+       'Location','northeast','Interpreter','latex');
+        set(legend,'FontSize',20);
+        set (gca, 'fontsize', 24) 
+subplot(1,3,2)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('counts', 'Interpreter', 'Latex')
+        legend( 'PDF(k)', '$\frac{n_{counts}}{n_{it}}(k)$', ...
+       'Location','northeast','Interpreter','latex');
+        set(legend,'FontSize',20);
+        set (gca, 'fontsize', 24) 
+subplot(1,3,3)
+        xlabel('k', 'Interpreter', 'Latex')
+        ylabel('counts', 'Interpreter', 'Latex')
+        legend( 'PDF(k)', '$\frac{n_{counts}}{n_{it}}(k)$', ...
+       'Location','northeast','Interpreter','latex');
+        set(legend,'FontSize',20);
+        set (gca, 'fontsize', 24) 
