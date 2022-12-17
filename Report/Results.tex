@@ -1,1 +1,41 @@
 \section{Results}\label{results}
+
+\subsection{Code testing}
+
+The IIEE module being implemented, some tests were required in order to check that the code behaves accordingly. To do so, several tests were realised. The first test consisted of statistical results for the yield. To derive statistical results, the simple geometry from \ref{Theory_axy} was implemented, as well as several horizontal slices of ions. These ions were initialised at different radial distances from the cathode. Making use of Eq.(\ref{}), their energy as they hit the electrode is known, and so is the average yield per incident ion. Recall that the yield is a function of the incident ion energy only, through the energy loss in the material. 
+
+\beq
+\gamma(E) = \Lambda_{exp}\cdot \frac{dE}{dx}\Bigg|_i
+\eeq 
+
+\noindent For all three materials, the three slices of ions were inialised along the axial direction, thus enabling to show that the electron generation from the code, over the loss of ions is independent of the axial position, as expected. Fig.(\ref{flat_slice}) shows the results for $H_2^{+}$ cations impinging on the cathode made either of $^{304}$SS, Cu or Al. The potential bias applied between the two electrodes was $\Delta \phi=20$ kV. The magnetic field is uniform, with field lines parallel to the electrodes, and $B=0.21$ T, as it is a value of the order of magnitude as used in gyrotrons. The radial positions of the electrode were $r_a=0.001$ m for the cathode and $0.01$ m for the anode, and the ions were generated at $r_1 = 0.003$ m, $r_2=0.005$ m and $r_3=0.008$ m. Comparison of the theoretical average electron yield and the one obtained from the IIEE module is exposed in Table.(\ref{tab_stat}). 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1.0 \textwidth]{Flatslice_stats.eps}
+	\caption{\label{flat_slice} }
+\end{figure}  
+
+\begin{table}[h]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{5cm}|c|c|c|c|}
+    \hline
+    \multirow{2}{5cm}{\textbf{Mode Transition Times Duration (Typical)}} & \multicolumn{3}{c|}{\textbf{Material}} \\
+    % \hline
+    % \textbf{Inactive Modes} & \textbf{Description}\\
+    \cline{2-5}
+    & \textbf{$^{304}$SS} & \textbf{Cu} & \textbf{Al} & \textbf{[MHz]}\\
+    %\hhline{~--}
+    \hline
+    $E$ & 1365 & 1260 & 1024 &  \\ \hline
+    $\gamma_{th}$ & TBD & TBD & TBD &  \\ \hline
+    $\gamma_{iiee}$ & TBD & TBD & TBD & \\ \hline
+    $\epsilon_{rel}$ & TBD & TBD & TBD & \\ \hline
+  \end{tabular}
+\end{table}
+
+
+\subsection{Cloud formation}
+
+\subsection{Further implementation}

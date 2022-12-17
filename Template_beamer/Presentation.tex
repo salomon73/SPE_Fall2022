@@ -1,0 +1,126 @@
+\documentclass[aspectratio=169]{beamer}
+\usepackage{graphicx}
+\graphicspath{{figures/}} %Setting the graphics path
+\usepackage{physics} % % Allows calls to \dv for easy derivatives
+\usepackage{amsmath,amssymb}
+\usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{wrapfig}
+\usepackage{siunitx} % use it for scientific notation of numbers
+\sisetup{round-precision=6,round-mode=figures,scientific-notation=true}
+\usepackage{xcolor}
+\definecolor{olivegreen}{RGB}{34,139,34}
+\usepackage{cancel}
+\usepackage{enumerate}
+\usepackage[absolute,showboxes,overlay]{textpos}
+\usepackage[normalem]{ulem}
+\usepackage{multirow}
+\usepackage{appendixnumberbeamer}
+\usepackage{listings}
+\usepackage{subcaption}
+\usepackage{esvect}
+\usepackage{bookmark}
+\usepackage{cancel}
+\usepackage{adjustbox}
+
+\usepackage{media9}
+\usepackage{multimedia}
+\usepackage{hyperref}
+%\input{embed_video.tex}
+
+% Package for circuits
+\usepackage{circuitikz}
+
+%Specifies how thick the bipoles are, e.g. the capacitor, the inductor, ...
+\ctikzset{bipoles/thickness=1.2}
+
+\newcommand{\midlabelline}[3]{
+   \node (midlabel) at ($ (#1)!.5!(#2) $) {#3};
+   \draw[latex-] (#1) --  (midlabel);
+   \draw[-latex] (midlabel) -- (#2);
+}
+
+\usepackage[skins,theorems]{tcolorbox}
+\tcbset{highlight math style={enhanced,
+  colframe=red,colback=white,arc=0pt,boxrule=1pt}}
+
+
+
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows,shapes.arrows}
+\usetikzlibrary{shapes}
+\usetikzlibrary{plotmarks}
+\usetikzlibrary{math}
+\usetikzlibrary{decorations.markings}
+
+\tikzstyle{process} = [rectangle, rounded corners, minimum width=2cm, minimum height=1cm, text centered, text width=4.0cm, text=white, draw=black, fill=greyEPFL]%blue!30]
+\tikzstyle{arrow} = [thick,->,>=stealth,draw=black,
+line width=1mm]
+
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+
+\tikzset{
+    big arrow/.style={
+    decoration={markings,mark=at position 1 with {\arrow[scale=1.5,#1]{>}}},
+    postaction={decorate},
+    shorten >=0.4pt},
+    big arrow/.default=blue
+}
+
+\tikzset{
+   pics/.cd,
+   vector in/.style args={#1/#2}{
+      code={
+         \draw[#1] (0,0)  circle (0.1);
+         \draw[#2] (4.5:0.1) -- (22.5:0.1) (13.5:0.) -- (31.5:0.1);
+      }%end code   
+   }%end style
+}%end tikzset
+\tikzset{
+   pics/vector out/.style args={#1/#2/#3}{
+      code={
+        \draw[line width=#1] (0,0)  circle (0.15);
+        \fill[#2] (0,0)  circle (#3);
+      }%end code   
+   }%end style
+}%end tikzset
+
+
+
+\renewcommand*{\CancelColor}{\color{red}}
+\newcommand\redout{\bgroup\markoverwith
+{\textcolor{red}{\rule[.5ex]{2pt}{0.8pt}}}\ULon}
+%
+%
+\usetheme{spc}
+%
+\author[guillaume.lebars@epfl.ch]{\scriptsize{G. Le Bars, J-P. Hogge, J. Loizu, S. Alberti, F. Romano, J. Genoud}}
+%
+\date{May 19, 2022}
+\title[]{\small{Simulation of self-consistent electron cloud formation in the refurbished coaxial gyrotron gun for the gt170 coaxial gyrotron in Fennecs.}}
+%
+\begin{document}
+%
+\setbeamercolor{itemize item}{fg=red}
+\frame{\titlepage}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\appendix
+
+\begin{frame}
+	\begin{center}
+		\Large{Appendix}
+	\end{center}
+\end{frame}
+
+%
+\end{document}
