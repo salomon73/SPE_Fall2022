@@ -166,7 +166,7 @@ figure
 
 %% Energy loss in electrode and yield%%
 
-out = Copper();
+out = Stainless();
 E   = out.E;
 Eloss = out.Eloss;
 element = out.element;
@@ -203,7 +203,7 @@ y = polyval(P,E(IndicesFit));
 LambdaExp = 1.e-3; % cm/MeV;
 Yield = LambdaExp * y; 
 
-energy_coord = linspace(0.001,0.02,1e3); % energy coordinate for extrapolated yield
+energy_coord = linspace(0.001,0.02,1e5); % energy coordinate for extrapolated yield
 Yield_pol  =  LambdaExp * polyval(P,energy_coord); % yield on this r coordinate
 
 
@@ -241,10 +241,11 @@ subplot(1,2,2)
     
 
 %% Plot of potential phi %%
-phiR = -(phiB-phiA)*log(R0./rA)./log(rB./rA) + phiA;
+radial_coord = linspace(0.001, 0.01, 1000000);
+phiR = -(phiB-phiA)*log(radial_coord./rA)./log(rB./rA) + phiA;
 
 figure
-    plot(R0,phiR, 'ko')
+    plot(radial_coord,phiR, 'k-', 'linewidth', 2)
     xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
     ylabel('$\phi$ [V]', 'Interpreter', 'Latex')
     legend(strcat('$dt = $', num2str(Ions.dt)), ...
@@ -253,6 +254,22 @@ figure
     set (gca, 'fontsize', 22)
     hold on 
 
+%% find energy values (for theoretical yield)
+b(1) = (phiA-phiB)/log(rB/rA);
+b(2) = 1/rA;
+b(3) = 0.0;
+f = @(b,x) b(1) .* log(b(2).*x) + b(3);
+Er3 = f(b,0.003);
+Er5 = f(b,0.005);
+Er8 = f(b,0.008);
+
+[val, Ind] = min(abs(0.5*Er3 - 1e6*energy_coord));
+gam3 = 2*Yield_pol(Ind) 
+[val, Ind] = min(abs(0.5*Er5 - 1e6*energy_coord));
+gam5 = 2*Yield_pol(Ind)  
+[val, Ind] = min(abs(0.5*Er8 - 1e6*energy_coord));
+gam8 = 2*Yield_pol(Ind)  
+ 
 %% Lower energy model %%
 
 gamma = compute_yield_potential(Ions, 'H')
