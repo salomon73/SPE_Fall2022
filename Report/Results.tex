@@ -1,1 +1,47 @@
 \section{Results}\label{results}
+
+\subsection{Code testing}
+
+The IIEE module being implemented, some tests were required in order to check that the code behaves accordingly. To do so, several tests were realised. The first one consisted of statistical results for the yield. To derive a statistics, the simple geometry from \ref{Theory_axy} was implemented, as well as several horizontal slices of ions. These ions were initialised at different radial distances from the cathode. Making use of Eq.(\ref{}), their energy as they hit the electrode is known, and so is the average yield per incident ion. Recall that the yield is a function of the incident ion energy only, through the energy loss in the material. 
+
+\beq
+\gamma(E) = \Lambda_{exp}\cdot \frac{dE}{dx}\Bigg|_i
+\eeq 
+
+\noindent For all three materials, the three slices of ions were initialised along the axial direction, thus enabling to show that the electron generation from the code, over the loss of ions, is independent of the axial position, as expected. Fig.(\ref{flat_slice}) shows the results for $H_2^{+}$ cations impinging on the cathode made either of $^{304}$SS, Cu or Al. The potential bias applied between the two electrodes is $\Delta \phi=20$ kV. The magnetic field is uniform, with field lines parallel to the electrodes, and $B=0.21$ T, as it is a value of the order of magnitude used in gyrotrons. The radial positions of the electrode were $r_a=0.001$ m for the cathode and $0.01$ m for the anode, and the ions were generated at $r_1 = 0.003$ m, $r_2=0.005$ m and $r_3=0.008$ m. Comparison of the theoretical average electron yield and the one obtained from the IIEE module is exposed in Table.(\ref{tab_stat}). 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1.0 \textwidth]{Flatslice_stats.eps}
+	\caption{\label{flat_slice} }
+\end{figure}  
+
+\begin{table}[h]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|p{5cm}|c|c|c|c|cl}
+    \hline
+    \center{\textbf{$^{304}$SS}}& $E_1$ & $E_2$ & $E_3$\\
+     \hline
+    $\gamma_{th}$ & 1.311  & 1.623 & 1.870  \\ \hline
+    $\gamma_{iiee}$ & 1.299 & 1.627 & 1.891   \\ \hline
+    $\epsilon_{rel}$ & 0.9\% & 0.2\% & 1.1\%  \\ \hline
+     %----------------------------------------------------------------
+    \center{\textbf{Cu}} & $E_1$ & $E_2$ & $E_3$ \\
+     \hline
+    $\gamma_{th}$ & 1.237 & 1.522 & 1.746   \\ \hline
+    $\gamma_{iiee}$ & 1.229 & 1.518 & 1.760  \\ \hline
+    $\epsilon_{rel}$ & 0.6\% & 0.3\% & 0.8\%  \\ \hline
+     %----------------------------------------------------------------
+     \center{\textbf{Al}}& $E_1$ & $E_2$ & $E_3$ \\
+     \hline
+    $\gamma_{th}$ & 0.920 & 1.133 & 1.297  \\ \hline
+    $\gamma_{iiee}$ & 0.910 & 1.115 & 1.293   \\ \hline
+    $\epsilon_{rel}$ & 1.0\% & 1.6\% & 0.3\%  \\ \hline
+  \end{tabular}\caption{Yield statistics for three materials}\label{tab_stat}
+\end{table}
+
+
+\subsection{Cloud formation}
+
+\subsection{Further implementation}

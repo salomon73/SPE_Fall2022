@@ -4,7 +4,7 @@
 
 addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
 addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
-Ions = espic2dhdf5('stable_dt_11.h5');
+Ions = espic2dhdf5('stable_dt_12.h5');
 
 %% To work from ppb110 
 addpath /home/sguincha/SPE_Fall2022/matlab_routines
@@ -88,7 +88,7 @@ phiA  = 0;
 phiB  = -20000;
 
 f = @(b,x) b(1) .* log(b(2).*x) + b(3);                           % Log Fit With Y-Offset
-B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [1e4, 1./rA, phiA-phiA]); % Initial guess
+B = fminsearch(@(b) norm(Etild - f(b,Rtild)), [(phiA-phiB)/log(rB/rA), 1./rA, phiA-phiA]); % Initial guess
     plot(Rtild, 1.e-3*f(B,Rtild), 'r-', 'linewidth', 2)
     hold on 
     plot(sort(R0),1e-3*(phiA-phiB)*log(sort(R0)./rA)./log(rB/rA), 'g-', 'linewidth', 2)
@@ -166,7 +166,7 @@ figure
 
 %% Energy loss in electrode and yield%%
 
-out = Copper();
+out = Stainless();
 E   = out.E;
 Eloss = out.Eloss;
 element = out.element;
@@ -203,7 +203,7 @@ y = polyval(P,E(IndicesFit));
 LambdaExp = 1.e-3; % cm/MeV;
 Yield = LambdaExp * y; 
 
-energy_coord = linspace(0.001,0.02,1e3); % energy coordinate for extrapolated yield
+energy_coord = linspace(0.001,0.02,1e5); % energy coordinate for extrapolated yield
 Yield_pol  =  LambdaExp * polyval(P,energy_coord); % yield on this r coordinate
 
 
@@ -241,10 +241,11 @@ subplot(1,2,2)
     
 
 %% Plot of potential phi %%
-phiR = -(phiB-phiA)*log(R0./rA)./log(rB./rA) + phiA;
+radial_coord = linspace(0.001, 0.01, 1000000);
+phiR = -(phiB-phiA)*log(radial_coord./rA)./log(rB./rA) + phiA;
 
 figure
-    plot(R0,phiR, 'ko')
+    plot(radial_coord,phiR, 'k-', 'linewidth', 2)
     xlabel('$R_{0}$ [m]', 'Interpreter', 'Latex')
     ylabel('$\phi$ [V]', 'Interpreter', 'Latex')
     legend(strcat('$dt = $', num2str(Ions.dt)), ...
@@ -253,6 +254,22 @@ figure
     set (gca, 'fontsize', 22)
     hold on 
 
+%% find energy values (for theoretical yield)
+b(1) = (phiA-phiB)/log(rB/rA);
+b(2) = 1/rA;
+b(3) = 0.0;
+f = @(b,x) b(1) .* log(b(2).*x) + b(3);
+Er3 = f(b,0.003);
+Er5 = f(b,0.005);
+Er8 = f(b,0.008);
+
+[val, Ind] = min(abs(0.5*Er3 - 1e6*energy_coord));
+gam3 = 2*Yield_pol(Ind) 
+[val, Ind] = min(abs(0.5*Er5 - 1e6*energy_coord));
+gam5 = 2*Yield_pol(Ind)  
+[val, Ind] = min(abs(0.5*Er8 - 1e6*energy_coord));
+gam8 = 2*Yield_pol(Ind)  
+ 
 %% Lower energy model %%
 
 gamma = compute_yield_potential(Ions, 'H')
@@ -441,6 +458,58 @@ seuils_E(2) = E(IndicesFit2(1))
 seuils_E(3) = E(IndicesFit3(1))
 seuils_E(4) = E(IndicesFit4(1))
 
+%% FIGURE ION INDUCED TREATMENT %%
+
+% electrode domain
+Rgrid = linspace(0,10,10);
+Zgrid = linspace(0,1,2);
+
+[R,Z] = meshgrid(Rgrid, Zgrid);
+vect_comp_Z = [ 0.2 ];
+vect_comp_R = [0.3];
+
+figure
+    hold on 
+    plot(linspace(0,10,10), ones(1,10), 'k-', 'linewidth', 2)
+    hold on 
+    p = pcolor(R,Z,ones(2,10));
+    set(p, 'FaceAlpha', 0.4)
+    shading interp
+    hold on 
+    plot(2,1.04, 'bo', 'MarkerSize', 10,  'MarkerFaceColor', 'b')
+    hold on 
+    plot(2,0.67, 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'r')
+    hold on 
+    plot(5,1.2, 'bo', 'MarkerSize', 10, 'MarkerFaceColor', 'b')
+    hold on 
+    plot(5,0.8, 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'r')
+    hold on 
+    plot(8,1.1, 'bo', 'MarkerSize', 10, 'MarkerFaceColor', 'b')
+    hold on 
+    plot(8,0.7, 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'r')
+    hold on 
+    q = quiver(5,1.2,  vect_comp_Z, vect_comp_R);
+    set(q, 'Color', 'k')
+    hold on 
+    vect_comp_Z = [-0.2 0 0.5];
+    vect_comp_R = [0.4583 0.3 0.4583];
+    q =quiver(2*ones(1,3),1.04*ones(1,3),  vect_comp_Z, vect_comp_R);
+    set(q, 'Color', 'k')
+    hold on 
+    vect_comp_Z = [-0.3 0.4];
+    vect_comp_R = [0.2  0.4583];
+    q =quiver(8*ones(1,2),1.1*ones(1,2),  vect_comp_Z, vect_comp_R);
+    set(q, 'Color', 'k')
+    ylabel('$R$', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$Z$', 'interpreter', 'latex', 'Fontsize', 22)
+    legend('boundary', 'cathode', '$e_1$', '$i_1$', '$e_2$', '$i_2$', '$e_3$', '$i_3$', ...
+            '$v_0$', '$v_0$','$v_0$', 'Interpreter', 'latex')
+    set(legend,'FontSize',20 );
+    set (gca, 'fontsize', 22)
+    set(gca, 'xtick', [])
+    set(gca, 'xticklabel', [])
+    set(gca, 'ytick', [])
+    set(gca, 'yticklabel', [])
 
 %% Function definitions %%
 

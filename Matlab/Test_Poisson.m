@@ -96,7 +96,7 @@ hold on
 %%
 x = linspace(0,10,11);
 figure
-histogram(I, 'Normalization', 'PDF','FaceColor', '#77AC30', 'FaceAlpha', 0.5)
+h = histogram(I, 'Normalization', 'PDF','FaceColor', '#77AC30', 'FaceAlpha', 0.5)
 hold on 
 plot(x,poisspdf(x, lambda), 'r-', 'linewidth', 2)
 

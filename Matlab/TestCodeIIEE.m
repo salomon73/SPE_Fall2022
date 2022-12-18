@@ -2,7 +2,7 @@
 addpath( '/home/sguincha/espic2d/matlab/')
 addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
 
-filename = 'extrude_iiee_partid.h5';
+filename = 'Test_H_SS.h5';
 ions = espic2dhdf5(filename);
 %%
 dt = ions.dt;
@@ -106,5 +106,44 @@ plot(Zelec(1500,2000:20000) , Relec(1500, 2000:20000), 'k*')
  ions.display2Dpotentialwell(0)
  
  
+%% Test Code IIEE - Horizontal slices statistics %%
 
- 
+ionsSS = espic2dhdf5('Test_H_SS.h5');
+ionsCu = espic2dhdf5('Test_H_Cu.h5');
+ionsAl = espic2dhdf5('Test_H_Al.h5');
+% colors
+% '#77AC30' '#D95319' '#0072BD'
+%%
+figure
+    p1 = plot(ionsSS.nbparts, 'linewidth', 2);
+    set(p1(1), 'Color','k')
+    hold on 
+    p2 = plot(ionsSS.species(1).nbparts, 'linewidth', 2);
+    set(p2(1), 'Color', '#D95319')
+    hold on 
+    p3 = plot(ionsCu.species(1).nbparts, 'linewidth', 2);
+    set(p3(1), 'Color', '#77AC30')
+    hold on 
+    p4 = plot(ionsAl.species(1).nbparts, 'linewidth', 2);
+    set(p4(1), 'Color', '#0072BD')
+    xlabel('nsteps', 'Interpreter', 'Latex') 
+    ylabel('nparts', 'Interpreter', 'Latex')
+    xlim([0 400])
+    legend('$n_i$', '$n_e^{SS}$' ,'$n_e^{Cu}$' ,'$n_e^{Al}$' ,'Location','best','Interpreter','latex');
+    set(legend,'FontSize',18);
+    set (gca, 'fontsize', 22)
+    axes('position',[.55 .55 .10 .30])
+    box on % put box around new pair of axes
+    indexOfInterest = 280:320; % range of t near perturbation   
+    p2 = plot(ionsSS.species(1).nbparts(indexOfInterest), 'linewidth', 2);
+    set(p2(1), 'Color', '#D95319')
+    hold on 
+    p3 = plot(ionsCu.species(1).nbparts(indexOfInterest), 'linewidth', 2);
+    set(p3(1), 'Color', '#77AC30')
+    hold on 
+    p4 = plot(ionsAl.species(1).nbparts(indexOfInterest), 'linewidth', 2);
+    set(p4(1), 'Color', '#0072BD')
+    axis tight
+    set (gca, 'fontsize', 22)
+    xticks([290 300])
+    xticklabels({'290' '300'})
