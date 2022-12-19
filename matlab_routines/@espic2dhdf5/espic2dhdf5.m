@@ -2034,16 +2034,19 @@ classdef espic2dhdf5
             if nargin<2
                 timesteps=1:length(obj.t2d);
             end
-            if nargin<3
+            if nargin<4
                 scalet=true;
             end
-            if nargin <4
+            if nargin<3
+                toptitle = "";
+            end
+            if nargin <5
                 dens=true;
             end
-            if nargin<5
+            if nargin<6
                 subdiv=1;
             end
-            if nargin<6
+            if nargin<7
                 nmean=1;
             end
             

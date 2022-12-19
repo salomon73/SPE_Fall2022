@@ -1,0 +1,109 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+\documentclass[aspectratio=169,xcolor=dvipsnames,8pt]{beamer}
+\usetheme{Simple}
+\usefonttheme[onlymath]{serif}
+\usepackage{hyperref}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+\usepackage{tikz}
+\newcommand{\beq}{\begin{equation}}
+\newcommand{\eeq}{\end{equation}}
+\newcommand{\bes}{\begin{split}}
+\newcommand{\ees}{\end{split}}
+\newcommand{\BB}{\textbf{B}}
+\newcommand{\jj}{\textbf{j}}
+\newcommand{\x}{\times}
+\newcommand{\ii}{\iota}
+\newcommand{\iotaa}{\bar{\iota}}
+\newcommand{\dd}{\partial}
+\graphicspath{{./Figures/}}  
+
+\setbeamersize{text margin left=14mm,text margin right=14mm}
+\defbeamertemplate{section in toc}{sections numbered roman}{%
+  \leavevmode%
+  \MakeUppercase{\romannumeral\inserttocsectionnumber}.\ %
+  \inserttocsection\par}
+\defbeamertemplate{subsection in toc}{bullets}{%
+  \leavevmode
+  \parbox[t]{1em}{\textbullet\hfill}%
+  \parbox[t]{\dimexpr\textwidth-1em\relax}{\inserttocsubsection}\par}
+  
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+% The title
+\title[Summary]{Numerical study of the effect of secondary electron emission on the dynamics of electron clouds in gyrotron guns}
+
+\author[S.Guinchard] {S. ~Guinchard$^{1}$, G. ~Le Bars$^{2}$}
+\institute[SPH] % Your institution may be shorthand to save space
+{
+    % Your institution for the title page
+    $^1$ Ecole Polytechnique Fédérale de Lausanne (EPFL), Physics Section (SPH), CH-1015 Lausanne, Switzerland\\
+    $^2$ Ecole Polytechnique Fédérale de Lausanne (EPFL), Swiss Plasma Center (SPC), CH-1015 Lausanne, Switzerland\\
+    \vspace{1cm}
+}
+\date{\today} % Date, can be changed to a custom date
+
+% Background
+\usebackgroundtemplate%
+{%
+\includegraphics[width=0.85\paperwidth,height=\paperheight]{Figures/Beamer_background}%}
+}
+\setbeamertemplate{section in toc}[sections numbered roman]
+%\setbeamertemplate{subsection in toc}[bullets]
+
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\begin{frame}
+    % Print the title page as the first slide
+    \titlepage
+\end{frame}
+
+% TABLE OF CONTENTS %
+\begin{frame}
+\tableofcontents
+\end{frame}
+%_________
+
+% ------------ INTRODUCTION -------------% 
+\section{Introduction}
+\begin{frame}{I. Introduction}
+
+\end{frame}
+%_______
+\begin{frame}{About the problem}
+
+\end{frame}
+%_______
+
+
+% ---------- THEORY ---------------% 
+\section{Theory}
+\begin{frame}{II. Theory}
+
+\end{frame}
+
+\subsection{Choosing a model}
+\begin{frame}{Choosing a model}
+
+\end{frame}
+
+
+% ------------ RESULTS ----------------- %
+\section{Results}
+\begin{frame}{III. Results}
+\end{frame}
+% ------------ REFERENCES ---------------
+\begin{frame}{References}
+
+\end{frame}
+% ------------------------------------------------ %
+\end{document}
