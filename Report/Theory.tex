@@ -56,7 +56,24 @@ The potential emissions model that has been chosen to treat ion-induced electron
 \gamma \sim \frac{0.2}{\epsilon_F}\big( 0.8 \cdot E_i -2 \phi \big),\label{pot_em}
 \eeq
 
-\noindent where $\epsilon_F$ denotes the Fermi energy of the metal constituting the target material, $\phi$ its work function, and $E_i$ the ionisation energy required initially to produce the incident ions. For hydrogen, this ionisation energy is $E_H \simeq 13.6$ eV. 
+\noindent where $\epsilon_F$ denotes the Fermi energy of the metal constituting the target material, $\phi$ its work function, and $E_i$ the ionisation energy required initially to produce the incident ions. For hydrogen, this ionisation energy is $E_H \simeq 13.6$ eV. To justify this last expression, let us briefly resume the steps followed by Kishinevsky. Hagstrum had identified in \cite{Hagstrum} that the electron yield induced by potential emissions followed: 
+
+\beq
+\gamma := \int_{\epsilon_0}^{\infty} N_i(\epsilon_K)P_e(\epsilon_K)d\epsilon_K,
+\eeq
+
+with $N_i(\epsilon_K)$ the energy distribution of Auger electrons inside the metal. The energy of the electrons is denoted by $\epsilon_K$, and $\epsilon_0$ is defined as $\epsilon_0:=\epsilon_F-\phi$. Note that $P_e(\epsilon_K)$ is the probability that the electron with energy $\epsilon_K$ overcomes the potential barrier at the surface of the metal. Studying experimentally the dependence of the yield on several parameters, it has been shown that the yield is a function of only three parameters $\gamma \equiv \gamma(\epsilon_F, \phi, E_i)$.\\
+
+\noindent Kishinevksy then reviewed yield values at fixed parameters. Fixing $(\phi, E_i)$, he managed to show that $\gamma_{(\phi,E_i)} \simeq \frac{cst}{\epsilon_F}$. Applying the same procedure for $\epsilon_F$ and $E_i$, he managed to constrain $\gamma$ as follow: 
+
+\beq
+\begin{split}
+\gamma \simeq \frac{0.2}{\epsilon_F}\big( 0.8 \cdot E_i -2 \phi \big), \\
+\gamma 
+\eeq
+
+
+
 
 \subsection{TRapped Electrons eXperiment TREX}
 \begin{itemize}
