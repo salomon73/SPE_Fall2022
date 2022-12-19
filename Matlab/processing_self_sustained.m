@@ -6,4 +6,4 @@ filename = 'H2Slanted_1e-12.h5';
 ions     = espic2dhdf5(filename);
 
 %%
-ions.displaytotcurrevol_geom(1:10:length(ions.t2d))
+ions.displaytotcurrevol_geom(length(ions.t2d)-500:10:length(ions.t2d))
