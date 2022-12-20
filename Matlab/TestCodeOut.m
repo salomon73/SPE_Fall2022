@@ -166,7 +166,7 @@ figure
 
 %% Energy loss in electrode and yield%%
 
-out = Stainless();
+out = Aluminum();
 E   = out.E;
 Eloss = out.Eloss;
 element = out.element;
@@ -219,7 +219,43 @@ figure
     set(legend,'FontSize',20);
     set (gca, 'fontsize', 22)
 
+%% Find best fit for dE/dx curve - piecewise %%
 
+index   = find(E<1e-2);
+energie = E(index);
+dEdx    = Eloss(index);
+
+figure
+plot(energie, dEdx);
+hold on 
+plot(energie, polyval(P,energie), 'k--')
+hold on 
+plot(energie,polyval(P1,energie), 'r--')
+
+
+%% BEST FITTING POLYNOMIAL %%
+index   = find( (3e-2<= E) &(E<=5e-2));
+energie = E(index);
+dEdx    = Eloss(index);
+pquad = polyfit(energie,dEdx, 2);
+plin  = polyfit(energie, dEdx, 1);
+figure
+    plot(energie, dEdx, 'k+-', 'linewidth', 2)
+    hold on 
+    plot(energie, polyval(pquad,energie), 'r--',  'linewidth', .75);
+    hold on 
+    plot(energie, polyval(P4,energie), 'g--',  'linewidth', .75)
+    hold on 
+    plot(energie, polyval(plin,energie), 'b--',  'linewidth', .75)
+    ylabel('$\frac{dE}{dx}$ [Mev/cm]', 'interpreter', 'latex','Fontsize', 22)
+    xlabel('$E$ [Mev]', 'interpreter', 'latex', 'Fontsize', 22)
+    set (gca, 'fontsize', 24)
+
+% figure
+% subplot(2,2,1)
+% subplot(2,2,2)
+% subplot(2,2,3)
+% subplot(2,2,4)
 %% Plot of energy as a function of initial position R0 and yield %%
 r = linspace(rA,rB, 10000);
 E_r = 1.602*1e-19/(1.602*1e-19) * (-(phiB-phiA)*log(r./rA)./log(rB./rA) + phiA);
@@ -298,19 +334,6 @@ figure
     set(legend,'FontSize',20);
     set (gca, 'fontsize', 22);
 
-%% Find best fit for dE/dx curve - piecewise %%
-
-index   = find(E<5e-2);
-energie = E(index);
-dEdx    = Eloss(index);
-
-figure
-plot(energie, dEdx);
-hold on 
-plot(energie, polyval(P,energie), 'k--')
-hold on 
-plot(linspace(0,5e-2, 1000),polyval(P,linspace(0,5e-2, 1000)), 'r--' )
-
 
 %% Energy loss in electrode and yield%%
 
@@ -349,21 +372,21 @@ y4    = polyval(P4,E(IndicesFit4));
 figure
     semilogx(E,Eloss, 'r+-', 'linewidth', 2)
     hold on
-    plot(E(IndicesFit1),y1, 'k-', 'linewidth', 1);
+    plot(E(IndicesFit1),y1, 'k-', 'linewidth', 1.5);
     hold on 
-    plot(E(IndicesFit2),y2, 'g-', 'linewidth', 1);
+    plot(E(IndicesFit2),y2, 'g-', 'linewidth', 1.5);
     hold on 
-    plot(E(IndicesFit3),y3, 'b-', 'linewidth', 1);
+    plot(E(IndicesFit3),y3, 'b-', 'linewidth', 1.5);
     hold on 
-    plot(E(IndicesFit4),y4, 'y-', 'linewidth', 1);
+    plot(E(IndicesFit4),y4, 'y-', 'linewidth', 1.5);
     hold on
     plot(EnergyRange(1)*ones(1,141),linspace(0,2500,141), 'w--', 'linewidth', 1)
     hold on 
-    plot(E(IndicesFit1(1))*ones(1,141),linspace(0,2500,141), 'g--', 'linewidth', 1)
+    plot(E(IndicesFit1(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
     hold on 
     plot(E(IndicesFit2(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
     hold on 
-    plot(E(IndicesFit3(1))*ones(1,141),linspace(0,2500,141), 'b--', 'linewidth', 1)
+    plot(E(IndicesFit3(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
     hold on 
     plot(E(IndicesFit4(1))*ones(1,141),linspace(0,2500,141), 'k--', 'linewidth', 1)
     hold on 
