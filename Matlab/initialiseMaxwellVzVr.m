@@ -1,3 +1,5 @@
+    %% Initialise particles coordinates and velocities to scan in TREX geom %%
+    
     %% Add all paths containing outputs %%
     AddAllPaths();
     
@@ -288,9 +290,9 @@
     format long 
     
     % Energy parameters % 
-    lowerBound = 0.1;
-    upperBound = 15;
-    nPoints = 10; % # values to scan E 
+    lowerBound = 2;
+    upperBound = 2;
+    nPoints = 1; % # values to scan E 
     E = linspace(lowerBound, upperBound, nPoints);
     
     % geom parameters %
@@ -302,7 +304,7 @@
     Zlim   = [0.34 0.40];
     
     % particles parameters %
-    nElectrons = 25;
+    nElectrons = 20;
     PointsZ = linspace(Zlim(1), Zlim(2), nElectrons);
     PointsR = rA+dr;
     Points  = [ PointsR * ones(size(PointsZ));PointsZ ];
