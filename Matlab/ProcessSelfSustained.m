@@ -2,7 +2,6 @@
     addpath(genpath('/home/sguincha/espic2d/matlab'))
     ions = espic2dhdf5('H2Slanted_1e-12.h5') 
 
-
 %% display current collected in different regions
     ions.displaytotcurrevol(1:10:length(ions.t2d))
 
