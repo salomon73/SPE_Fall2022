@@ -9,7 +9,8 @@
 %% display surface current density collected in different regions
     ions.displaySurfFlux(length(ions.t2d))
 
-%% process surf flux
+%% process surf flux for electronic current
+
     subdiv=1;
     timestep = length(ions.t2d)-1000;
     mflux= ions.Metallicflux(timestep,subdiv);
@@ -120,7 +121,7 @@
         temps(compteur) = time;
 %         peak1(ii) = flux(Ind(end));
 %         peak2(ii) = flux(Ind(end-1));
-    end
+    end            time=obj.t2d(timestep);
 %%
     avg1 = smoothdata(peak1);
     avg2 = smoothdata(peak2);
@@ -140,3 +141,15 @@
     legend('$J_{max}^{i}$', '$J_{max}^{c}$','Location','best','Interpreter','latex');
     set (gca, 'FontSize', 24)
     set (legend, 'FontSize', 20)
+    
+    
+%% process the surf flux for ionic current
+
+    mflux= obj.MetallicFlux_species(timestep,subdiv);
+    lflux= -squeeze(obj.Axialflux(timestep,1,species_id))';
+    rflux= squeeze(obj.Axialflux(timestep,length(obj.zgrid),species_id))';
+    time=obj.t2d(timestep);
+    
+    
+    
+    
