@@ -6,7 +6,7 @@
     ions.displaytotcurrevol(1:10:length(ions.t2d))
 
 %% display surface current density collected in different regions
-    ions.displaySurfFlux(length(ions.t2d))
+    ions.displaySurfFlux(length(ions.t2d),1,1)
 
 %% process surf flux
     subdiv=1;
