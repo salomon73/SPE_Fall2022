@@ -162,7 +162,7 @@
             %ions.displaysplbound(gca,1e3);
             contour(ions.zgrid*1e3,ions.rgrid*1e3,ions.geomweight(:,:,1),[0 0],'b-','linewidth',1.5);
             hold on
-            for i=1:length(mflux.p)
+            for i=2%:length(mflux.p)
                 x=mflux.p{i}(1,:)*1000;
                 y=mflux.p{i}(2,:)*1000;
                 y(end)=NaN;
