@@ -18,7 +18,7 @@
     % -> electrons initialised with normal velocity
     % -> electrons with varying components along (r,z)
     % Read PartInfoV0
-    load('PartInfos.mat')>
+    load('PartInfos.mat')
     
     
     % Added species characteristics % 
