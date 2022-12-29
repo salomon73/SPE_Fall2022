@@ -1,0 +1,75 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: SpeMain.aux
+The style file: alpha.bst
+Database file #1: SpeMainNotes.bib
+Database file #2: references.bib
+You're missing a field part---line 242 of file references.bib
+ : number = 
+ :          ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "BorisAlg"
+Warning--I didn't find a database entry for "sources"
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1185 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1185 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1185 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1185 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1185 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1185 of file alpha.bst
+Warning--empty journal in AlbertiThesis
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1250 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1250 of file alpha.bst
+Too many commas in name 1 of "Dietmar Hasselkamp, Hermann Rothard, Karl-Ontjes Groeneveld, Jürgen Kemmler, Peter Varga, Hannspeter Winter" for entry HasselII
+while executing---line 1250 of file alpha.bst
+Warning--empty year in HasselII
+Warning--empty journal in GenoudThesis
+You've used 10 entries,
+            2543 wiz_defined-function locations,
+            631 strings with 6379 characters,
+and the built_in function-call counts, 3794 in all, are:
+= -- 358
+> -- 165
+< -- 10
++ -- 55
+- -- 54
+* -- 279
+:= -- 629
+add.period$ -- 29
+call.type$ -- 10
+change.case$ -- 63
+chr.to.int$ -- 9
+cite$ -- 13
+duplicate$ -- 160
+empty$ -- 280
+format.name$ -- 68
+if$ -- 767
+int.to.chr$ -- 2
+int.to.str$ -- 0
+missing$ -- 9
+newline$ -- 53
+num.names$ -- 31
+pop$ -- 66
+preamble$ -- 1
+purify$ -- 74
+quote$ -- 0
+skip$ -- 123
+stack$ -- 0
+substring$ -- 200
+swap$ -- 22
+text.length$ -- 10
+text.prefix$ -- 6
+top$ -- 0
+type$ -- 76
+warning$ -- 3
+while$ -- 31
+width$ -- 12
+write$ -- 126
+(There were 10 error messages)
