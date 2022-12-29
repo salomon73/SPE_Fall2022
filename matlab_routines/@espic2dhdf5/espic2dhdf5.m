@@ -1154,8 +1154,7 @@ classdef espic2dhdf5
                 for jj = 1:length(timestep)
 
                     flux = qe*mflux.gamma{ii}(:,jj)'.*mflux.p{ii}(2,:);
-                    flux = flux(~isnan(flux));
-                    Im(ii,jj) =  2*pi*trapz(mflux.p{ii}(1,~isnan(flux)), flux);  
+                    Im(ii,jj) =  2*pi*trapz(mflux.p{ii}(1,~isnan(flux)), flux(~isnan(flux)));  
                 end
             end
             
