@@ -1098,40 +1098,71 @@ classdef espic2dhdf5
         end
         
         
+%         function [I, pos]=OutCurrents_species(obj,timestep, subdiv)
+%             % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
+%             % This is simply the surface integral of the axial flux
+%             if nargin<3
+%                 subdiv=1;
+%             end
+%             flux=obj.Axialflux(timestep,[1 obj.nz+1],2);
+%             Iz=squeeze(trapz(obj.species(1).rgrid,-flux.*obj.species(1).rgrid)*2*pi*obj.species.q);
+%             Iz(1,:)=-Iz(1,:);
+%             gamm=obj.MetallicFlux_species(timestep, subdiv);
+%             qe = obj.species.q;
+%             % OK TILL HERE
+% %           c=mflux.gamma{i}'*qe/(100^2)/P;
+%             Im=zeros(length(gamm.p),length(timestep));
+%             pos=cell(size(gamm.p));
+% 
+%             for i=1:length(gamm.p)
+%                 p=gamm.p{i};
+%                 pos{i}=p;
+%                 flux=gamm.gamma{i}'*obj.species.q;
+%                 for j=1:length(timestep)
+% %                     Im(i,j)=pi/2*sum((p(2,1:end-1)+p(2,2:end)).*(flux(2:end,j)+flux(1:end-1,j))'...
+% %                         .*sqrt((p(1,2:end)-p(1,1:end-1)).^2+(p(2,2:end)-p(2,1:end-1)).^2));
+%                     
+%                     %AxialDensity = flux(j,:).*sqrt(p(1,:).^2 + p(2,:).^2);
+%                     AxialDensity = flux(j,:).* p(2,:);
+%                     Im(i,j) = 2*pi*trapz(p(1,~isnan(AxialDensity)),AxialDensity(~isnan(AxialDensity)));
+%                 end
+%             end
+%             Im = flip(Im);
+%             I=-cat(1,Iz,Im);
+%         end
+
+
+
         function [I, pos]=OutCurrents_species(obj,timestep, subdiv)
             % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
-            % This is simply the surface integral of the axial flux
+            % This is simply the surface integral of the axial flux for
+            % ions
             if nargin<3
                 subdiv=1;
             end
             flux=obj.Axialflux(timestep,[1 obj.nz+1],2);
-            Iz=squeeze(trapz(obj.species(1).rgrid,-flux.*obj.species(1).rgrid)*2*pi*obj.species.q);
+            Iz=squeeze(trapz(obj.species(1).rgrid,flux.*obj.species(1).rgrid)*2*pi*obj.species.q);
             Iz(1,:)=-Iz(1,:);
-            gamm=obj.MetallicFlux_species(timestep, subdiv);
-            qe = obj.species.q;
-            % OK TILL HERE
-%           c=mflux.gamma{i}'*qe/(100^2)/P;
-            Im=zeros(length(gamm.p),length(timestep));
-            pos=cell(size(gamm.p));
+            mflux = obj.MetallicFlux_species(timestep,subdiv);
+            qe = abs(obj.species.q); % ions charge
 
-            for i=1:length(gamm.p)
-                p=gamm.p{i};
-                pos{i}=p;
-                flux=gamm.gamma{i}'*obj.species.q;
-                for j=1:length(timestep)
-%                     Im(i,j)=pi/2*sum((p(2,1:end-1)+p(2,2:end)).*(flux(2:end,j)+flux(1:end-1,j))'...
-%                         .*sqrt((p(1,2:end)-p(1,1:end-1)).^2+(p(2,2:end)-p(2,1:end-1)).^2));
-                    
-                    %AxialDensity = flux(j,:).*sqrt(p(1,:).^2 + p(2,:).^2);
-                    AxialDensity = flux(j,:).* p(2,:);
-                    Im(i,j) = 2*pi*trapz(p(1,:),AxialDensity);
+            Im=zeros(length(mflux.p),length(timestep));
+            pos=cell(size(mflux.p));
+            
+            for ii =1:length(mflux.gamma) 
+                pos{ii}=mflux.p{ii};
+                for jj = 1:length(timestep)
+
+                    flux = qe*mflux.gamma{ii}(:,jj)'.*mflux.p{ii}(2,:);
+                    Im(ii,jj) =  2*pi*trapz(mflux.p{ii}(1,~isnan(flux)), flux(~isnan(flux)));  
                 end
             end
-            Im = flip(Im);
-            I=-cat(1,Iz,Im);
+            
+            I=cat(1,Iz,Im);
         end
         
-
+        
+        
         
         function [pot] = PotentialWell(obj,fieldstep)
             %PotentialWell Computes the potential well at the given timestep on the FEM grid points
