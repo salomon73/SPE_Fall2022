@@ -7,6 +7,12 @@ Stefano Alberti.
   relativistes - onde électromagnétique dans un gyrotron quasi-optique.
 \newblock page 163, 1991.
 
+\bibitem[Bar93]{baragiola}
+Raúl~A. Baragiola.
+\newblock Principles and mechanisms of ion induced electron emission.
+\newblock {\em Nuclear Instruments and Methods in Physics Research Section B:
+  Beam Interactions with Materials and Atoms}, 78(1):223--238, 1993.
+
 \bibitem[DH]{HasselII}
 Karl-Ontjes Groeneveld Jürgen Kemmler Peter Varga Hannspeter~Winter
   Dietmar~Hasselkamp, Hermann~Rothard, editor.
@@ -17,7 +23,7 @@ Karl-Ontjes Groeneveld Jürgen Kemmler Peter Varga Hannspeter~Winter
 Jérémy Genoud.
 \newblock Advanced linear models for gyro-backward wave instabilities in
   gyrotrons.
-\newblock page 169, 2019.
+\newblock page~4, 2019.
 
 \bibitem[Hag54]{Hagstrum}
 Homer~D. Hagstrum.
