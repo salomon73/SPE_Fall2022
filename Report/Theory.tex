@@ -3,7 +3,7 @@
 \subsection{Gyrotron guns and trapping phenomena}
 
 
-Gyrotrons are microwaves generator devices used in plasma heating and current drive applications for fusion purposes \cite{Pagonakis}. The operating mode of gyrotron guns is based on the electron cyclotron maser instability. This instability occurs when a beam of relativistic electrons, gyrating around magnetic field lines, interact with the transverse component of the electric field. The transverse electrons' energy is then converted in electromagnetic waves in an open, resonant cavity. More precisely, the interaction takes place between the electron beam and a transverse electric mode TE$_{m,p,q}$ supported by the cavity, see Fig.(\ref{modes} - Left). The subscripts $m,p,q$ denote respectively the azimuthal, radial and longitudinal mode numbers. When the pulsation of the EM wave inside of the cavity equals the relativistic electron cyclotron (EC) frequency, that is $\omega = \omega_e/\gamma$, a group of electrons with initially no phase relation, will, under the action of the field, regroup and gyrate in phase, as a whole. This is called 'phase bunching', see Fig.(\ref{modes} - Right). Note that we define $\omega$, $\omega_e$ as the EM wave and the EC frequencies respectively, and $\gamma$ the Lorenz factor.  Then, increasing the frequency $\omega$, after an integer number of periods, the electrons will be in a region such that their transverse velocity is on average positive, $\braket{v_x} > 0$ \cite{AlbertiThesis}. Using that the electrons energy $W$ varies as $dW/dt = -|e|v_xE_x$, the energy variation is negative, and by conservation, the latter is converted in EM energy.\\
+Gyrotrons are microwaves generator devices used in plasma heating and current drive applications for fusion purposes \cite{Pagonakis}. The operating mode of gyrotron guns is based on the electron cyclotron maser instability (CMI). This instability occurs when a beam of relativistic electrons, gyrating around magnetic field lines, interact with the transverse component of the electric field. The transverse electrons' energy is then converted in electromagnetic waves in an open, resonant cavity. More precisely, the interaction takes place between the electron beam and a transverse electric mode TE$_{m,p,q}$ supported by the cavity, see Fig.(\ref{modes} - Left). The subscripts $m,p,q$ denote respectively the azimuthal, radial and longitudinal mode numbers. When the pulsation of the EM wave inside of the cavity equals the relativistic electron cyclotron (EC) frequency, that is $\omega = \omega_e/\gamma$, a group of electrons with initially no phase relation, will, under the action of the field, regroup and gyrate in phase, as a whole. This is called 'phase bunching', see Fig.(\ref{modes} - Right). Note that we define $\omega$, $\omega_e$ as the EM wave and the EC frequencies respectively, and $\gamma$ the Lorenz factor.  Then, increasing the frequency $\omega$, after an integer number of periods, the electrons will be in a region such that their transverse velocity is on average positive, $\braket{v_x} > 0$ \cite{AlbertiThesis}. Using that the electrons energy $W$ varies as $dW/dt = -|e|v_xE_x$, the energy variation is negative, and by conservation, the latter is converted in EM energy.\\
 
 \begin{figure}[h!]
 \centering
@@ -13,15 +13,13 @@ Gyrotrons are microwaves generator devices used in plasma heating and current dr
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[width = 0.75 \textwidth]{gyrotron_schematics_2}
-	\caption{\label{gyrotron} Schematic of a gyrotron gun and its different constituents. Source: courtesy of S. Alberti.}
+	\includegraphics[width = 0.85 \textwidth]{gyrotron_schematics_3}
+	\caption{\label{gyrotron} Right: Schematic of a gyrotron gun and its different constituents. Source: courtesy of S. Alberti - Left: Zoomed view of the MIG \cite{TREX}}
 \end{figure}  
 
 \noindent On top of the cavity lies a mode converter so that the frequency of the emitted microwaves matches one of the plasma resonance frequencies. The radiation is then reflected by several mirrors and directed through a diamond window so it can penetrate the plasma, see Fig.(\ref{gyrotron}). The most common heating frequency corresponds to the electrons' gyrofrequency $\omega_e$, or some of its harmonics. In that case, we speak of electron cyclotron resonance heating (ECRH). It is when the electromagnetic wave has a component along the toroidal magnetic field that it can induce a current. The latter phenomenon is called electron cyclotron current drive (ECCD).\\
 
-
-
-All the previously described events occur in the gyrotron cavity, or after the latter. However, the beam quality as it enters the cavity is very important, since it will, among others, participate to the interaction efficiency \cite{Pagonakis}.
+All the previously described events occur in the gyrotron cavity, or after the latter. However, the beam quality as it enters the cavity is very important, since it will, among others, participate to the interaction efficiency \cite{Pagonakis}. The beam is generated by an electron gun, also called magnetron injection gun (MIG). An axial cross section of the MIG is depicted in the left part of Fig.(\ref{gyrotron}). It consists in a cylindrical cathode around a coaxial insert, and a cylindrical anode of a larger radius around it. The beam electrons are produced by thermo-emission. The electrons are accelerated by the electric field and guided through the exit of the MIG by mean of the magnetic field present as shown in Fig.(\ref{gyrotron}), so they can reach the cavity where they will achieve the collective gyro-motion from the CMI. Nevertheless, multiple phenomena can disrupt the functioning of the MIG, among which the formation of trapped electron clouds at the back of the MIG \cite{Pagonakis, lebars_et_al}. Indeed, as the local population of electrons increase inside the MIG cavity, discharges phenomena can occur when a certain critical value is reached. Thus, voltage stand-off problems can follow from discharges \cite{ITER_gyrotron}, that were later attributed to the presence of these trapped electrons.  
 
 \subsection{TRapped Electrons eXperiment TREX}
 \begin{itemize}
@@ -29,6 +27,12 @@ All the previously described events occur in the gyrotron cavity, or after the l
 \item{What we hope to see}
 \item{Comparisons with our module ?}
 \end{itemize}
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 0.65 \textwidth]{TREX_schematics}
+	\caption{\label{TREX_schematics} Schematic of the TREX experiment \cite{TREX}.}
+\end{figure}  
 
 
 \subsection{The FENNECS code}
