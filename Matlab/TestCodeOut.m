@@ -495,8 +495,9 @@ figure
     hold on 
     plot(linspace(0,10,10), ones(1,10), 'k-', 'linewidth', 2)
     hold on 
-    p = pcolor(R,Z,ones(2,10));
+    p = surf(R,Z,ones(2,10));
     set(p, 'FaceAlpha', 0.4)
+    set(p, 'FaceColor', 'r')
     shading interp
     hold on 
     plot(2,1.04, 'bo', 'MarkerSize', 10,  'MarkerFaceColor', 'b')

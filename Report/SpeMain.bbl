@@ -1,0 +1,92 @@
+\newcommand{\etalchar}[1]{$^{#1}$}
+\begin{thebibliography}{LBHL{\etalchar{+}}22}
+
+\bibitem[Alb91]{AlbertiThesis}
+Stefano Alberti.
+\newblock Etude expérimentale de l'interaction faisceau d'électrons
+  relativistes - onde électromagnétique dans un gyrotron quasi-optique.
+\newblock pages 2--5, 1991.
+
+\bibitem[Bar93]{baragiola}
+Raúl~A. Baragiola.
+\newblock Principles and mechanisms of ion induced electron emission.
+\newblock {\em Nuclear Instruments and Methods in Physics Research Section B:
+  Beam Interactions with Materials and Atoms}, 78(1):223--238, 1993.
+
+\bibitem[BLVV85]{BorisAlg}
+C.K. Birdsall, A.B. Langdon, J.P. Verboncoeur, and V.~Vehedi.
+\newblock {\em Plasma Physics Via Computer Simulation}.
+\newblock Adam Hilger series on plasma physics. McGraw-Hill, 1985.
+
+\bibitem[DH]{HasselII}
+Karl-Ontjes Groeneveld Jürgen Kemmler Peter Varga Hannspeter~Winter
+  Dietmar~Hasselkamp, Hermann~Rothard, editor.
+\newblock {\em Particle Induced Electron Emission II}.
+\newblock Springer Berlin, Heidelberg.
+
+\bibitem[Gen19]{GenoudThesis}
+Jérémy Genoud.
+\newblock Advanced linear models for gyro-backward wave instabilities in
+  gyrotrons.
+\newblock page~4, 2019.
+
+\bibitem[Hag54]{Hagstrum}
+Homer~D. Hagstrum.
+\newblock Theory of auger ejection of electrons from metals by ions.
+\newblock {\em Phys. Rev.}, 96:336--365, Oct 1954.
+
+\bibitem[HGA{\etalchar{+}}09]{ITER_gyrotron}
+J.-P. Hogge, T.~P. Goodman, S.~Alberti, F.~Albajar, K.~A. Avramides, P.~Benin,
+  S.~Bethuys, W.~Bin, T.~Bonicelli, A.~Bruschi, S.~Cirant, E.~Droz,
+  O.~Dumbrajs, D.~Fasel, F.~Gandini, G.~Gantenbein, S.~Illy, S.~Jawla, J.~Jin,
+  S.~Kern, P.~Lavanchy, C.~LiÉvin, B.~MarlÉtaz, P.~Marmillod, A.~Perez,
+  B.~Piosczyk, I.~Pagonakis, L.~Porte, T.~Rzesnickl, U.~Siravo, M.~Thumm, and
+  M.~Q. Tran.
+\newblock First experimental results from the european union 2-mw coaxial
+  cavity iter gyrotron prototype.
+\newblock {\em Fusion Science and Technology}, 55(2):204--212, 2009.
+
+\bibitem[Jan82a]{Janni_vol1}
+Joseph~F. Janni.
+\newblock Energy loss, range, path length, time-of-flight, straggling, multiple
+  scattering, and nuclear interaction probability: In two parts. part 1. for 63
+  compounds part 2.
+\newblock {\em Atomic Data and Nuclear Data Tables}, 27(2):147--339, 1982.
+
+\bibitem[Jan82b]{Janni_vol2}
+Joseph~F. Janni.
+\newblock Energy loss, range, path length, time-of-flight, straggling, multiple
+  scattering, and nuclear interaction probability: In two parts. part 1. for 63
+  compounds part 2.
+\newblock {\em Atomic Data and Nuclear Data Tables}, 27(4):341--529, 1982.
+
+\bibitem[Kis73]{kishi73}
+L.~M. Kishinevsky.
+\newblock Estimation of electron potential emission yield dependence on metal
+  and ion parameters.
+\newblock {\em Radiation Effects}, 19(1):23--27, 1973.
+
+\bibitem[LB22]{fennecs}
+Guillaume Le~Bars.
+\newblock Models, manual and validations for fennecs code, 2022.
+
+\bibitem[LBHL{\etalchar{+}}22]{lebars_et_al}
+G.~Le~Bars, J.-Ph. Hogge, J.~Loizu, S.~Alberti, F.~Romano, and A.~Cerfon.
+\newblock Self-consistent formation and steady-state characterization of
+  trapped high-energy electron clouds in the presence of a neutral gas
+  background.
+\newblock {\em Physics of Plasmas}, 29(8):082105, 2022.
+
+\bibitem[PPZ{\etalchar{+}}16]{Pagonakis}
+Ioannis~Gr. Pagonakis, Bernhard Piosczyk, Jianhua Zhang, Stefan Illy, Tomasz
+  Rzesnicki, Jean-Philippe Hogge, Konstantinos Avramidis, Gerd Gantenbein,
+  Manfred Thumm, and John Jelonnek.
+\newblock Electron trapping mechanisms in magnetron injection guns.
+\newblock {\em Physics of Plasmas}, 23(2):023105, 2016.
+
+\bibitem[RAH{\etalchar{+}}22]{TREX}
+F~Romano, S~Alberti, J.P Hogge, J~Genoud, G~Le~Bars, and J~Loiozu.
+\newblock The trapped electrons experiment (t-rex).
+\newblock 2022.
+
+\end{thebibliography}
