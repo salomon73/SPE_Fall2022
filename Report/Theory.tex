@@ -210,7 +210,7 @@ P(E) = \frac{1}{\Gamma(\kappa)\theta^{\kappa}}E^{\kappa-1}e^{-\frac{E}{\theta}},
 C(E) = \frac{1}{\Gamma(\kappa)}\gamma{\Big(\kappa, \frac{E}{\theta}\Big)},
 \eeq
 
-where $\gamma{\Big(\kappa, \frac{E}{\theta}\Big)}$ is the lower incomplete gamma function.\\ 
+\noindent where $\gamma{\Big(\kappa, \frac{E}{\theta}\Big)}$ is the lower incomplete gamma function.\\ 
 
 
 \noindent Regarding the numerical implementation of the electron energy distribution in the FENNECS code, the same procedure as to produce a random number of electrons was applied, but in that case, the random numbers generated would not be integer anymore, and would follow a gamma distribution instead of Poisson. The difference in the number generation lies mostly in the discretisation of the range of values that could be taken. For Poisson generated numbers, only integer values can be taken, and hence, the construction conducted previously leads to exactly Poisson distributed values. In the case of the electrons' energy, the latter can physically vary on a continuum. Our energy-values generator is hence limited by the degree of precision in the discretisation of the energy range. However, for our purpose, that is of a qualitative survey of the behavior of ion-induced electrons, such precision is not required, since according to the large electric field values, no significant effect of the initial electrons' energy is to be expected. 
@@ -221,9 +221,17 @@ where $\gamma{\Big(\kappa, \frac{E}{\theta}\Big)}$ is the lower incomplete gamma
 \item{Take $E$ as $E := \min_{\tilde{E}} |r-C_{\Gamma}(\tilde{E})|$}.
 \end{enumerate}
 
+\noindent Fig.(\ref{gamma_hist}) shows that our gamma random-number generator functions correctly. Indeed, following the same procedure as to statistically test the Poisson generator, one sees that over a large number of counts, the obtained distribution matches the gamma PDF. 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{gamma_hist_restr.eps}
+	\caption{\label{gamma_hist}  }
+\end{figure}  
 
 
-Regarding the implementation of the electron generation by the lost ions in itself, it consisted simply in combining the previous steps each time an ion was to hit the cathode. The full numerical treatment consisted in identifying the ions that would hit the cathode and apply the external module taking account for electron emissions. Summing up the steps, each ion that disappeared would be identified evaluating the geometric weight, which would state that the particle is no longer in the simulation domain. Then, its energy would be evaluated, so that the average yield $\gamma(E)$ would serve in generating a random number of electrons, for which some additional memory would have been allocated. These electrons would then be placed initially at the last position \emph{inside} the domain, and be given an energy randomly generated according to the gamma law from above. Then ion could then safely be removed from the particles, and the electrons would contribute to the newly updated population of particles. In light of that, it is important that the time step is short enough so the last recorded ion positions before they get removed, are close enough to the electrode, to avoid any spread effect as in Fig.(\ref{ion_spread}). However, since the electrons are to be tracked to evaluate their potential contribution to any electron cloud, the time step should be already little enough. Fig.(\ref{scheme}) illustrates the numerical treatment of cathode colliding ions. 
+
+To put the module functioning in a nutshell, the process of generating electrons out of the ions loss consisted simply in combining the previous steps each time an ion was to hit the cathode. The full numerical treatment consisted in identifying the ions that would hit the cathode and apply the external module taking account for electron emissions. Summing up the steps, each ion that disappeared would be identified evaluating the geometric weight, which would state that the particle is no longer in the simulation domain. Then, its energy would be evaluated, so that the average yield $\gamma(E)$ would serve in generating a random number of electrons, for which some additional memory would have been allocated. These electrons would then be placed initially at the last position \emph{inside} the domain, and be given an energy randomly generated according to the gamma law from above. Then ion could then safely be removed from the particles, and the electrons would contribute to the newly updated population of particles. In light of that, it is important that the time step is short enough so the last recorded ion positions before they get removed, are close enough to the electrode, to avoid any spread effect as in Fig.(\ref{vert_spread}). However, since the electrons are to be tracked to evaluate their potential contribution to any electron cloud, the time step should be already little enough. Fig.(\ref{scheme}) illustrates the numerical treatment of cathode colliding ions. 
 
 \begin{figure}[h!]
 \centering
