@@ -2,8 +2,11 @@
     
     %% if only 1 plot
     hContour = fig.Children(2).Children(1)
-    % if subplot
+    %% if subplot
     hContour = fig.Children.Children(1).Children(5);
+    %% for electrode
+    fig.Children(2).Children(10)
+    %%
     hFills=hContour.FacePrims;
             [hFills.ColorType] = deal('truecoloralpha');  % default = 'truecolor'
             try
