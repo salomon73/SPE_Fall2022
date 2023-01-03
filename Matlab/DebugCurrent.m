@@ -46,3 +46,37 @@ hold on
 plot(current(1,:))
 hold on 
 plot(current(2,:))
+
+
+
+%% Metallic fluxes 
+% TO SHOW TO GUILLAUME
+
+figure
+hold on 
+plot(mfluxe.p{1}(1,:), mfluxe.gamma{1}(:,1)')
+plot(mfluxe.p{2}(1,:), mfluxe.gamma{2}(:,1)')
+xlabel('Z [m]', 'interpreter', 'latex')
+ylabel('$\Phi_e$ [A/C/m$^2$]', 'interpreter', 'latex')
+set (gca, 'fontsize', 20)
+
+%%
+figure
+hold on 
+plot(mfluxi.p{1}(1,:), mfluxi.gamma{1}(:,1)')
+plot(mfluxi.p{2}(1,:), mfluxi.gamma{2}(:,1)')
+xlabel('Z [m]', 'interpreter', 'latex')
+ylabel('$\Phi_i$ [A/C/m$^2$]', 'interpreter', 'latex')
+set (gca, 'fontsize', 20)
+
+
+
+
+
+
+
+%% REPRODUCE CURRENTS PLOTS
+
+ ions.displaytotcurrevol(length(ions.t2d)-100:10:length(ions.t2d),1,1) 
+ %SECOND INDEX TO KNOW IF WE SUM the contribution of the ionic current too
+ ions_less.displaytotcurrevol(length(ions_less.t2d)-100:10:length(ions_less.t2d),1,1)
