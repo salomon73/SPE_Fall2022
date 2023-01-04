@@ -5,18 +5,31 @@
 The IIEE module being implemented, some tests were required in order to check that the code behaves accordingly. To do so, several tests were realised. The first one consisted of statistical results for the yield. To derive a statistics, the simple geometry from \ref{Theory_axy} was implemented, as well as several horizontal slices of ions. These ions were initialised at different radial distances from the cathode. Making use of Eq.(\ref{ions_energy}), their energy as they hit the electrode is known, and so is the average yield per incident ion. Recall that the yield is a function of the incident ion energy only, through the energy loss in the material,
 
 \beq
-\gamma(E) = \Lambda_{exp}\cdot \frac{dE}{dx}\Bigg|_i.
+\gamma(E) = \Lambda_{exp}\cdot \frac{dE}{dx}\Bigg|_i.\label{yield_result}
 \eeq 
 
-\noindent It is also important to note that the energy loss tables used to implement the yield curves as in Fig.(\ref{yield}).
+\noindent It is also important to note that the energy loss tables used to implement the yield curves as in Fig.(\ref{yield}) contained values for protons impinging on different materials. In order to obtain results exploitable for the TREX experiment, the yield for incident protons had to be replaced by the yield for other ions, as H$_2^{+}$ for example. Approximatively, since H$_{2}$ is a diatomic molecule formed of hydrogen atoms, which are protons when ionised, one can deduce the yield for H$_2^{+}$ cations through $dE(\tilde{E})/dx|_{H_2^{+}} \sim 2dE(\tilde{E}/2)/dx|_{H^{+}}$ \cite{Yield_H2}. Hence, Eq.(\ref{yield_result}) reads 
 
-\noindent For all three materials, the slices of ions were initialised along the axial direction, thus enabling to show that the electron generation from the code, over the loss of ions, is independent of the axial position, as expected. Fig.(\ref{flat_slice}) shows the results for $H_2^{+}$ cations impinging on the cathode made either of $^{304}$SS, Cu or Al. The potential bias applied between the two electrodes is $\Delta \phi=20$ kV. The magnetic field is uniform, with field lines parallel to the electrodes, and $B=0.21$ T, as it is a value of the order of magnitude used in gyrotrons. The radial positions of the electrode were $r_a=0.001$ m for the cathode and $r_b=0.01$ m for the anode, and the ions were generated at $r_1 = 0.003$ m, $r_2=0.005$ m and $r_3=0.008$ m. Comparison of the theoretical average electron yield and the one obtained from the IIEE module is exposed in Table.(\ref{tab_stat}). 
+\beq
+\gamma_{H_2^+}(\tilde{E}) = \Lambda_{exp}\cdot \frac{dE(\tilde{E})}{dx}\Bigg|_{H_2^+} =2 \Lambda_{exp}\cdot \frac{dE(\tilde{E}/2)}{dx}\Bigg|_{H^+},
+\eeq  
+
+and then 
+
+\beq
+\gamma_{H_2^+}(E) \simeq 2\cdot \gamma_{H^+}(E/2). \label{Yield_H2+}
+\eeq
+\noindent For all three materials, the slices of ions were initialised along the axial direction, thus enabling to show that the electron generation from the code, over the loss of ions, is independent of the axial position, as expected. Fig.(\ref{flat_slice}) shows the results for $H_2^{+}$ cations impinging on the cathode made either of $^{304}$SS, Cu or Al. The potential bias applied between the two electrodes is $\Delta \phi=20$ kV. The magnetic field is uniform, with field lines parallel to the electrodes, and $B=0.21$ T, as it is a value of the order of magnitude used in gyrotrons. The radial positions of the electrode were $r_a=0.001$ m for the cathode and $r_b=0.01$ m for the anode, and the ions were generated at $r_1 = 0.003$ m, $r_2=0.005$ m and $r_3=0.008$ m. Using the very simple equation Eq.(\ref{Yield_H2+}), the expected yield could be estimated and the comparison of the latter with the one obtained from the IIEE module is exposed in Table.(\ref{tab_stat}). 
 
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 1.0 \textwidth]{Flatslice_stats.eps}
-	\caption{\label{flat_slice} }
+	\caption{\label{flat_slice} Plot of the number of particles over the number of time-steps. The black curve represents the number of ions, while the colored curves show the number of electrons produced in the impingement of $H_2^+$ ions over $^{304}$SS, Cu and Al.}
 \end{figure}  
+
+\noindent One notes on Fig.(\ref{flat_slice}) that the ions population curve is discontinuous. It is due to the fact that the ions are initially configured in three slices at distinct radii, as shown in Fig.(\ref{slice_config}), and together with the symmetry of the system, they reach the cathode and disappear at distinct discrete times, hence the steps. Regarding the peaked shape of the electronic population curves, they disappear few time after being generated because in this geometry, the magnetic field lines are parallel to the electrodes. Thus, of a Larmor gyration, the electrons are not moving away from the cathode, and hence, they are recaptured few after being emitted.\\
+
+The statistical results presented in Table.(\ref{tab_stat}) are interesting in the sense that the theoretical model seems to have been implemented correctly. Regarding the relative errors, they are always lesser or equal to $1.6\%$, which is an acceptable value considering the fact that the model is approximative in several ways. Indeed, the yield conversion from $H^+$ to $H_2^{+}$ exposed in Eq.(\ref{Yield_H2+}) is an approximation. The fact that the yield in the potential emission region was constant (see Eq.(\ref{pot_em})), and that we linearly interpolated this constant value to the bottom of the kinetic emission model, constitutes one more source of approximation. However, this description is sufficient for a simple estimate of the influence of IIEE on electron clouds formation and behavior. Indeed, the yield being of the order of $\sim 1-2$, the approximations made should not influence or disturb greatly the expected results, in terms of electronic densities for example. 
 
 \begin{table}[h]
   \centering
@@ -40,10 +53,12 @@ The IIEE module being implemented, some tests were required in order to check th
     $\gamma_{th}$ & 0.920 & 1.133 & 1.297  \\ \hline
     $\gamma_{iiee}$ & 0.910 & 1.115 & 1.293   \\ \hline
     $\epsilon_{rel}$ & 1.0\% & 1.6\% & 0.3\%  \\ \hline
-  \end{tabular}\caption{Yield statistics for three materials}\label{tab_stat}
+  \end{tabular}\caption{Yield statistics for H$_2^{+}$ ions impinging on the three materials}\label{tab_stat}
 \end{table}
 
 
 \subsection{Cloud formation}
+
+Now, let us deal with results concerning the clouds formation and dynamic, with and without taking account for IIEE. In first considerations, two particular TREX geometries have been implemented. LEt us start with results in 
 
 \subsection{Further implementation}
