@@ -1069,34 +1069,9 @@ classdef espic2dhdf5
             
             
         end
-        function [I, pos]=OutCurrents(obj,timestep, subdiv)
-            % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
-            % This is simply the surface integral of the axial flux
-            if nargin<3
-                subdiv=1;
-            end
-            flux=obj.Axialflux(timestep,[1 obj.nz+1]);
-            %obj.Axialflux(timestep,length(obj.zgrid),species_id)
-            Iz=squeeze(trapz(obj.rgrid,flux.*obj.rgrid)*2*pi*obj.qsim/obj.weight);
-            Iz(1,:)=-Iz(1,:);
-            gamm=obj.Metallicflux(timestep, subdiv);  
-%           c=mflux.gamma{i}'*qe/(100^2)/P;
-            Im=zeros(length(gamm.p),length(timestep));
-            pos=cell(size(gamm.p));
-            for i=1:length(gamm.p)
-                p=gamm.p{i};
-                pos{i}=p;
-                flux=gamm.gamma{i}';
-                for j=1:length(timestep)
-                    %Im(i,j)=pi/2*sum((p(2,1:end-1)+p(2,2:end)).*(flux(2:end,j)+flux(1:end-1,j))'...
-                    %   .*sqrt((p(1,2:end)-p(1,1:end-1)).^2+(p(2,2:end)-p(2,1:end-1)).^2));
-                    AxialDensity = flux(j,:).* p(2,:);
-                    Im(i,j) = 2*pi*trapz(p(1,:),AxialDensity);
-                end
-            end
-            I=-cat(1,Iz,Im*obj.qsim/obj.weight);
-        end
         
+        
+
         
 %         function [I, pos]=OutCurrents_species(obj,timestep, subdiv)
 %             % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
@@ -1105,7 +1080,7 @@ classdef espic2dhdf5
 %                 subdiv=1;
 %             end
 %             flux=obj.Axialflux(timestep,[1 obj.nz+1],2);
-%             Iz=squeeze(trapz(obj.species(1).rgrid,-flux.*obj.species(1).rgrid)*2*pi*obj.species.q);
+%             Iz=squeeze(trapz(obj.species(1).rgrid,flux.*obj.species(1).rgrid)*2*pi*obj.species.q);
 %             Iz(1,:)=-Iz(1,:);
 %             gamm=obj.MetallicFlux_species(timestep, subdiv);
 %             qe = obj.species.q;
@@ -1127,11 +1102,63 @@ classdef espic2dhdf5
 %                     Im(i,j) = 2*pi*trapz(p(1,~isnan(AxialDensity)),AxialDensity(~isnan(AxialDensity)));
 %                 end
 %             end
-%             Im = flip(Im);
-%             I=-cat(1,Iz,Im);
+%             I=cat(1,Iz,Im);
 %         end
 
+%         function [I, pos]=OutCurrents(obj,timestep, subdiv)
+%             % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
+%             % This is simply the surface integral of the axial flux
+%             if nargin<3
+%                 subdiv=1;
+%             end
+%             flux=obj.Axialflux(timestep,[1 obj.nz+1]);
+%             Iz=squeeze(trapz(obj.rgrid,flux.*obj.rgrid)*2*pi*obj.qsim/obj.weight);
+%             Iz(1,:)=-Iz(1,:);
+%             
+%             gamm=obj.Metallicflux(timestep, subdiv);  
+%             Im=zeros(length(gamm.p),length(timestep));
+%             pos=cell(size(gamm.p));
+%             for i=1:length(gamm.p)
+%                 p=gamm.p{i};
+%                 pos{i}=p;
+%                 flux=gamm.gamma{i}';
+%                 for j=1:length(timestep)
+% %                     Im(i,j)=pi/2*sum((p(2,1:end-1)+p(2,2:end)).*(flux(2:end,j)+flux(1:end-1,j))'...
+% %                       .*sqrt((p(1,2:end)-p(1,1:end-1)).^2+(p(2,2:end)-p(2,1:end-1)).^2));
+%                     AxialDensity = flux(j,:).* p(2,:);
+%                     Im(i,j) = 2*pi*trapz(p(1,:),AxialDensity);
+%                 end
+%             end
+%             I=-cat(1,Iz,Im*obj.qsim/obj.weight);
+%         end
+%         
+        function [I, pos]=OutCurrents(obj,timestep, subdiv)
+            % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
+            % This is simply the surface integral of the axial flux for
+            % ions
+            if nargin<3
+                subdiv=1;
+            end
+            qe = obj.qsim/obj.weight; % electrons charge
+            flux=obj.Axialflux(timestep,[1 obj.nz+1]);
+            Iz=squeeze(trapz(obj.rgrid,flux.*obj.rgrid)*2*pi*qe);
+            Iz(1,:)=-Iz(1,:);
 
+            mflux = obj.Metallicflux(timestep,subdiv);
+            Im=zeros(length(mflux.p),length(timestep));
+            pos=cell(size(mflux.p));
+            
+            for ii =1:length(mflux.gamma) 
+                pos{ii}=mflux.p{ii};
+                for jj = 1:length(timestep)
+
+                    flux = qe*mflux.gamma{ii}(:,jj)'.*mflux.p{ii}(2,:);
+                    Im(ii,jj) =  2*pi*trapz(mflux.p{ii}(1,~isnan(flux)), flux(~isnan(flux)));  
+                end
+            end
+            
+            I=-cat(1,Iz,Im);
+        end
 
         function [I, pos]=OutCurrents_species(obj,timestep, subdiv)
             % Computes the Outgoing currens at the simulation axial boundaries at timestep timestep
@@ -1868,28 +1895,50 @@ classdef espic2dhdf5
             obj.savegraph(f,sprintf('%s/%sEnergy',obj.folder,obj.name));
         end
         
-        function f=displaycharge(obj,f,linelegend)
+        function out=displaycharge(obj,scalet,f,linelegend)
             %% Plot the time evolution of the system charge of electrons
             % f: figure handle if you want to stack several such curves
             % on the same figure
             % linelegend: legend for this charge evolution
             tmin=1;
             tmax=length(obj.ekin);
-            if nargin<2
-                f=figure('Name', sprintf('%s Charge',obj.name));
+            if nargin<2 
+                scalet =false;
             end
             if nargin<3
+                f=figure('Name', sprintf('%s Charge',obj.name));
+            end
+            if nargin<4
                 linelegend='';
             end
             ax=f.CurrentAxes;
             if isempty(ax)
                 ax=axes(f);
             end
+            if scalet
+                if obj.neutcol.present
+                    vexb0=(obj.Ez(:,:,1).*obj.Br'-obj.Er(:,:,1).*obj.Bz')./(obj.B'.^2);
+                    vexb0(obj.geomweight(:,:,1)<=0)=0;
+                    E=0.5*obj.msim/obj.weight*mean(abs(vexb0(:)))^2/obj.qe;
+                    taucol=1/(obj.neutcol.neutdens*mean(abs(vexb0(:)))*(obj.sigio(E)+obj.sigmela(E)+obj.sigmio(E)));
+                    try
+                        Sio_S=1e17*(obj.neutcol.neutdens*mean(abs(vexb0(:)))*obj.sigio(E))/(obj.maxwellsrce.frequency*obj.weight/(pi*(obj.maxwellsrce.rlim(2)^2-obj.maxwellsrce.rlim(1)^2)*diff(obj.maxwellsrce.zlim)))
+                    catch
+                    end
+                    tlabel='t/\tau_d [-]';
+                else
+                    taucol=2*pi/obj.omece;
+                    tlabel='t/\tau_ce [-]';
+                end
+            else
+                taucol=1e-9;
+                tlabel='t [ns]';
+            end
             try
-                plot(ax,obj.t0d(tmin:tmax),abs(obj.npart(tmin:tmax)*obj.qsim),'linewidth',1.5,'displayname',linelegend)
+                plot(ax,obj.t0d(tmin:tmax)/taucol,abs(obj.npart(tmin:tmax)*obj.qsim),'linewidth',2,'displayname',linelegend)
                 hold on
                 ylabel(ax,'Total charge [C]')
-                xlabel(ax,'t [s]')
+                xlabel(ax,tlabel)
                 grid on
                 if(nargin>2)
                     legend
@@ -1900,6 +1949,9 @@ classdef espic2dhdf5
             if nargin < 2
                 obj.savegraph(f,sprintf('%s/%scharge',obj.folder,obj.name));
             end
+            
+            out.time   = obj.t0d(tmin:tmax)/taucol;
+            out.charge = abs(obj.npart(tmin:tmax)*obj.qsim);
         end
         
         function displaySimParticles(obj)
@@ -2161,7 +2213,7 @@ classdef espic2dhdf5
         end
         
         
-        function displaytotcurrevol(obj,timesteps,species_id,toptitle,scalet,dens,subdiv,nmean)
+        function out = displaytotcurrevol(obj,timesteps,species_id,all_cur_id, toptitle,scalet,dens,subdiv,nmean)
             % Computes and display the time evolution of the outgoing
             % currents at time obj.t2d(timesteps)
             %scalet=true scales the time by the ellastic collision
@@ -2178,18 +2230,21 @@ classdef espic2dhdf5
                 species_id =1;
             end
             if nargin<4
-                toptitle="";
+                all_cur_id = 0;
             end
             if nargin<5
+                toptitle="";
+            end
+            if nargin<6
                 scalet=true;
             end
-            if nargin <6
+            if nargin <7
                 dens=true;
             end
-            if nargin<7
+            if nargin<8
                 subdiv=1;
             end
-            if nargin<8
+            if nargin<9
                 nmean=1;
             end
             
@@ -2254,6 +2309,22 @@ classdef espic2dhdf5
             P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
             currents=currents/P;   
             end
+            % hack to sum ionic + electronic current
+            if all_cur_id==1
+                [el_curr,pos]=obj.OutCurrents(timesteps,subdiv);
+                P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
+                out.elec_currents=el_curr/P;
+                
+                [ion_curr,pos]=obj.OutCurrents_species(timesteps,subdiv);
+                P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
+                out.ion_currents=ion_curr/P;  
+                
+                totCurr_el = sum(out.elec_currents,1);
+                totCurr_ion = sum(out.ion_currents,1);
+                
+                TotalCurrent = totCurr_el+totCurr_ion;
+            end
+            % plot
             f=figure('Name',sprintf('%s Charges',obj.name));
             tiledlayout(2,1)
             nexttile
@@ -2287,7 +2358,14 @@ classdef espic2dhdf5
             for i=3:size(currents,1)
                 p(i)=plot(axl,obj.t2d(timesteps)/taucol,movmean(currents(i,:),nmean),'Displayname',sprintf('border %i',i-2),'linewidth',1.8);
             end
-            plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(currents(:,:),1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
+           
+            if all_cur_id ==0
+                plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(currents(:,:),1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
+            else 
+                plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(out.elec_currents + out.ion_currents,1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
+                hold on 
+                p(size(currents,1))=plot(axl,obj.t2d(timesteps)/taucol,movmean(out.ion_currents(end,:),nmean),'Displayname',sprintf('border %i',i-2),'linewidth',1.8);
+            end
             hold on 
             xlabel(tlabel)
             ylabel('I/p_n [A/mbar]')
@@ -2353,6 +2431,211 @@ classdef espic2dhdf5
             end
             
         end
+% 
+% function displaytotcurrevol(obj,timesteps,species_id,all_cur_id,toptitle,scalet,dens,subdiv,nmean)
+%             % Computes and display the time evolution of the outgoing
+%             % currents at time obj.t2d(timesteps)
+%             %scalet=true scales the time by the ellastic collision
+%             %frequency
+%             %dens = true plot the time evolution of the maximum electron
+%             %density in the simulation domain otherwise plot the total
+%             %number of electrons in the domain
+%             % also plot in a subplot the color coded boundary corresponding
+%             % to each current
+%             if nargin<2
+%                 timesteps=1:length(obj.t2d);
+%             end
+%             if nargin<3
+%                 species_id =1;
+%             end
+%             if nargin<4
+%                 all_cur_id=0;
+%             end
+%             if nargin<5
+%                 toptitle="";
+%             end
+%             if nargin<6
+%                 scalet=true;
+%             end
+%             if nargin <7
+%                 dens=true;
+%             end
+%             if nargin<8
+%                 subdiv=1;
+%             end
+%             if nargin<9
+%                 nmean=1;
+%             end
+%             
+%             if scalet
+%                 if obj.neutcol.present
+%                     vexb0=(obj.Ez(:,:,1).*obj.Br'-obj.Er(:,:,1).*obj.Bz')./(obj.B'.^2);
+%                     vexb0(obj.geomweight(:,:,1)<=0)=0;
+%                     E=0.5*obj.msim/obj.weight*mean(abs(vexb0(:)))^2/obj.qe;
+%                     taucol=1/(obj.neutcol.neutdens*mean(abs(vexb0(:)))*(obj.sigio(E)+obj.sigmela(E)+obj.sigmio(E)));
+%                     try
+%                         Sio_S=1e17*(obj.neutcol.neutdens*mean(abs(vexb0(:)))*obj.sigio(E))/(obj.maxwellsrce.frequency*obj.weight/(pi*(obj.maxwellsrce.rlim(2)^2-obj.maxwellsrce.rlim(1)^2)*diff(obj.maxwellsrce.zlim)))
+%                     catch
+%                     end
+%                     tlabel='t/\tau_d [-]';
+%                 else
+%                     taucol=2*pi/obj.omece;
+%                     tlabel='t/\tau_ce [-]';
+%                 end
+%             else
+%                 taucol=1e-9;
+%                 tlabel='t [ns]';
+%             end
+%             
+%             if dens
+%                 if species_id==1
+%                     N=obj.N(:,:,timesteps);
+%                 else 
+%                     N=obj.species_moments.N(:,:,timesteps);
+%                 end
+%                 geomw=obj.geomweight(:,:,1);
+%                     geomw(geomw<0)=0;
+%                     geomw(geomw>0)=1;
+%                     N=N.*geomw;
+%                     %[~,idl]=max(N(:,:,end),[],'all','linear');
+%                     %[ir,iz]=ind2sub(size(geomw),idl);
+%                     %nmax=squeeze(max(max(N,[],1),[],2));
+%                     tn=(obj.t2d(timesteps));
+%                     nmax=zeros(2,length(tn));
+%                     nrhalf= floor(0.5*length(obj.rgrid));%find(obj.rgrid>0.07);
+% 
+%                     nmax(1,:)=squeeze(max(max(N(1:nrhalf,:,:),[],1),[],2));
+%                     nmax(2,:)=squeeze(max(max(N(nrhalf+1:end,:,:),[],1),[],2));
+% 
+% 
+%                     nlabel='n_{e,max} [m^{-3}]';
+%                     ndlabel='n_{e,max}';
+%             else
+%                 t0dst=find(obj.t0d>=obj.t2d(timesteps(1)),1,'first');
+%                 t0dlst=find(obj.t0d<=obj.t2d(timesteps(end)),1,'last');
+%                 tn=obj.t0d(t0dst:t0dlst);
+%                 nmax=obj.npart(t0dst:t0dlst)*obj.weight;
+%                 nlabel='Nb e^-';
+%                 ndlabel='Nb e^-';
+%             end
+%             
+%             if all_cur_id == 0
+%                 if species_id ==1
+%                 [currents,pos]=obj.OutCurrents(timesteps,subdiv);
+%                 P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
+%                 currents=currents/P;
+%                 else % for ionic currents
+%                 [currents,pos]=obj.OutCurrents_species(timesteps,subdiv);
+%                 P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
+%                 currents=currents/P;   
+%                 end
+%             else 
+%                 [currents_el,pos]=obj.OutCurrents(timesteps,subdiv);
+%                 P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
+%                 currents_el=currents_el/P;
+%                 [currents_ion,pos]=obj.OutCurrents_species(timesteps,subdiv);
+%                 currents_ion = current_ion/P;
+%             end
+%             
+%             f=figure('Name',sprintf('%s Charges',obj.name));
+%             tiledlayout(2,1)
+%             nexttile
+%             % Plot the evolution of nb of particles
+%             yyaxis right
+%             for i=1:size(nmax,1)
+%                 p=plot(tn/taucol,nmax(i,:),'b','linewidth',2.2,'Displayname',sprintf('%s, %d',ndlabel,i));
+%                 hold on
+%             end
+%             ylabel(nlabel)
+%             axl=gca;
+%             axl.YAxis(2).Color=p.Color;
+%             ylim([0 inf])
+%             
+%             if(obj.B(1,1)>obj.B(end,1))
+%                 lname='HFS';
+%                 rname='LFS';
+%             else
+%                 lname='LFS';
+%                 rname='HFS';
+%             end
+%             
+%             yyaxis( 'left');
+%             map=colormap(lines);
+%             set(axl,'linestyleorder',{'-',':','--','*','+'},...
+%                 'ColorOrder',map(2:7,:), 'NextPlot','replacechildren')
+%             p(1)=plot(axl,obj.t2d(timesteps)/taucol,movmean(currents(1,:),nmean),'Displayname',lname,'linewidth',1.8);
+%             hold on
+%             p(2)=plot(axl,obj.t2d(timesteps)/taucol,movmean(currents(2,:),nmean),'Displayname',rname,'linewidth',1.8);
+%             % Plot the currents
+%             for i=3:size(currents,1)
+%                 p(i)=plot(axl,obj.t2d(timesteps)/taucol,movmean(currents(i,:),nmean),'Displayname',sprintf('border %i',i-2),'linewidth',1.8);
+%             end
+%             plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(currents(:,:),1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
+%             hold on 
+%             xlabel(tlabel)
+%             ylabel('I/p_n [A/mbar]')
+%             grid on
+%             set(gca,'fontsize',12)
+%             ax.YAxis(1).Color='black';
+%             
+%             %legend('Orientation','horizontal','location','north','numcolumns',3)
+%             
+%             if ~isempty(toptitle)
+%                 title(toptitle)
+%             end
+%             
+%             ax2=nexttile;
+%             geomw=obj.geomweight(:,:,1);
+%             geomw(geomw<=0)=0;
+%             geomw(geomw>0)=NaN;
+%             [c1,hContour]=contourf(ax2,obj.zgrid*1000,obj.rgrid*1000,geomw, [0 0]);
+%             hold on
+%             drawnow;
+%             grid on;
+%             
+%             for i=1:length(pos)
+%                 plot(ax2,pos{i}(1,:)*1000,pos{i}(2,:)*1000,'linestyle',p(i+2).LineStyle,...
+%                     'color',p(i+2).Color,'marker',p(i+2).Marker,...
+%                     'displayname',sprintf('border %i',i),'linewidth',1.8)
+%                 hold on
+%             end
+%             title('Domain')
+%             plot(ax2,ones(size(obj.rgrid))*obj.zgrid(1)*1000,obj.rgrid*1000,'linestyle',p(1).LineStyle,...
+%                 'color',p(1).Color,'marker',p(1).Marker,...
+%                 'displayname',lname,'linewidth',1.8)
+%             plot(ax2,ones(size(obj.rgrid))*obj.zgrid(end)*1000,obj.rgrid*1000,'linestyle',p(2).LineStyle,...
+%                 'color',p(2).Color,'marker',p(2).Marker,...
+%                 'displayname',rname,'linewidth',1.8)
+%             xlabel('z [mm]')
+%             ylabel('r [mm]')
+%             grid on
+%             set(gca,'fontsize',12)
+%             hFills=hContour.FacePrims;
+%             [hFills.ColorType] = deal('truecoloralpha');  % default = 'truecolor'
+%             try
+%                 hFills(1).ColorData = uint8([150;150;150;255]);
+%                 for idx = 2 : numel(hFills)
+%                     hFills(idx).ColorData(4) = 0;   % default=255
+%                 end
+%             catch
+%             end
+%             %legend('Orientation','horizontal','location','north','numcolumns',4)
+%             
+%             
+%             fprintf('mean total current: %f [A/mbar]\n',mean(sum(currents(:,max(1,size(currents,2)-30):end),1,'omitnan')));
+%             
+%             %if nargin <3
+%             %    sgtitle(sprintf('\\phi_b-\\phi_a=%.2g kV, B=%f T',(obj.potout-obj.potinn)*obj.phinorm/1e3,mean(obj.B(:))))
+%             %elseif ~isempty(toptitle)
+%             %    sgtitle(toptitle)
+%             %end
+%             if length(subdiv)>1
+%                 obj.savegraph(f,sprintf('%s/%s_totIEvol%i%i_div',obj.folder,obj.name,scalet,dens),[16 14]);
+%             else
+%                 obj.savegraph(f,sprintf('%s/%s_totIEvol%i%i',obj.folder,obj.name,scalet,dens),[16 14]);
+%             end
+%             
+%         end
         
         function display2Dpotentialwell(obj,timestep,rcoord,clims)
             % Display the 2D potential well at time obj.t2d(timestep)
@@ -3113,6 +3396,107 @@ classdef espic2dhdf5
             obj.savegraph(f,sprintf('%sfluid_dens',obj.name))
         end
         
+        function display_ionicconfigurration(obj, fieldstart, fieldend, species_id)
+           %displayconfiguration plot the configuration of the simulation
+            % domain withe boundaries, the magnetic field lines the
+            % electric equipotential lines and the electron density
+            % averaged in time between t2d(fieldstart) and t2d(fieldend)
+            % species_id: gathers the ion species indices in an array.
+            for ii = 1 :species_id(end-1) 
+                dens(ii,:,:)=mean(obj.species_moments(ii).N(:,:,fieldstart:fieldend),3);
+            end
+            geomw=obj.geomweight(:,:,1);
+            maxdens=max(dens(:));
+            geomw(geomw<0)=0;
+            geomw(geomw>0)=maxdens;
+            dens(geomw<=0)=0;
+            geomw(geomw>0)=NaN;
+            
+            
+            
+            f=figure('Name', sprintf('%s fields',obj.name));
+            ax1=gca;
+            title(sprintf('Configuration'))
+            %dens(dens<=1e13)=NaN;
+            %% electron density
+            for ii =1:2
+                h(ii)=contourf(ax1,obj.zgrid*1000,obj.rgrid*1000,dens(ii,:,:),50,'Displayname','n_e [m^{-3}]', 'linestyle','none');
+                hold on;
+            end
+            colormap(flipud(hot));
+            %% Magnetic field lines
+            Blines=obj.rAthet;
+            levels=linspace(min(Blines(obj.geomweight(:,:,1)>0)),max(Blines(obj.geomweight(:,:,1)>0)),20);
+            [~,h1]=contour(ax1,obj.zgrid*1000,obj.rgrid*1000,Blines,real(levels),'-.','color','k','linewidth',1.5,'Displayname','Magnetic field lines');
+            
+            %% Equipotential lines
+            Pot=mean(obj.pot(:,:,fieldstart:fieldend),3);
+            Pot(obj.geomweight(:,:,1)<0)=NaN;
+            %levels=8;%[-3.4 -5 -10 -15 -20 -25];%7;
+            potcolor='b';%[0.3660 0.6740 0.1880];
+            [c1,h2]=contour(ax1,obj.zgrid*1000,obj.rgrid*1000,Pot,'--','color',potcolor,'ShowText','on','linewidth',1.2,'Displayname','Equipotentials [kV]');
+            clabel(c1,h2,'Color',potcolor)
+            
+            % Grey outline shows metallic parts
+            [c1,hContour]=contourf(ax1,obj.zgrid*1000,obj.rgrid*1000,geomw, [0 0]);
+            
+            drawnow;
+            
+            % set the axia limits
+            xlim(ax1,[obj.zgrid(1)*1000 obj.zgrid(end)*1000])
+            if(obj.conformgeom)
+                ylim([ax1 ],[obj.rgrid(1)*1000 obj.rgrid(rgridend)*1000])
+            else
+                ylim([ax1],[obj.rgrid(1)*1000 obj.rgrid(end)*1000])
+            end
+            legend([h1,h2],{'Magnetic field lines','Equipotentials [V]'},'location','northeast')
+            xlabel(ax1,'z [mm]')
+            ylabel(ax1,'r [mm]')
+            
+            c = colorbar(ax1);
+            c.Label.String= 'n[m^{-3}]';
+            view(ax1,2)
+            
+            grid on;
+            hFills=hContour.FacePrims;
+            [hFills.ColorType] = deal('truecoloralpha');  % default = 'truecolor'
+            try
+                hFills(1).ColorData = uint8([150;150;150;255]);
+                for idx = 2 : numel(hFills)
+                    hFills(idx).ColorData(4) = 0;   % default=255
+                end
+            catch
+            end
+            [~, name, ~] = fileparts(obj.file);
+            
+            % with this you could show the outline of the maxwellian source
+            % if obj.maxwellsrce.present
+            %     rlen=diff(obj.maxwellsrce.rlim);
+            %     zlen=diff(obj.maxwellsrce.zlim);
+            % rectangle('Position',[obj.maxwellsrce.zlim(1) obj.maxwellsrce.rlim(1) zlen rlen]*1000,'Edgecolor','g','Linewidth',2,'Linestyle','--')
+            % end
+            
+            % in case of coaxial configuration, extend the display domain
+            % and add grey rectangles to show metallic boundaries
+            if( obj.walltype >=2 && obj.walltype<=4)
+                rectangle('Position',[obj.zgrid(1) obj.r_b obj.zgrid(end)-obj.zgrid(1) 0.001]*1e3,'FaceColor',[150 150 150]/255,'Edgecolor','none')
+                ylimits=ylim;
+                ylim([ylimits(1),ylimits(2)+1])
+            end
+            if sum(obj.geomweight(:,1,1))==0
+                rectangle('Position',[obj.zgrid(1) obj.r_a-0.001 obj.zgrid(end)-obj.zgrid(1) 0.001]*1e3,'FaceColor',[150 150 150]/255,'Edgecolor','none')
+                ylimits=ylim;
+                ylim([ylimits(1)-1,ylimits(2)])
+            end
+            f.PaperUnits='centimeters';
+            %axis equal
+            
+            papsize=[14 5 ];
+            
+            
+            obj.savegraph(f,sprintf('%s/%sFields',obj.folder,obj.name),papsize); 
+        end
+        
         function displayconfiguration(obj,fieldstart,fieldend)
             %displayconfiguration plot the configuration of the simulation
             % domain withe boundaries, the magnetic field lines the
@@ -3285,7 +3669,7 @@ classdef espic2dhdf5
             obj.savegraph(f,sprintf('%s/%s_Bfield',obj.folder,obj.name),papsize);
         end
         
-        function displaySurfFlux(obj,timestep, subdiv, species_id)
+        function displaySurfFlux(obj,timestep, subdiv, species_id,scalet)
             %displaySurfFlux plot the current densities
             %on the domain boundaries for time t2d(timestep)
             %directly on the boundaries themselves
@@ -3296,6 +3680,9 @@ classdef espic2dhdf5
             end
             if nargin<4
                 species_id =1;
+            end
+            if nargin<5
+                scalet = false;
             end
             if species_id ==1
                 mflux= obj.Metallicflux(timestep,subdiv);
@@ -3349,8 +3736,28 @@ classdef espic2dhdf5
             c(c<=0)=NaN;
             patch(x,y,c,'EdgeColor','interp','LineWidth',linew);
             
-            title(sprintf('t=%4.2f [ns]',time*1e9))
-            
+            if scalet == false
+                
+                title(sprintf('t=%4.2f [ns]',time*1e9))
+            else 
+                if obj.neutcol.present
+                    vexb0=(obj.Ez(:,:,1).*obj.Br'-obj.Er(:,:,1).*obj.Bz')./(obj.B'.^2);
+                    vexb0(obj.geomweight(:,:,1)<=0)=0;
+                    E=0.5*obj.msim/obj.weight*mean(abs(vexb0(:)))^2/obj.qe;
+                    taucol=1/(obj.neutcol.neutdens*mean(abs(vexb0(:)))*(obj.sigio(E)+obj.sigmela(E)+obj.sigmio(E)));
+                    try
+                        Sio_S=1e17*(obj.neutcol.neutdens*mean(abs(vexb0(:)))*obj.sigio(E))/(obj.maxwellsrce.frequency*obj.weight/(pi*(obj.maxwellsrce.rlim(2)^2-obj.maxwellsrce.rlim(1)^2)*diff(obj.maxwellsrce.zlim)))
+                    catch
+                    end
+                    tlabel='t/\tau_d [-]';
+                else
+                    taucol=2*pi/obj.omece;
+                    tlabel='t/\tau_ce [-]';
+                end
+                title(sprintf('t/tau_d=%4.2f [-]', time/taucol))
+            end
+                
+             
             c=colorbar;
             c.Label.String= 'j\cdotn [A/(cm^2 mbar)]';
             xlabel('z [mm]')
