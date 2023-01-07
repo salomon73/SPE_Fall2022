@@ -32,7 +32,7 @@ and then
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 0.6 \textwidth]{FlatSlice_config.eps}
-	\caption{\label{slice_config}  }
+	\caption{\label{slice_config}  Initial ionic configuration used to produce the statistics from Table.(\ref{tab_stat}). The red stripes denote the initial ions positions. Note that by azimuthal symmetry, the ions are disposed on annuli. }
 \end{figure}  
 
 The statistical results presented in Table.(\ref{tab_stat}) are interesting in the sense that the theoretical model seems to have been implemented correctly. Regarding the relative errors, they are always lesser or equal to $1.6\%$, which is an acceptable value considering the fact that the model is approximative in several ways. Indeed, the yield conversion from $H^+$ to $H_2^{+}$ exposed in Eq.(\ref{Yield_H2+}) is an approximation. The fact that the yield in the potential emission region was constant (see Eq.(\ref{pot_em})), and that we linearly interpolated this constant value to the bottom of the kinetic emission model, constitutes one more source of approximation. However, this description is sufficient for a simple estimate of the influence of IIEE on electron clouds formation and behavior. Indeed, the yield being of the order of $\sim 1-2$, the approximations made should not influence or disturb greatly the expected results, in terms of electronic densities for example. \\
@@ -67,7 +67,7 @@ The last phase of the module testing was to determine wether or not some of the 
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 1.0 \textwidth]{config_trapped_rect.jpg}
-	\caption{\label{config_trapped} }
+	\caption{\label{config_trapped} Left: trapping region from the TREX extrude geometry. A cloud is present and the initial ion distribution is emphasized by the blue rectangle. - Right: vacuum potential well and two trapped electrons orbits.}
 \end{figure}  
 
 \subsection{Cloud formation}
@@ -81,23 +81,77 @@ Several characteristics are of interest in this case. As mentioned before, the c
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 1.0 \textwidth]{Config_H2Slanted.eps}
-	\caption{\label{Config_mag_Slanted} }
+	\caption{\label{Config_mag_Slanted} Left: magnetic configuration from the TREX slanted geometry. - Right: initial configuration of electrons, leading to the formation of an electron cloud.}
 \end{figure}  
 
 
-Let us first compare how fast the steady state is reached in both situations. Recall that the steady-state is characterized by the ions loss equal to the electrons loss. Hence, this is supposed to imply that the ionic current and the electronic current are equal and constant over time. Regarding the number of particles, it is supposed to reach a maximum and stagnate. The time required to reach this maximum corresponds to the cloud formation time. Plotting the total electronic charge over time can be a great indicator of the state of formation of the cloud. It can also enable to compare the formation in the two situations, where IIEE are considered and not. \\
+Let us first compare how fast the steady state is reached in both situations. Recall that the steady-state is characterized by the ions loss equal to the electrons loss. Hence, this is supposed to imply that the ionic current and the electronic current are constant over time, and of the same order of magnitude. Regarding the number of particles, it is supposed to reach a maximum and stagnate. The time required to reach this maximum corresponds to the cloud formation time. Plotting the total electronic charge over time can be a great indicator of the state of formation of the cloud. It can also enable to compare the formation in the two situations, where IIEE are considered and not. \\
 
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 1.0 \textwidth]{elec_density_current.eps}
-	\caption{\label{elec_density_current} }
+	\caption{\label{elec_density_current} Left: evolution of the total electronic charge inside the domain, over time normalised by the collision time. - Right: electron density in steady state.}
 \end{figure}  
 
-On the left part of Fig.(\ref{elec_density_current}), the absolute value of the total electronic charge in the domain is represented over time, the time being normalised by the collision time, to remove the pressure dependency. The blue curve represents the charge when the ion induced emissions are taken into account. As expected the charge is higher, since more electrons have been produced. Note that this information alone is not sufficient to determine wether the total charge is higher because more electrons have accumulated in the cloud, or if they are present elsewhere in the domain. This is why the electron density is plotted in steady state, on the right plot of Fig.(\ref{elec_density_current}). Since both clouds, with and without IIEE had the exam same density and shape, only the situation with IIEE has been shown, for the sake of space. Note that the density of electrons coming out of the cathode, under the ellipse is non negligible since it is of about the same, or one less, order of magnitude as the cloud density (see colorbar). It is clear that these electrons, due to their Larmor motion along field lines, cannot reach the cloud and be trapped too. They will simply leave the domain axially, and contribute to a source of axial current. Now, one question arises: what is the order of magnitude of this ion-induced electronic current ? 
+On the left part of Fig.(\ref{elec_density_current}), the absolute value of the total electronic charge in the domain is represented over time, the time being normalised by the collision time, to remove the pressure dependency. The blue curve represents the charge when the ion induced emissions are taken into account. One notes that the formation times are similar, since the inflexion point of each curve is located at about the same time, and so is the peak value. As expected the charge is higher, since more electrons have been produced. Note that this information alone is not sufficient to determine wether the total charge is higher because more electrons have accumulated in the cloud, or if they are present elsewhere in the domain. This is why the electron density is plotted in steady state, on the right plot of Fig.(\ref{elec_density_current}). Although it is not represented, both clouds, with and without IIEE had the exam same density and shape (hence, for the sake of saving space, only the situation with IIEE has been shown). This is consistent with our expectation, since the ion-induced electrons are formed at the cathode, and the potential well is located right by the anode. It is clear that these electrons, due to their Larmor motion along field lines, cannot reach the cloud and be trapped too. They will simply leave the domain axially, and contribute to a source of axial current. Now, one question arises: what is the order of magnitude of this ion-induced electronic current ?\\ 
 
-\newpage
+To answer this question, the current collected at all the boundaries of the domain has been plotted over time. The boundaries are the axial limits, $z=250$ mm and $z=445$ mm, and the metallic electrodes. The curves shown in Fig.(\ref{TotCurr_less}) corresponds to the currents collected in the case where the IIEE were not considered. The purple curve corresponds to the electronic current collected in the region of the ellipse, as the cloud is progressively compressing against the electrode and leaking electrons towards the metal. The plain green line corresponds to the electronic current at the cathode, which is consistently approximately zero. The green dashed line corresponds to the ionic current at the anode, while the yellow plain line shows the axial current at the low field side, that is electrons leaking from the potential well as it is progressively squeezed against the anode (see Fig.(\ref{pot_well_all}) for the evolution of the potential well). The black plain curve represents the total current, that is the sum of all these contributions. The dashed black curve corresponds to the sum of all currents from Fig.(\ref{TotCurr_H2}), for the sake of comparison. The blue (plain) line shows the evolution of the electron density $n_e$ over time, in order to visualise when the steady state is reached, while the dashed one corresponds to the electrons density in the lower radial half of the domain. Note that the time has been normalised here by the collision time $\tau_d$. As predicted, in steady state, the ionic (dashed green) and electronic (purple + yellow) are constant  and of the same order. Of course, no current is collected on the high field side. \\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1.0 \textwidth]{TotCurr_less_onlycur}
+	\caption{\label{TotCurr_less} Currents collected at all the boundaries of the domain, in absence of ion induced electron emissions. The colors correspond to the domains highlighted at the bottom part of  Fig.(\ref{TotCurr_H2})}
+\end{figure} 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1.0 \textwidth]{TotCurr_H2_iiee.eps}
+	\caption{\label{TotCurr_H2} Top: Currents collected at all boundaries of the domain, taking account for IIEE. - Bottom: Domain and boundaries definitions. The high field side is in red on the left, the low field side in yellow, the cathode in green and the anode in purple.}
+\end{figure} 
+
+The high plot from Fig.(\ref{TotCurr_H2}) represents the same information as in Fig.(\ref{TotCurr_less}), with the exact same color code. However, the contributions to the different currents might change a little bit. Still, no current is collected on the high field side. The electronic current collected at the anode is approximately the same in both situations, emphasising that the cloud behavior does not depend on IIEE in this geometry. However, now a contribution (negative) of the total current at the cathode is present (green, solid line). This contribution is due to the electrons leaving the cathode as they are produced by the ions. Note that since the yield is on average, of the order of 1-1.5, the ionic current (green dashed) is approximately equal and of opposite sign as the electronic current leaving the cathode. The generation of electrons at the electrode being discrete events, the currents fluctuates a bit more around its average value. \\
+
+\noindent Since the ions and the electrons have opposite charges, and they flow in opposite directions, the negative current at the cathode, coming from the electrons, will contribute to a new net current towards the grounded region. Indeed, all electrons being generated at the cathode are flowing towards the low field size to leave the domain. Thus, it is expected that the axial current is at least as important as the electronic current induced by electrons leaving the cathode. It turns out that it is even greater, since it contains the contribution from the electrons that are leaking from the cloud, see yellow line on Fig.(\ref{TotCurr_less}). The total current flowing from the cathode (at $\Phi = -20$ kV) to the grounded regions (low field side and anode), plotted in black, is now much greater than the total current observed without ion induced emissions. \\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1.0 \textwidth]{Potential_well_all.eps}
+	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+\end{figure}
+
+\noindent The dynamic of the potential well as the cloud is forming is shown in Fig.(\ref{pot_well_all}). The upper left corner plot shows the vacuum potential well, that is the well formed naturally by the magnetic field line crossing the equipotentials, in absence of the cloud. For the sake of readability, the equipotentials have not been shown. The dashed red contours show where the cloud forms inside the potential well. The upper right and lower left corners plots show the potential well in presence of the cloud, with IIEE and without them respectively. Note that the wells are identical, as expected from the previous considerations. The lower right corner plots shows a zoomed view of the potential well, with the contours ouf the cloud. Note that the outer contour intersects the anode, explaining the purple curve in Fig.(\ref{TotCurr_less}-\ref{TotCurr_H2}), since some electrons from the cloud are collected at the anode. The potential well depth is remarkably affected by the cloud (see colorbar).\\
+
+So to sum things up, the IIEE in this particular geometry seem not to influence neither the cloud formation time, nor the density. The clouds behave the same both with and without the ion induced electrons. As said previously, this can be explained by the magnetic topology, preventing the electrons leaving the cathode to reach the cloud's potential well. However, it is important to note that the electrons produced by the ions contribute to a non-negligible net current component, that adds up on top of the other contributions, coming from the cloud leaking electrons, and the ions. Hence, this new contribution has to be taken into account in the dimensioning and the design of the power supply for the MIG. \\
+ 
 \textbf{TREX \emph{extrude} geometry}\\
 
+Now, let us focus on one of the other designed geometries for TREX, the so called \emph{extrude} geometry, that is with half an ellipse dug inside the cathode. The electrode geometry has been shown previously in Fig.(\ref{config_trapped}). Here again, the anode is grounded, and the cathode is set at the potential $\Phi = -20$ kV.
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{Extrude_config_both.eps}
+	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+\end{figure}
 
 
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{Config_extrude.eps}
+	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{steady_state_cloud_extrude.eps}
+	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{totcharge_iiee_less.eps}
+	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+\end{figure}
+
+
+\newpage
 \subsection{Further implementation}
