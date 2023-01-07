@@ -442,6 +442,62 @@ figure
                       'H','He', 'Ne',...
            'Location','northwest','Interpreter','latex');
     set(legend,'FontSize',20);
+    xlabel('E [MeV]', 'interpreter', 'latex')
+    ylabel('$\gamma(E)$', 'interpreter', 'latex')
+    set (gca, 'fontsize', 22)
+    
+    
+%%  H2+ Yield
+
+E_1 = linspace(E(IndicesFit1(1)), E(IndicesFit2(1)),100);
+E_2 = linspace(E(IndicesFit2(1)), E(IndicesFit3(1)),100);
+E_3 = linspace(E(IndicesFit3(1)), E(IndicesFit4(1)),100);
+E_4 = linspace(E(IndicesFit4(1)), E(IndicesFit4(end)),100);
+
+ionisation_energy_H2 = 458*1.602e19*1e3/(6.02214076e23);
+gamma = compute_yield_potential(Ions, 'H');
+
+
+LambdaExp = 1e-3;
+yield1 = LambdaExp * polyval(P1,E_1);
+yield2 = LambdaExp * polyval(P2,E_2);
+yield3 = LambdaExp * polyval(P3,E_3);
+yield4 = LambdaExp * polyval(P4,E_4);
+
+yieldH21 = 2*LambdaExp * polyval(P1,E_1/2);
+yieldH22 = 2*LambdaExp * polyval(P2,E_2/2);
+yieldH23 = 2*LambdaExp * polyval(P3,E_3/2);
+yieldH24 = 2*LambdaExp * polyval(P4,E_4/2);
+
+allindex = cat(2, IndicesFit1, IndicesFit2, IndicesFit3, IndicesFit4);
+yieldTabulated = LambdaExp * Eloss(allindex);
+DeltaX = E(IndicesFit1(1))-0; %slope
+DeltaYH = yieldTabulated(IndicesFit(1))-Hydrogen;
+DeltaYHe = yieldTabulated(IndicesFit(1))-Helium;
+DeltaYNe = yieldTabulated(IndicesFit(1))-Neon;
+X = linspace(0,DeltaX,10);
+hydrogen_yield = DeltaYH/DeltaX*X + Hydrogen;
+helium_yield   = DeltaYHe/DeltaX*X + Helium;
+neon_yield     = DeltaYNe/DeltaX*X + Neon;
+
+figure
+    plot(E_1, yield1, 'k-', 'linewidth', 2)
+    hold on 
+    plot(E_2, yield2, 'k-', 'linewidth', 2)
+    hold on 
+    plot(E_3, yield3, 'k-', 'linewidth', 2)
+    hold on 
+    plot(E_4, yield4, 'k-', 'linewidth', 2)
+    hold on 
+    plot(X,hydrogen_yield,'k-', 'linewidth', 2)
+    hold on 
+    plot(E_1, yieldH21, 'r-', 'linewidth', 2)
+    hold on 
+    plot(E_2, yieldH22, 'r-', 'linewidth', 2)
+    hold on 
+    plot(E_3, yieldH23, 'r-', 'linewidth', 2)
+    hold on 
+    plot(E_4, yieldH24, 'r-', 'linewidth', 2)
     set (gca, 'fontsize', 22)
 
 %% PPB110 %%```
@@ -556,8 +612,12 @@ switch Neutral
     case 'Ne'
         Ei = 21.5646;
         gamma = alpha*(beta*Ei-2*abs(WF));
+    case 'H2'
+        Ei = 12.1836;
+        gamma =0.0; 
+        %alpha*(beta*Ei-2*abs(WF));
     otherwise 
-        error('Neutral gas should be Hydrogen, Helium or Neon');
+        error('Neutral gas should be Hydrogen, H2, Helium or Neon');
 end
 
 % end of function
