@@ -11,12 +11,12 @@
         if(showgrid)
             [sf]=surface(ions.zgrid,ions.rgrid,dens);
         else
-            [~,sf]=contourf(ions.zgrid,ions.rgrid,dens,40,'edgecolor','none');
+            [~,sf]=contourf(1000*ions.zgrid,1000*ions.rgrid,dens,40,'edgecolor','none');
         end
-        xlim([ions.zgrid(1) ions.zgrid(end)])
-        ylim([ions.rgrid(1) ions.rgrid(end)])
-        xlabel('z [m]')
-        ylabel('r [m]')
+        xlim(1000*[ions.zgrid(1) ions.zgrid(end)])
+        ylim(1000*[ions.rgrid(1) ions.rgrid(end)])
+        xlabel('z [mm]')
+        ylabel('r [mm]')
         title('Density')
         c = colorbar;
         c.Label.String= 'n[m^{-3}]';
@@ -34,12 +34,12 @@
         colormap(hotmap);
         hold on
 
-        contour(ions.zgrid,ions.rgrid,ions.geomweight(:,:,1),[0 0],'r-','linewidth',1.5);
+        contour(1000*ions.zgrid,1000*ions.rgrid,ions.geomweight(:,:,1),[0 0],'r-','linewidth',1.5);
         
         Blines=ions.rAthet;
         levels=linspace(min(Blines(ions.geomweight(:,:,1)>0)),max(Blines(ions.geomweight(:,:,1)>0)),20);
         Blines(ions.geomweight(:,:,1)<0)=NaN;
-        contour(ions.zgrid,ions.rgrid,Blines,real(levels),'m-.','linewidth',1.5);
+        contour(1000*ions.zgrid,1000*ions.rgrid,Blines,real(levels),'m-.','linewidth',1.5);
         set (gca, 'fontsize', 20)
         
         
