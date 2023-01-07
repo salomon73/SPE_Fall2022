@@ -125,33 +125,63 @@ So to sum things up, the IIEE in this particular geometry seem not to influence 
  
 \textbf{TREX \emph{extrude} geometry}\\
 
-Now, let us focus on one of the other designed geometries for TREX, the so called \emph{extrude} geometry, that is with half an ellipse dug inside the cathode. The electrode geometry has been shown previously in Fig.(\ref{config_trapped}). Here again, the anode is grounded, and the cathode is set at the potential $\Phi = -20$ kV.
+Now, let us focus on one of the other designed geometries for TREX, the so called \emph{extrude} geometry, that is with half an ellipse dug inside the cathode. The electrode geometry has been shown previously in Fig.(\ref{extrude_config_both}). Here again, the anode is grounded, and the cathode is set at the potential $\Phi = -20$ kV. The magnetic field intensity is the same inside the domain, and designed to reproduce the field from a superconducting magnet outside the domain, on the high field side. In the region of the ellipse, $B$ ranges $\sim 0.35 - 0.22$ T. The vacuum potential well, as defined previously, is shown in the right plot of Fig.(\ref{extrude_config_both}). This ellipse aims at reproducing the bottom part of the trapping region, under the corona ring from a typical MIG, as shown in the dashed red region from Fig.(\ref{gyrotron}). It is also located in the same axial region as the outer ellipse form the \emph{slanted} geometry studied above, in order to be able to combine the two geometries, to be closer to the full MIG shape. However, splitting the study in two makes it easier to identify the physical phenomena influencing the formation of the clouds, and to separate the currents components. Indeed, taking the geometry where both the inner and the outer ellipses are present would lead to two clouds, preventing us from determining easily which cloud is responsible for which current and so on. Nevertheless, this would be the object of an interesting further study. \\
+
 
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 1 \textwidth]{Extrude_config_both.eps}
-	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+	\caption{\label{extrude_config_both} Left: magnetic configuration for the extrude geometry. The high field side is on the left and the magnetic field lines are shown in red. - Right: Vacuum potential well in the same geometry.}
 \end{figure}
+
+In order to carry out the same kind of study as for the slanted configuration, several cases have been studied, the main goal being to compare the characteristics of electron clouds formation with and without IIEE, and how the electric currents collected at the boundaries of the domain are affected too. Let us first review the cloud formation times. It has been stated previously how the steady stated is characterised, especially through the total charge evolution. The absolute value of the total electronic charge in the domain is plotted over normalised time, in the left plot of Fig.(\ref{totcharge_iiee_less}). The striking information is that here, contrarily to the case with the outer ellipse, the steady state is reached much faster. Indeed, the plateau is reached with IIEE about twice as fast as without.\\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{totcharge_iiee_less.eps}
+	\caption{\label{totcharge_iiee_less} Left: total (absolute) charge in the domain over normalised time. - Right: Final state and cloud density in absence of ion induced electron emissions.}
+\end{figure}
+
+\noindent The equilibrium state of the cloud without ion induced electrons is shown on the right plot from Fig.(\ref{totcharge_iiee_less}). To be able to compare the latter, the cloud in steady state with IIEE is shown in Fig.(\ref{steady_state_cloud_extrude}). Both the right and left plots are with IIEE, but different initial conditions. This will be discussed below. Coming back to the steady state cloud densities, with and without IIEE, they are of the same order. However, note that the cloud positions are different. The cloud formed in presence of ion induced emissions is located a bit lower inside the ellipse than without. This can be explained by the fact that a lot of electrons being generated at the cathode boundary, in the trapping region, the potential well tends to be filled by the bottom. As the density grows inside the well, the latter becomes progressively narrower and its depth is decreasing as the potential is screen by the charge density (see Fig.(\ref{potential_well_extrude_both}) - Right). Without ion induced emissions (Fig.(\ref{potential_well_extrude_both}) - Right), the well tends to be filling by the top, since the electrons are being generated mostly in the ellipse region, not at the cathode surface. This explains the fact that the potential well remains deep in its bottom part, and hence the upper position of the cloud.\\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{steady_state_cloud_extrude.eps}
+	\caption{\label{steady_state_cloud_extrude} Steady state electron clouds with ion induced electron emissions, corresponding respectively to the left and right initial electron distributions from Fig.(\ref{Config_extrude}).}
+\end{figure}
+
+This equilibrium cloud is well a self sustained situation, in case of ion induced electron emissions, since several initial conditions can give rise to this cloud. Indeed, in Fig.(\ref{Config_extrude}) one notes that these two configurations led to the clouds in fig above. Speak of the formation times, the steady state occured later and so on.. 
 
 
 \begin{figure}[h!]
 \centering
 	\includegraphics[width = 1 \textwidth]{Config_extrude.eps}
-	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+	\caption{\label{Config_extrude} Initial electron distributions leading to the clouds shown in Fig.(\ref{steady_state_cloud_extrude}), taking account for ion induced electron emissions.}
+\end{figure}
+
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{TotCurr_Extrude_iiee_less.pdf}
+	\caption{\label{TotCurr_Extrude_iiee_less} Current collected at all the domain boundaries, without ion induced electron emissions. The color code is the same as the one used for the slanted geometry. The total current from Fig.(\ref{TotCurr_Extrude_iiee}) has been superimposed for the sake of comparison. However the curve is interrupted earlier since the steady state was reached much faster.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[width = 1 \textwidth]{steady_state_cloud_extrude.eps}
-	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+	\includegraphics[width = 1 \textwidth]{TotCurr_Extrude_iiee.eps}
+	\caption{\label{TotCurr_Extrude_iiee} Current collected at all the domain boundaries, with IIEE. The color of the curves matches the highlighted domain boundaries. The dashed green still represents the ionic current at the cathode.  }
 \end{figure}
+
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[width = 1 \textwidth]{totcharge_iiee_less.eps}
-	\caption{\label{pot_well_all} Potential well dynamics as the electron cloud forms. Up Left: Vacuum potential well - Up Right: Potential well in presence of the cloud (IIEE) - Down Left: Potential well in presence of the cloud (without IIEE) - Down Right: Zoomed view}
+	\includegraphics[width = 1 \textwidth]{potential_well_extrude_both.eps}
+	\caption{\label{potential_well_extrude_both} Left: Potential well in presence of the cloud, in steady state, without ion induced emissions. Some cloud density contours are given in dashed black. The innermost contour has a greater density than the outermost. Right: Same, but with ion indued emissions. For readability purpose, the density contours are shown in red. The time has been normalised.}
 \end{figure}
 
+
+\newpage
+\textbf{ITER gt-170 refurbished MIG}\\
 
 \newpage
 \subsection{Further implementation}
