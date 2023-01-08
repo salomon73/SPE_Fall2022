@@ -13,7 +13,7 @@ ions_less.displayenergy
 
 %% Charge over normalised time
 %true argument: bool to scale time over coll time
-
+time_step_corrupted = 509;
 out_less = ions_less.displaycharge(true);
 out = ions.displaycharge(true);
 step = 5068:length(out.time);
