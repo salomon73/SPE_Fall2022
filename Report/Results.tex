@@ -138,7 +138,7 @@ In order to carry out the same kind of study as for the slanted configuration, s
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[width = 1 \textwidth]{totcharge_iiee_less.eps}
+	\includegraphics[width = 1 \textwidth]{totcharge_iiee_less_prolonged.eps}
 	\caption{\label{totcharge_iiee_less} Left: total (absolute) charge in the domain over normalised time. - Right: Final state and cloud density in absence of ion induced electron emissions.}
 \end{figure}
 
@@ -163,7 +163,7 @@ The last part of this study in the extrude geometry is dedicated to the currents
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[width = 1 \textwidth]{TotCurr_Extrude_iiee_less.pdf}
+	\includegraphics[width = 1 \textwidth]{TotCurr_Extrude_iiee_less_prolonged.pdf}
 	\caption{\label{TotCurr_Extrude_iiee_less} Current collected at all the domain boundaries, without ion induced electron emissions. The color code is the same as the one used for the slanted geometry. The total current from Fig.(\ref{TotCurr_Extrude_iiee}) has been superimposed for the sake of comparison. However the curve is interrupted earlier since the steady state was reached much faster.}
 \end{figure}
 
@@ -173,11 +173,11 @@ The last part of this study in the extrude geometry is dedicated to the currents
 	\caption{\label{TotCurr_Extrude_iiee} Current collected at all the domain boundaries, with IIEE. The color of the curves matches the highlighted domain boundaries. The dashed green still represents the ionic current at the cathode.  }
 \end{figure}
 
-\noindent The case with IIEE is depicted in Fig.(\ref{TotCurr_Extrude_iiee}). The domain boundaries are emphasised again with the color lines from the bottom plot. The contributions to the currents from each particle species can be identified having a look at Fig.(\ref{Current_dens_all_extrude}). It shows the current densities at the electrodes and at the axial limits of the domain, in both cases, for electrons and ions. Note that this time, on Fig.(\ref{TotCurr_Extrude_iiee}), an electronic contribution to the current collected at the cathode is present. It comes from the electrons that are emitted inside the ellipse, and recapture at the electrode surface. Some of them are trapped in the cloud, and some others are guided towards the wall of the ellipse. This current vanishes in steady state. The ionic current (dashed green) and the axial current are slightly higher, resulting in a total current between the cathode and the ground to be higher too. The fact that the axial current is higher can be explained as follows: as the cloud is a little denser, more electrons are coming out, increasing the cloud contribution to the axial current. This is combined with the fact that the electrons that are leaving towards the low field side produce ions by inelastic collisions on their way out. Since IIEE are considered, new electrons appear at the cathode surface, but in a region where no trapping can occur. They simply add to the existing electron flux in that area, increasing the axial current, and contribute in the formation of more ions too. Fig.(\ref{Current_dens_all_extrude}) confirms that last information, since on right plots, the ionic current density is slightly higher in the ion-induced emissions case. 
+\noindent The case with IIEE is depicted in Fig.(\ref{TotCurr_Extrude_iiee}). The domain boundaries are emphasised again with the color lines from the bottom plot. The contributions to the currents from each particle species can be identified having a look at Fig.(\ref{Current_dens_all_extrude}). It shows the current densities at the electrodes and at the axial limits of the domain, in both cases, for electrons and ions. Note that this time, on Fig.(\ref{TotCurr_Extrude_iiee}), an electronic contribution to the current collected at the cathode is present. It comes from the electrons that are emitted inside the ellipse, and recapture at the electrode surface. Some of them are trapped in the cloud, and some others are guided towards the wall of the ellipse. This current vanishes in steady state. The ionic current (dashed green) and the axial current are slightly higher, resulting in a total current between the cathode and the ground to be higher too. The fact that the axial current is higher can be explained as follows: as the cloud is a little denser, more electrons are coming out, increasing the cloud contribution to the axial current. This is combined with the fact that the electrons that are leaving towards the low field side produce ions by inelastic collisions on their way out. Since IIEE are considered, new electrons appear at the cathode surface, but in a region where no trapping can occur. They simply add to the existing electron flux in that area, increasing the axial current, and contribute in the formation of more ions too. Fig.(\ref{Current_dens_all_extrude}) confirms that last information, since on right plots, the ionic current density is slightly higher in the ion-induced emissions case. \\
 
 \begin{figure}[h!]
 \centering
-	\includegraphics[width = 1 \textwidth]{Current_dens_all_extrude.eps}
+	\includegraphics[width = 1 \textwidth]{Current_dens_all_extrude_withTime.eps}
 	\caption{\label{Current_dens_all_extrude}Top: Current densities in steady state for electrons (left) and ions (right), without ion induced electrons. Bottom: same with IIEE. }
 \end{figure}
 
@@ -193,7 +193,81 @@ To draw a conclusion on this part, two of the TREX possible geometries were impl
 \newpage
 \textbf{ITER gt-170 refurbished MIG}\\
 
-Let us now focus on the previously introduced ITER GT-170 geometry.
+Let us now focus on the previously introduced ITER GT-170 geometry. This MIG geometry is of interest since it is part of the gyrotrons that have been designed for ECRH for the ITER project \cite{}. The magnetic field intensity inside the MIG is defined as in Fig.(\ref{magnetic_configuration}) (left), and the equipotentials are such that two magnetic wells are present (see Fig.(\ref{Totcharge+magwell})). This is consistent with our expectations from the combination of the two geometries from TREX. The two potential wells have approximately the same depth. In order to study the formation of the two electron clouds in this geometry, an initial distribution of electrons has been implemented in the whole trapping region, as emphasised on Fig.(\ref{magnetic_configuration}) (right). The system is then left to evolve, with and without ion induced electrons. The expected results are a combination of what has been observed in the two previous sections.\\
+
+The total charge (of electrons) inside the domain over the normalised time is being shown in Fig.(\ref{Totcharge+magwell}). The steady states are reached at similar times, although the case with IIEE got there a bit earlier. Without much surprise, the total charge is higher for the case with IIEE. However, one notes that the growth rate of the charge in the domain is not continuous, as it slows down at the middle. This is due to the fact that the lower cloud filled faster the upper cloud, since the ion induced electrons were generated in its trapping region. The steady state was achieved when both clouds  reached their maximum densities. 
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_magnetic_configuration.eps}
+	\caption{\label{magnetic_configuration} Left: magnetic field intensity inside the MIG chamber. The magnetic field lines are plotted in red. -  Right: Magnetic field lines (black) crossing equipotentials (blue), inducing two potential well shown in Fig.(\ref{Totcharge+magwell}). The yellow dotted region corresponds to the initial electron distribution.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_totCharge_magwell.eps}
+	\caption{\label{Totcharge+magwell} Left: Evolution of the total charge inside the MIG chamber. The blue curve shows the case with ion-induced electrons. - Right: Potential wells present inside the MIG due to the magnetic and electric fields topology.}
+\end{figure}
+
+
+In order to show the influence of the electron clouds on the potential wells, the latter were represented in presence of the clouds, in steady state, in Fig.(\ref{Well_cloud_both}). The upper cloud contours are similar between the two plots, as predicted by our TREX simulations from the slanted configurations. This is great since it proves that the geometries used for the TREX experiment which is currently being built enable to reproduce results from gyrotron guns such as this one. The lower cloud, as for it, is sensitive to the ion-induced electrons. Indeed, with IIEE, it is located lower than without. The potential well is more screened (see colorbar from Fig.(\ref{Well_cloud_both}) - left). Once again, this is a confirmation that the results predicted for TREX are consistent, when aiming at reproducing a gyrotron gun. Recall that we had observed the positions of the clouds in the ellipse to be different, one being slightly offset radially from the other.\\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_Well_cloud_both.eps}
+	\caption{\label{Well_cloud_both} Potential wells from Fig.(\ref{Totcharge+magwell}), in presence of the electron clouds, in steady state. Some cloud density contours have been superimposed in red. Left: No IIEE. - Right: IIEE}
+\end{figure}
+
+The density plots from Fig.(\ref{GT_final_densities}) enable to visualise the electrons repartition in the upper and the lower wells. In the case without IIEE, the lower well is much less filled. The exact density difference can not be extracted from the colorbar at naked eye, hence, the peak densities in both clouds are shown as time evolving variables on the current-plots Fig.(\ref{GTtotCurr_steadyState}-\ref{GTtotCurr_iiee}). The density in the lower cloud with IIEE is about two times the one without. \\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_final_densities.eps}
+	\caption{\label{GT_final_densities} Final cloud configurations and densities in both cases. Left: No IIEE. - Right: IIEE}
+\end{figure}
+
+With these informations in hand, let us now focus on the electric currents flowing in the vacuum chamber. The currents measured at each boundary of the MIG over time have been reported on  Fig.(\ref{GTtotCurr_steadyState}-\ref{GTtotCurr_iiee}). The time has been normalised by the collision time so the two situations can be compared. In absence of ion-induced emissions, only three components contribute to the current measure between the cathode and the grounded regions. The green curve shows the current from electrons leaving the lower cloud. The red curve corresponds to the electrons leaking from the upper cloud and being captured at the anode. Some of them are captured in the cloud region, and some are captured when hitting the wall as they follow magnetic lines towards the exit of the MIG (see current densities in Fig.(\ref{GT170_CurrDens})). The dashed, light blue curve shows the ionic current produced as the ions flow towards the cathode. The total current is plotted in solid black. The dashed black curve is the sum of all current contributions considering IIEE.\\
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_totCurr_steady_sate.eps}
+	\caption{\label{GTtotCurr_steadyState} Top: Evolution of all the current components inside the MIG, without ion-induced emissions. The color code corresponds to the domain boundaries highlighted in Fig.(\ref{GTtotCurr_iiee}). The dashed black curve corresponds to the total current with IIEE. Bottom left: All current components without IIEE, in steady state. - Bottom right: same with ion-induced electrons. }
+\end{figure}
+
+\noindent Considering ion-induced electron emissions, the total current measured is higher. Indeed, as showed in Fig.(\ref{GTtotCurr_iiee}), there is a higher contribution at the exit of the MIG chamber (red curve), as well as a slightly increased ionic current (dashed light blue). The current collected at the surface of the anode is identical, since this is only influenced through the upper cloud behavior, as explained when dealing with the slanted TREX geometry. The solid light blue curve corresponds to the electrons collected at the cathode surface, after being emitted by ions in that region. They do not contribute to an additional current since they tend to decrease the ionic ionic. So the total current (solid black line) is given by the sum of the red, the green, and the dashed light blue curves. The difference in the magnitude of each current contribution, with and without IIEE, can be seen on the bottom plots on Fig.(\ref{GTtotCurr_steadyState}). On the latter, the lower cloud densities are shown with the solid, dark blue lines, while the upper cloud densities, identical, are given by the dashed, dark blue lines.\\
+
+ 
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_totCurr_iiee.eps}
+	\caption{\label{GTtotCurr_iiee} All measured current contributions, in presence of ion-induced electron emissions, and represented over the normalised time.}
+\end{figure}
+
+\noindent Introduced before as a tool to measure which are the main contributions to the currents collected at the domain boundaries, the current densities for both electrons and ions are shown on Fig.(\ref{GT170_CurrDens}). The current densities are measured in steady state.  
+
+\begin{figure}[h!]
+\centering
+	\includegraphics[width = 1 \textwidth]{GT170_Current_densities_iiee.eps}
+	\caption{\label{GT170_CurrDens} Current densities for both electrons (left) and ions (right), in steady state and with IIEE.}
+\end{figure}
+
+As to sum things up regarding this comparative case study in the GT-170 geometry, results were as predicted at the end of TREX results, a combination of the ones obtained in slanted and in extrude geometries. The clouds' densities were affected, as the bottom cloud was filled with more electrons generated around its trapping region. The currents were affected too. The total collected current got increased of about $20\%$ in steady state, reopening the question of the power supply needed for the MIG.\\
 
 \newpage
 \subsection{Further implementation}
+
+As of now, the module implemented in the FENNECS code to deal with ion-induced electron emissions does not take account for some physical features and parameters, and one could consider adding them to the FENNECS module dealing with ion-induced electron emissions. For example, the angular dependance on the yield model has been mentioned but not implemented. In fact, the yield is supposed to depend on two angular parameters. The angle of the ion beam with respect to the surface normal, and the emission angle of the electrons. The two dependences are stated below and could be used to complement the existing module. Let us denote by $\theta_i$ the angle of ions with respect to the surface normal ($\theta_i = 0$) and $\theta_e$ the escape angle of electrons. If the ion beam is tilted by an angle $\theta_i$, the path-length of the incident particles in the electrons escape zone is prolonged by a factor of $\cos(\theta_i)^{-1}$. Hence, the total electron yield is supposed to be changed by 
+
+\beq
+\gamma(E, \theta_i) = \gamma(E)\cdot \cos(\theta_i)^{-1}.
+\eeq
+
+\noindent The previous equation is based on a straight ion path inside the solid. Experimentally, the term $\cos(\theta_i)^{-1}$ was observe to behave as $\cos(\theta_i)^{-f}$, $0.5 \leq f \leq 1.5$ \cite{HasselII}. The angular dependance of emitted electrons is expected to follow 
+
+\beq
+\frac{d \gamma}{d \Omega}(\theta_e) = \frac{d\gamma}{d \Omega}(0)\cdot \cos{\theta}, 
+\eeq
+
+where $\Omega$ denotes a solid angle around the emission direction.\\
+
+
