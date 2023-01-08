@@ -15,10 +15,15 @@ ions_less.displayenergy
 %true argument: bool to scale time over coll time
 
 out_less = ions_less.displaycharge(true);
-ions.displaycharge(true)
+out = ions.displaycharge(true);
+step = 5068:length(out.time);
+figure
+    p(1)= plot(out.time(step), out.charge(step), 'linewidth', 2);
     hold on 
     p(2) = plot(out_less.time, out_less.charge, 'linewidth', 2);
     legend('$q_{iiee}$', '$q_0$' ,'Location','best','Interpreter','latex');
+    xlabel('t/\tau_d [-]')
+    ylabel('Total Charge [C]')
     set(legend,'FontSize',18);
     set (gca, 'fontsize', 22)
 
