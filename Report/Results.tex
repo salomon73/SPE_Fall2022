@@ -2,7 +2,7 @@
 
 \subsection{Code testing}\label{CodeTest_section}
 
-The IIEE module being implemented, some tests were required in order to check that the code behaves accordingly. To do so, several tests were realised. The first one consisted of statistical results for the yield. To derive a statistics, the simple geometry from \ref{Theory_axy} was implemented, as well as several horizontal slices of ions. These ions were initialised at different radial distances from the cathode. Making use of Eq.(\ref{ions_energy}), their energy as they hit the electrode is known, and so is the average yield per incident ion. Recall that the yield is a function of the incident ion energy only, through the energy loss in the material,
+The IIEE module being implemented, some tests were required in order to check that the code behaves accordingly. To do so, several tests were realised. The first one consisted of statistical results for the yield. To derive a statistics, the simple geometry from Fig.(\ref{Config_ions}) was implemented, as well as several horizontal slices of ions. These ions were initialised at different radial distances from the cathode. Making use of Eq.(\ref{ions_energy}), their energy as they hit the electrode is known, and so is the average yield per incident ion. Recall that the yield is a function of the incident ion energy only, through the energy loss in the material,
 
 \beq
 \gamma(E) = \Lambda_{exp}\cdot \frac{dE}{dx}\Bigg|_i.\label{yield_result}
@@ -268,6 +268,6 @@ As of now, the module implemented in the FENNECS code to deal with ion-induced e
 \frac{d \gamma}{d \Omega}(\theta_e) = \frac{d\gamma}{d \Omega}(0)\cdot \cos{\theta}, 
 \eeq
 
-where $\Omega$ denotes a solid angle around the emission direction.\\
+\noindent where $\Omega$ denotes a solid angle around the emission direction.\\
 
 

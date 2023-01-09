@@ -24,6 +24,11 @@ Karl-Ontjes Groeneveld Jürgen Kemmler Peter Varga Hannspeter~Winter
 \newblock {\em Particle Induced Electron Emission II}.
 \newblock Springer Berlin, Heidelberg.
 
+\bibitem[Fis87]{Fisch}
+Nathaniel Fisch.
+\newblock Theory of current drive in plasmas.
+\newblock {\em Rev. Mod. Phys.}, 59:175--234, 01 1987.
+
 \bibitem[Gen19]{GenoudThesis}
 Jérémy Genoud.
 \newblock Advanced linear models for gyro-backward wave instabilities in
@@ -76,6 +81,22 @@ G.~Le~Bars, J.-Ph. Hogge, J.~Loizu, S.~Alberti, F.~Romano, and A.~Cerfon.
   trapped high-energy electron clouds in the presence of a neutral gas
   background.
 \newblock {\em Physics of Plasmas}, 29(8):082105, 2022.
+
+\bibitem[OHA{\etalchar{+}}11]{ITER_gyrotrons}
+T.~Omori, M.A. Henderson, F.~Albajar, S.~Alberti, U.~Baruah, T.S. Bigelow,
+  B.~Beckett, R.~Bertizzolo, T.~Bonicelli, A.~Bruschi, J.B. Caughman,
+  R.~Chavan, S.~Cirant, A.~Collazos, D.~Cox, C.~Darbos, M.R. {de Baar},
+  G.~Denisov, D.~Farina, F.~Gandini, T.~Gassmann, T.P. Goodman, R.~Heidinger,
+  J.P. Hogge, S.~Illy, O.~Jean, J.~Jin, K.~Kajiwara, W.~Kasparek, A.~Kasugai,
+  S.~Kern, N.~Kobayashi, H.~Kumric, J.D. Landis, A.~Moro, C.~Nazare, Y.~Oda,
+  I.~Pagonakis, B.~Piosczyk, P.~Platania, B.~Plaum, E.~Poli, L.~Porte,
+  D.~Purohit, G.~Ramponi, S.L. Rao, D.A. Rasmussen, D.M.S. Ronden,
+  T.~Rzesnicki, G.~Saibene, K.~Sakamoto, F.~Sanchez, T.~Scherer, M.A. Shapiro,
+  C.~Sozzi, P.~Spaeh, D.~Strauss, O.~Sauter, K.~Takahashi, R.J. Temkin,
+  M.~Thumm, M.Q. Tran, V.S. Udintsev, and H.~Zohm.
+\newblock Overview of the iter ec hcd system and its capabilities.
+\newblock {\em Fusion Engineering and Design}, 86(6):951--954, 2011.
+\newblock Proceedings of the 26th Symposium of Fusion Technology (SOFT-26).
 
 \bibitem[PPZ{\etalchar{+}}16]{Pagonakis}
 Ioannis~Gr. Pagonakis, Bernhard Piosczyk, Jianhua Zhang, Stefan Illy, Tomasz
