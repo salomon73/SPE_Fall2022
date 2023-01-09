@@ -1,6 +1,6 @@
 \section{Results}\label{results}
 
-\subsection{Code testing}
+\subsection{Code testing}\label{CodeTest_section}
 
 The IIEE module being implemented, some tests were required in order to check that the code behaves accordingly. To do so, several tests were realised. The first one consisted of statistical results for the yield. To derive a statistics, the simple geometry from \ref{Theory_axy} was implemented, as well as several horizontal slices of ions. These ions were initialised at different radial distances from the cathode. Making use of Eq.(\ref{ions_energy}), their energy as they hit the electrode is known, and so is the average yield per incident ion. Recall that the yield is a function of the incident ion energy only, through the energy loss in the material,
 
@@ -70,7 +70,7 @@ The last phase of the module testing was to determine wether or not some of the 
 	\caption{\label{config_trapped} Left: trapping region from the TREX extrude geometry. A cloud is present and the initial ion distribution is emphasized by the blue rectangle. - Right: vacuum potential well and two trapped electrons orbits.}
 \end{figure}  
 
-\subsection{Cloud formation}
+\subsection{Cloud formation}\label{Cloud_section}
 
 Now, let us deal with results concerning the clouds formation and dynamic, with and without taking account for IIEE. In first considerations, two particular TREX geometries have been implemented. Let us start with results in the \emph{slanted} geometry, that is with a prominent half-ellipse coming out of the anode, as in Fig.({\ref{TREX_schematics}}).\\
 
@@ -251,7 +251,7 @@ With these informations in hand, let us now focus on the electric currents flowi
 	\caption{\label{GT170_CurrDens} Current densities for both electrons (left) and ions (right), in steady state and with IIEE.}
 \end{figure}
 
-As to sum things up regarding this comparative case study in the GT-170 geometry, results were as predicted at the end of TREX results, a combination of the ones obtained in slanted and in extrude geometries. The clouds' densities were affected, as the bottom cloud was filled with more electrons generated around its trapping region. The currents were affected too. The total collected current got increased of about $20\%$ in steady state, reopening the question of the power supply needed for the MIG.\\
+As to sum things up regarding this comparative case study in the GT-170 geometry, results were as predicted at the end of TREX results, a combination of the ones obtained in slanted and in extrude geometries. The clouds' densities were affected, as the bottom cloud was filled with more electrons generated around its trapping region. The currents were affected too. The total collected current got increased of about $20\%$ in steady state, increasing the pressure on the power supply needed for the MIG.\\
 
 \newpage
 \subsection{Further implementation}
