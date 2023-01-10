@@ -2319,10 +2319,11 @@ classdef espic2dhdf5
                 P=obj.neutcol.neutdens*obj.kb*300/100;% pressure at room temperature in mbar
                 out.ion_currents=ion_curr/P;  
                 
-                totCurr_el = sum(out.elec_currents,1);
+                totCurr_el  = sum(out.elec_currents(1:end-1,:),1);
                 totCurr_ion = sum(out.ion_currents,1);
                 
                 TotalCurrent = totCurr_el+totCurr_ion;
+                out.temps = tn/taucol;
             end
             % plot
             f=figure('Name',sprintf('%s Charges',obj.name));
@@ -2362,7 +2363,8 @@ classdef espic2dhdf5
             if all_cur_id ==0
                 plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(currents(:,:),1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
             else 
-                plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(out.elec_currents + out.ion_currents,1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
+%                 plot(axl,obj.t2d(timesteps)/taucol,movmean(sum(out.elec_currents + out.ion_currents,1,'omitnan'),nmean),'k-','Displayname','total','linewidth',1.8);
+                plot(axl,obj.t2d(timesteps)/taucol,movmean(TotalCurrent,nmean),'k-','Displayname','total','linewidth',1.8);
                 hold on 
                 p(size(currents,1))=plot(axl,obj.t2d(timesteps)/taucol,movmean(out.ion_currents(end,:),nmean),'Displayname',sprintf('border %i',i-2),'linewidth',1.8);
             end
@@ -2802,7 +2804,7 @@ classdef espic2dhdf5
             Pot=model.pot;
             rathet=model.rathet;
             if (mod(rpos, 1) ~= 0)
-                [~,rpos]=min(abs(M.rgrid-rpos));
+                [~,rpos]=min(abs(obj.rgrid-rpos));
             end
             crpos=obj.rgrid(rpos);
             id=find(timestep==0);
@@ -3530,7 +3532,7 @@ classdef espic2dhdf5
             Pot(obj.geomweight(:,:,1)<0)=NaN;
             %levels=8;%[-3.4 -5 -10 -15 -20 -25];%7;
             potcolor='b';%[0.3660 0.6740 0.1880];
-            [c1,h2]=contour(ax1,obj.zgrid*1000,obj.rgrid*1000,Pot,'--','color',potcolor,'ShowText','on','linewidth',1.2,'Displayname','Equipotentials [kV]');
+            [c1,h2]=contour(ax1,obj.zgrid*1000,obj.rgrid*1000,Pot,6,'--','color',potcolor,'ShowText','on','linewidth',1.2,'Displayname','Equipotentials [kV]');
             clabel(c1,h2,'Color',potcolor)
             
             % Grey outline shows metallic parts
