@@ -1,8 +1,8 @@
 %% To work from home on local machine (macbook) 
 %cd /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Inputs/Test_ions3    set(legend,'FontSize',18);
-    set (gca, 'fontsize', 22)
 
-addpath /Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines
+
+addpath ('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/matlab_routines')
 addpath(genpath('/Users/salomonguinchard/Documents/GitHub/SPE_Fall2022/Matlab/Data/'))
 Ions = espic2dhdf5('stable_dt_12.h5');
 
